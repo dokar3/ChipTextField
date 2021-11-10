@@ -19,6 +19,8 @@ import com.dokar.chiptextfield.ChipTextField
 import com.dokar.chiptextfield.rememberChipInputFieldState
 import com.dokar.chiptextfield.sample.theme.ChipTextFieldTheme
 
+private const val LOREM_IPSUM = "Lorem ipsum dolor sit amet, consectetur adipisicing elit"
+
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,28 +39,14 @@ class MainActivity : ComponentActivity() {
 fun SampleScreen(name: String) {
     Column {
         val chips = remember {
-            listOf(
-                Chip("MyName"),
-                Chip("Apple"),
-                Chip("String"),
-                Chip("Tag"),
-                Chip("Greeting"),
-                Chip("Text"),
-                Chip("Ending"),
-                Chip("Bright"),
-                Chip("Wonder"),
-                Chip("Xenon"),
-            )
+            LOREM_IPSUM.split(" ").map(::Chip)
         }
         val state = rememberChipInputFieldState(chips = chips)
         ChipTextField(
             state = state,
-            modifier = Modifier
-                .fillMaxWidth(0.5f)
-                .padding(8.dp),
+            modifier = Modifier.fillMaxWidth().padding(8.dp),
             initialTextFieldValue = name
         )
-        TextField(value = "TextField", onValueChange = {})
     }
 }
 
