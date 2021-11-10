@@ -77,9 +77,7 @@ fun SampleScreen(name: String) {
     }
 
     Column {
-        val chips = remember {
-            LOREM_IPSUM.split(" ").map(::Chip)
-        }
+        val chips = remember { LOREM_IPSUM.split(" ").map(::Chip) }
         val state = rememberChipInputFieldState(chips = chips)
         ChipTextField(
             state = state,
