@@ -40,6 +40,8 @@ fun ChipTextField(
     enabled: Boolean = true,
     readOnly: Boolean = false,
     textColor: Color = MaterialTheme.colors.onBackground,
+    cursorColor: Color = MaterialTheme.colors.primary,
+    indicatorColor: Color = MaterialTheme.colors.primary,
     chipTextColor: Color = textColor,
     chipBorderColor: Color = chipTextColor,
     chipBackgroundColor: Color = Color.Transparent,
@@ -61,14 +63,14 @@ fun ChipTextField(
         else -> IndicatorUnfocusedWidth
     }
 
-    val indicatorColor = when {
-        isFocused -> MaterialTheme.colors.primary
+    val currIndicatorColor = when {
+        isFocused -> indicatorColor
         else -> MaterialTheme.colors.onBackground.copy(alpha = 0.45f)
     }
 
     FlowRow(
         modifier = modifier
-            .drawIndicatorLine(indicatorWidth, indicatorColor)
+            .drawIndicatorLine(indicatorWidth, currIndicatorColor)
             .padding(bottom = 6.dp)
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
@@ -123,7 +125,7 @@ fun ChipTextField(
             ),
             singleLine = true,
             interactionSource = interactionSource,
-            cursorBrush = SolidColor(MaterialTheme.colors.primary)
+            cursorBrush = SolidColor(cursorColor)
         )
     }
 }

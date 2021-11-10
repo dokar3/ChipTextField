@@ -83,6 +83,8 @@ fun SampleScreen(name: String) {
             state = state,
             modifier = Modifier.fillMaxWidth().padding(8.dp),
             initialTextFieldValue = name,
+            cursorColor = chipColors.border,
+            indicatorColor = chipColors.border,
             chipTextColor = chipColors.text,
             chipBorderColor = chipColors.border,
             chipBackgroundColor = chipColors.background
