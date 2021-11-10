@@ -24,6 +24,7 @@ import androidx.compose.ui.input.key.KeyEventType
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.input.key.type
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
@@ -77,6 +78,12 @@ fun ChipTextField(
                 indication = null,
                 onClick = {
                     focusRequester.requestFocus()
+                    // Move cursor to end
+                    val text = textFieldValue.text
+                    textFieldValueState = TextFieldValue(
+                        text = text,
+                        selection = TextRange(text.length, text.length)
+                    )
                 }
             ),
         mainAxisSpacing = 4.dp,
