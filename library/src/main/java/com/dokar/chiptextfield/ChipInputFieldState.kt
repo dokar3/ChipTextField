@@ -10,8 +10,6 @@ import androidx.compose.runtime.setValue
 fun rememberChipInputFieldState(chips: List<Chip>): ChipInputFieldState {
     return remember {
         ChipInputFieldState(chips)
-    }.apply {
-        this.chips = chips
     }
 }
 
