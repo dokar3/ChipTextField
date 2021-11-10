@@ -3,12 +3,18 @@ package com.dokar.chiptextfield
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.listSaver
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 
 @Composable
 fun rememberChipInputFieldState(chips: List<Chip>): ChipInputFieldState {
-    return remember {
+    return rememberSaveable(
+        saver = listSaver(
+            save = { it.chips.map { chip -> chip.name } },
+            restore = { ChipInputFieldState(it.map(::Chip)) }
+        )
+    ) {
         ChipInputFieldState(chips)
     }
 }
