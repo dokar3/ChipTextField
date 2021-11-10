@@ -63,7 +63,7 @@ fun ChipTextField(
 
     val indicatorColor = when {
         isFocused -> MaterialTheme.colors.primary
-        else -> MaterialTheme.colors.onSecondary
+        else -> MaterialTheme.colors.onBackground.copy(alpha = 0.45f)
     }
 
     FlowRow(

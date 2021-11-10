@@ -40,10 +40,10 @@ fun ChipItem(
     Box {
         Row(
             modifier = modifier
-                .background(backgroundColor)
-                .border(1.dp, borderColor, shape)
-                .clip(shape)
-                .padding(6.dp, 2.dp),
+                .background(color = backgroundColor, shape = shape)
+                .border(width = 1.dp, color = borderColor, shape = shape)
+                .clip(shape = shape)
+                .padding(horizontal = 6.dp, vertical = 2.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(text = chip.name, color = textColor)
