@@ -60,13 +60,14 @@ fun <T : Chip> ChipTextField(
     textColor: Color = MaterialTheme.colors.onBackground,
     cursorColor: Color = MaterialTheme.colors.primary,
     indicatorColor: Color = MaterialTheme.colors.primary,
+    chipShape: Shape = CircleShape,
+    chipTextColor: Color = textColor,
+    chipBorderColor: Color = chipTextColor,
+    chipBackgroundColor: Color = Color.Transparent,
     chipStartWidget: @Composable BoxWithConstraintsScope.(chip: T) -> Unit = {},
     chipEndWidget: @Composable BoxWithConstraintsScope.(chip: T) -> Unit = { chip: T ->
         CloseButton(state = state, chip = chip)
     },
-    chipTextColor: Color = textColor,
-    chipBorderColor: Color = chipTextColor,
-    chipBackgroundColor: Color = Color.Transparent,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
 ) {
     var textFieldValueState by remember {
@@ -114,6 +115,7 @@ fun <T : Chip> ChipTextField(
         ChipGroup(
             state = state,
             interactionSource = interactionSource,
+            chipShape = chipShape,
             chipTextColor = chipTextColor,
             chipBorderColor = chipBorderColor,
             chipBackgroundColor = chipBackgroundColor,
@@ -171,6 +173,7 @@ fun <T : Chip> ChipTextField(
 private fun <T : Chip> ChipGroup(
     state: ChipInputFieldState<T>,
     interactionSource: MutableInteractionSource,
+    chipShape: Shape,
     chipTextColor: Color,
     chipBorderColor: Color,
     chipBackgroundColor: Color,
@@ -181,6 +184,7 @@ private fun <T : Chip> ChipGroup(
         ChipItem(
             chip = chip,
             interactionSource = interactionSource,
+            shape = chipShape,
             textColor = chipTextColor,
             borderColor = chipBorderColor,
             backgroundColor = chipBackgroundColor,
@@ -194,13 +198,13 @@ private fun <T : Chip> ChipGroup(
 private fun <T : Chip> ChipItem(
     chip: T,
     interactionSource: MutableInteractionSource,
+    shape: Shape,
     textColor: Color,
     borderColor: Color,
     backgroundColor: Color,
     chipStartWidget: @Composable BoxWithConstraintsScope.(chip: T) -> Unit,
     chipEndWidget: @Composable BoxWithConstraintsScope.(chip: T) -> Unit,
-    modifier: Modifier = Modifier,
-    shape: Shape = CircleShape
+    modifier: Modifier = Modifier
 ) {
     var textFieldValueState by remember { mutableStateOf(TextFieldValue(chip.value)) }
     val textFieldValue = textFieldValueState.copy(text = textFieldValueState.text)

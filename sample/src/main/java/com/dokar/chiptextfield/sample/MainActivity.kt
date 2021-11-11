@@ -117,10 +117,10 @@ private fun AvatarChips(
         initialTextFieldValue = name,
         cursorColor = chipColors.border,
         indicatorColor = chipColors.border,
-        chipStartWidget = { Avatar(it) },
         chipTextColor = chipColors.text,
         chipBorderColor = chipColors.border,
-        chipBackgroundColor = chipColors.background
+        chipBackgroundColor = chipColors.background,
+        chipStartWidget = { Avatar(it) },
     )
 }
 
