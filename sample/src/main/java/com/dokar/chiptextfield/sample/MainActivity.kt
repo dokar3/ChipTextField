@@ -3,11 +3,13 @@ package com.dokar.chiptextfield.sample
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraintsScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -25,27 +27,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil.compose.rememberImagePainter
 import com.dokar.chiptextfield.Chip
 import com.dokar.chiptextfield.ChipTextField
-import com.dokar.chiptextfield.rememberChipInputFieldState
+import com.dokar.chiptextfield.rememberChipTextFieldState
+import com.dokar.chiptextfield.sample.data.AvatarChip
+import com.dokar.chiptextfield.sample.data.SampleChips
 import com.dokar.chiptextfield.sample.theme.ChipTextFieldTheme
-
-private const val LOREM_IPSUM = "Lorem ipsum dolor sit amet, consectetur adipisicing elit"
-
-private data class ChipColors(
-    val text: Color,
-    val border: Color,
-    val background: Color
-)
-
-private val THEME_COLORS = listOf(
-    ChipColors(text = Color.Black, border = Color.Black, background = Color.Transparent),
-    ChipColors(text = Color.White, border = Color(0xff94d2bd), background = Color(0xff94d2bd)),
-    ChipColors(text = Color.White, border = Color(0xffe85d04), background = Color(0xffe85d04)),
-    ChipColors(text = Color.White, border = Color(0xff9fa0ff), background = Color(0xff9fa0ff))
-)
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -77,18 +68,11 @@ fun SampleScreen(name: String) {
     }
 
     Column {
-        val chips = remember { LOREM_IPSUM.split(" ").map(::Chip) }
-        val state = rememberChipInputFieldState(chips = chips)
-        ChipTextField(
-            state = state,
-            modifier = Modifier.fillMaxWidth().padding(8.dp),
-            initialTextFieldValue = name,
-            cursorColor = chipColors.border,
-            indicatorColor = chipColors.border,
-            chipTextColor = chipColors.text,
-            chipBorderColor = chipColors.border,
-            chipBackgroundColor = chipColors.background
-        )
+        SimpleChips(name = name, chipColors = chipColors)
+
+        Spacer(modifier = Modifier.height(32.dp))
+
+        AvatarChips(name = name, chipColors = chipColors)
 
         Spacer(modifier = Modifier.height(32.dp))
 
@@ -97,6 +81,64 @@ fun SampleScreen(name: String) {
             modifier = Modifier.fillMaxWidth()
         )
     }
+}
+
+@Composable
+private fun SimpleChips(
+    name: String,
+    chipColors: ChipColors
+) {
+    val chips = remember { SampleChips.getTextChips() }
+    val state = rememberChipTextFieldState(chips = chips)
+    ChipTextField(
+        state = state,
+        onCreateChip = Chip::textChip,
+        modifier = Modifier.fillMaxWidth().padding(8.dp),
+        initialTextFieldValue = name,
+        cursorColor = chipColors.border,
+        indicatorColor = chipColors.border,
+        chipTextColor = chipColors.text,
+        chipBorderColor = chipColors.border,
+        chipBackgroundColor = chipColors.background
+    )
+}
+
+@Composable
+private fun AvatarChips(
+    name: String,
+    chipColors: ChipColors
+) {
+    val chips = remember { SampleChips.getAvatarChips() }
+    val state = rememberChipTextFieldState(chips = chips)
+    ChipTextField(
+        state = state,
+        onCreateChip = { AvatarChip(it, SampleChips.randomAvatarUrl()) },
+        modifier = Modifier.fillMaxWidth().padding(8.dp),
+        initialTextFieldValue = name,
+        cursorColor = chipColors.border,
+        indicatorColor = chipColors.border,
+        chipStartWidget = { Avatar(it) },
+        chipTextColor = chipColors.text,
+        chipBorderColor = chipColors.border,
+        chipBackgroundColor = chipColors.background
+    )
+}
+
+@Composable
+private fun BoxWithConstraintsScope.Avatar(
+    chip: AvatarChip,
+    modifier: Modifier = Modifier
+) {
+    val size = with(LocalDensity.current) { constraints.maxHeight.toDp() }
+    val painter = rememberImagePainter(chip.avatarUrl)
+    Image(
+        painter = painter,
+        contentDescription = null,
+        modifier = modifier
+            .size(size)
+            .clip(shape = CircleShape)
+            .background(MaterialTheme.colors.onBackground.copy(alpha = 0.2f))
+    )
 }
 
 @Composable
@@ -135,7 +177,7 @@ private fun ColorItem(
         Color.Transparent
     }
     Box(
-        modifier.size(32.dp)
+        modifier = modifier.size(32.dp)
             .clip(CircleShape)
             .border(width = 2.dp, color = borderColor, shape = CircleShape)
             .padding(4.dp)
