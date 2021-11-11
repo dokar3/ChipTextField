@@ -1,9 +1,11 @@
 package com.dokar.chiptextfield
 
-import androidx.compose.ui.graphics.painter.Painter
+data class TextChip(override var value: String) : Chip
 
-data class Chip(
-    val name: String,
-    val icon: Painter? = null,
-    val showDelete: Boolean = true,
-)
+interface Chip {
+    var value: String
+
+    companion object {
+        fun textChip(text: String) = TextChip(text)
+    }
+}
