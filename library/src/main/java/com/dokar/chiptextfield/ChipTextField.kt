@@ -240,7 +240,7 @@ private fun <T : Chip> ChipItem(
             },
             modifier = Modifier
                 .onSizeChanged { textFieldHeight = it.height }
-                .padding(horizontal = 8.dp, vertical = 2.dp)
+                .padding(horizontal = 8.dp, vertical = 3.dp)
                 .width(IntrinsicSize.Min)
                 .focusRequester(focusRequester),
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Send),
