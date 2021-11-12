@@ -206,7 +206,7 @@ private fun <T : Chip> ChipItem(
     chipEndWidget: @Composable BoxWithConstraintsScope.(chip: T) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var textFieldValueState by remember { mutableStateOf(TextFieldValue(chip.value)) }
+    var textFieldValueState by remember(chip) { mutableStateOf(TextFieldValue(chip.value)) }
     val textFieldValue = textFieldValueState.copy(text = textFieldValueState.text)
 
     val textStyle = remember(textColor) { TextStyle.Default.copy(color = textColor) }
