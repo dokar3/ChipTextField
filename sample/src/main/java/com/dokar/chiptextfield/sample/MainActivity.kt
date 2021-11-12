@@ -27,7 +27,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -37,6 +39,7 @@ import com.dokar.chiptextfield.Chip
 import com.dokar.chiptextfield.ChipTextField
 import com.dokar.chiptextfield.rememberChipTextFieldState
 import com.dokar.chiptextfield.sample.data.AvatarChip
+import com.dokar.chiptextfield.sample.data.CheckableChip
 import com.dokar.chiptextfield.sample.data.SampleChips
 import com.dokar.chiptextfield.sample.theme.ChipTextFieldTheme
 
@@ -74,6 +77,10 @@ fun SampleScreen(name: String) {
 
         Spacer(modifier = Modifier.height(32.dp))
 
+        CheckableChips(name = name, chipColors = chipColors)
+
+        Spacer(modifier = Modifier.height(32.dp))
+
         AvatarChips(name = name, chipColors = chipColors)
 
         Spacer(modifier = Modifier.height(32.dp))
@@ -102,6 +109,52 @@ private fun SimpleChips(
         chipTextColor = chipColors.text,
         chipBorderColor = chipColors.border,
         chipBackgroundColor = chipColors.background
+    )
+}
+
+@Composable
+private fun CheckableChips(
+    name: String,
+    chipColors: ChipColors
+) {
+    val chips = remember { SampleChips.getCheckableChips() }
+    val state = rememberChipTextFieldState(chips = chips)
+    ChipTextField(
+        state = state,
+        onCreateChip = ::CheckableChip,
+        modifier = Modifier.fillMaxWidth().padding(8.dp),
+        initialTextFieldValue = name,
+        readOnly = true,
+        textStyle = TextStyle.Default.copy(fontSize = 18.sp),
+        cursorColor = chipColors.border,
+        indicatorColor = chipColors.border,
+        chipTextColor = chipColors.text,
+        chipBorderColor = chipColors.border,
+        chipBackgroundColor = chipColors.background,
+        chipStartWidget = {
+            if (it.isChecked) {
+                CheckedIcon(chipColors = chipColors)
+            }
+        },
+        chipEndWidget = {},
+        onChipClick = {
+            it.isChecked = !it.isChecked
+        }
+    )
+}
+
+@Composable
+private fun CheckedIcon(
+    chipColors: ChipColors,
+    modifier: Modifier = Modifier
+) {
+    Image(
+        painter = painterResource(R.drawable.ic_baseline_check_24),
+        contentDescription = null,
+        modifier = modifier
+            .size(24.dp)
+            .padding(start = 6.dp),
+        colorFilter = ColorFilter.tint(chipColors.text)
     )
 }
 

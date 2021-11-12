@@ -14,9 +14,9 @@ fun <T : Chip> rememberChipTextFieldState(chips: List<T>): ChipInputFieldState<T
 }
 
 class ChipInputFieldState<T : Chip>(
-    _chips: List<T> = emptyList()
+    chips: List<T> = emptyList()
 ) {
-    var chips by mutableStateOf(_chips)
+    var chips by mutableStateOf(chips)
 
     fun addChip(chip: T) {
         val list = chips.toMutableList()
