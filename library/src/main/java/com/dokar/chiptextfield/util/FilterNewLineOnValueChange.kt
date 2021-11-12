@@ -22,7 +22,7 @@ private fun String.hasNewLine(): Boolean {
 private fun String.removeNewLine(): String {
     val index = indexOf('\n')
     return if (index != -1) {
-        substring(0, index - 1) + substring(index)
+        substring(0, index) + substring(index + 1)
     } else {
         this
     }
