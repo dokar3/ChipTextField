@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.material.MaterialTheme
@@ -23,7 +24,10 @@ class MainActivity : ComponentActivity() {
         setContent {
             ChipTextFieldTheme {
                 // A surface container using the 'background' color from the theme
-                Surface(color = MaterialTheme.colors.background) {
+                Surface(
+                    color = MaterialTheme.colors.background,
+                    modifier = Modifier.fillMaxSize()
+                ) {
                     SampleScreen("Android")
                 }
             }
@@ -33,20 +37,11 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun SampleScreen(name: String) {
-    val selectedColorPosition = remember {
-        mutableStateOf(0)
-    }
+    val selectedColorPosition = remember { mutableStateOf(0) }
 
-    val chipColors = when (selectedColorPosition.value) {
-        0 -> {
-            getDefaultChipColors()
-        }
-        else -> {
-            THEME_COLORS[selectedColorPosition.value]
-        }
-    }
+    val chipColors = getChipColors(selectedColorPosition.value)
 
-    Column {
+    Column(modifier = Modifier.fillMaxSize()) {
         TextChips(name = name, chipColors = chipColors)
 
         Spacer(modifier = Modifier.height(32.dp))
@@ -63,6 +58,18 @@ fun SampleScreen(name: String) {
             selectedPosition = selectedColorPosition,
             modifier = Modifier.fillMaxWidth()
         )
+    }
+}
+
+@Composable
+private fun getChipColors(selectedPos: Int): ChipColors {
+    return when (selectedPos) {
+        0 -> {
+            getDefaultChipColors()
+        }
+        else -> {
+            THEME_COLORS[selectedPos]
+        }
     }
 }
 

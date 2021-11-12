@@ -29,6 +29,7 @@ internal fun AvatarChips(
 ) {
     val chips = remember { SampleChips.getAvatarChips() }
     val state = rememberChipTextFieldState(chips = chips)
+    ChipsHeader("Avatar chips")
     ChipTextField(
         state = state,
         onCreateChip = { AvatarChip(it, SampleChips.randomAvatarUrl()) },

@@ -18,6 +18,7 @@ internal fun TextChips(
 ) {
     val chips = remember { SampleChips.getTextChips() }
     val state = rememberChipTextFieldState(chips = chips)
+    ChipsHeader("Text chips")
     ChipTextField(
         state = state,
         onCreateChip = Chip::textChip,

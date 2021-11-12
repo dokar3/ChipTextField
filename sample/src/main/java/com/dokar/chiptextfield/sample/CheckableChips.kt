@@ -24,6 +24,7 @@ internal fun CheckableChips(
 ) {
     val chips = remember { SampleChips.getCheckableChips() }
     val state = rememberChipTextFieldState(chips = chips)
+    ChipsHeader("Checkable chips")
     ChipTextField(
         state = state,
         onCreateChip = ::CheckableChip,
