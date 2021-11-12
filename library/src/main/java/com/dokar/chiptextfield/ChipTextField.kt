@@ -42,9 +42,10 @@ import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.dokar.chiptextfield.util.filterNewLine
-import com.dokar.chiptextfield.widget.CloseButton
+import com.dokar.chiptextfield.widget.CloseButtonWidget
 import com.google.accompanist.flowlayout.FlowCrossAxisAlignment
 import com.google.accompanist.flowlayout.FlowRow
 
@@ -61,13 +62,15 @@ fun <T : Chip> ChipTextField(
     textColor: Color = MaterialTheme.colors.onBackground,
     cursorColor: Color = MaterialTheme.colors.primary,
     indicatorColor: Color = MaterialTheme.colors.primary,
+    chipVerticalSpacing: Dp = 4.dp,
+    chipHorizontalSpacing: Dp = 4.dp,
     chipShape: Shape = CircleShape,
     chipTextColor: Color = textColor,
     chipBorderColor: Color = chipTextColor,
     chipBackgroundColor: Color = Color.Transparent,
     chipStartWidget: @Composable BoxWithConstraintsScope.(chip: T) -> Unit = {},
     chipEndWidget: @Composable BoxWithConstraintsScope.(chip: T) -> Unit = { chip: T ->
-        CloseButton(state = state, chip = chip)
+        CloseButtonWidget(state = state, chip = chip)
     },
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
 ) {
@@ -95,7 +98,7 @@ fun <T : Chip> ChipTextField(
     FlowRow(
         modifier = modifier
             .drawIndicatorLine(indicatorWidth, currIndicatorColor)
-            .padding(bottom = 6.dp)
+            .padding(bottom = chipVerticalSpacing + 2.dp)
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null,
@@ -109,8 +112,8 @@ fun <T : Chip> ChipTextField(
                     )
                 }
             ),
-        mainAxisSpacing = 4.dp,
-        crossAxisSpacing = 4.dp,
+        mainAxisSpacing = chipHorizontalSpacing,
+        crossAxisSpacing = chipVerticalSpacing,
         crossAxisAlignment = FlowCrossAxisAlignment.Center
     ) {
         ChipGroup(

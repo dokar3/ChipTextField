@@ -24,7 +24,7 @@ import com.dokar.chiptextfield.Chip
 import com.dokar.chiptextfield.ChipInputFieldState
 
 @Composable
-internal fun <T : Chip> CloseButton(
+fun <T : Chip> CloseButtonWidget(
     state: ChipInputFieldState<T>,
     chip: T
 ) {
@@ -35,7 +35,7 @@ internal fun <T : Chip> CloseButton(
 }
 
 @Composable
-private fun CloseButton(
+fun CloseButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
