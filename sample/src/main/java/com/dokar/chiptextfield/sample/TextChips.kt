@@ -12,7 +12,7 @@ import com.dokar.chiptextfield.rememberChipTextFieldState
 import com.dokar.chiptextfield.sample.data.SampleChips
 
 @Composable
-internal fun SimpleChips(
+internal fun TextChips(
     name: String,
     chipColors: ChipColors
 ) {

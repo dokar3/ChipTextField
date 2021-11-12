@@ -47,7 +47,7 @@ fun SampleScreen(name: String) {
     }
 
     Column {
-        SimpleChips(name = name, chipColors = chipColors)
+        TextChips(name = name, chipColors = chipColors)
 
         Spacer(modifier = Modifier.height(32.dp))
 
