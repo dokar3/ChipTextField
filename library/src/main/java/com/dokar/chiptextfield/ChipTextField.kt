@@ -57,6 +57,7 @@ fun <T : Chip> ChipTextField(
     initialTextFieldValue: String = "",
     enabled: Boolean = true,
     readOnly: Boolean = false,
+    textStyle: TextStyle = TextStyle.Default,
     textColor: Color = MaterialTheme.colors.onBackground,
     cursorColor: Color = MaterialTheme.colors.primary,
     indicatorColor: Color = MaterialTheme.colors.primary,
@@ -75,7 +76,7 @@ fun <T : Chip> ChipTextField(
     }
     val textFieldValue = textFieldValueState.copy(text = textFieldValueState.text)
 
-    val textStyle = remember(textColor) { TextStyle.Default.copy(color = textColor) }
+    val fieldTextStyle = remember(textStyle, textColor) { textStyle.copy(color = textColor) }
 
     val focusRequester = remember { FocusRequester() }
 
@@ -115,6 +116,7 @@ fun <T : Chip> ChipTextField(
         ChipGroup(
             state = state,
             interactionSource = interactionSource,
+            textStyle = textStyle,
             chipShape = chipShape,
             chipTextColor = chipTextColor,
             chipBorderColor = chipBorderColor,
@@ -149,7 +151,7 @@ fun <T : Chip> ChipTextField(
                 },
             enabled = enabled,
             readOnly = readOnly,
-            textStyle = textStyle,
+            textStyle = fieldTextStyle,
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Send),
             keyboardActions = KeyboardActions(
                 onSend = {
@@ -173,6 +175,7 @@ fun <T : Chip> ChipTextField(
 private fun <T : Chip> ChipGroup(
     state: ChipInputFieldState<T>,
     interactionSource: MutableInteractionSource,
+    textStyle: TextStyle,
     chipShape: Shape,
     chipTextColor: Color,
     chipBorderColor: Color,
@@ -184,6 +187,7 @@ private fun <T : Chip> ChipGroup(
         ChipItem(
             chip = chip,
             interactionSource = interactionSource,
+            textStyle = textStyle,
             shape = chipShape,
             textColor = chipTextColor,
             borderColor = chipBorderColor,
@@ -198,6 +202,7 @@ private fun <T : Chip> ChipGroup(
 private fun <T : Chip> ChipItem(
     chip: T,
     interactionSource: MutableInteractionSource,
+    textStyle: TextStyle,
     shape: Shape,
     textColor: Color,
     borderColor: Color,
@@ -209,7 +214,7 @@ private fun <T : Chip> ChipItem(
     var textFieldValueState by remember(chip) { mutableStateOf(TextFieldValue(chip.value)) }
     val textFieldValue = textFieldValueState.copy(text = textFieldValueState.text)
 
-    val textStyle = remember(textColor) { TextStyle.Default.copy(color = textColor) }
+    val chipTextStyle = remember(textColor) { textStyle.copy(color = textColor) }
 
     val focusRequester = remember { FocusRequester() }
 
@@ -249,7 +254,7 @@ private fun <T : Chip> ChipItem(
                 .focusRequester(focusRequester),
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Send),
             keyboardActions = KeyboardActions(onSend = { focusRequester.freeFocus() }),
-            textStyle = textStyle,
+            textStyle = chipTextStyle,
             interactionSource = interactionSource
         )
 

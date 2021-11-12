@@ -28,8 +28,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil.compose.rememberImagePainter
 import com.dokar.chiptextfield.Chip
 import com.dokar.chiptextfield.ChipTextField
@@ -115,6 +117,7 @@ private fun AvatarChips(
         onCreateChip = { AvatarChip(it, SampleChips.randomAvatarUrl()) },
         modifier = Modifier.fillMaxWidth().padding(8.dp),
         initialTextFieldValue = name,
+        textStyle = TextStyle.Default.copy(fontSize = 18.sp),
         cursorColor = chipColors.border,
         indicatorColor = chipColors.border,
         chipTextColor = chipColors.text,
