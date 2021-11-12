@@ -4,6 +4,8 @@
 
 ![](/images/screenshot_dark.png)
 
+![](/images/screenshot_checkable.png)
+
 ![](/images/screenshot_avatar.png)
 
 
