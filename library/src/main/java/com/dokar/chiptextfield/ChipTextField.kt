@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -29,7 +28,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyEventType
@@ -38,6 +36,7 @@ import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.input.key.type
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
@@ -54,20 +53,17 @@ import com.google.accompanist.flowlayout.FlowRow
 @Composable
 fun <T : Chip> ChipTextField(
     state: ChipInputFieldState<T>,
-    onCreateChip: (text: String) -> T,
+    onCreateChip: (text: String) -> T?,
     modifier: Modifier = Modifier,
     initialTextFieldValue: String = "",
     readOnly: Boolean = false,
     textStyle: TextStyle = TextStyle.Default,
     textColor: Color = MaterialTheme.colors.onBackground,
     cursorColor: Color = MaterialTheme.colors.primary,
-    indicatorColor: Color = MaterialTheme.colors.primary,
+    indicatorColor: Color = cursorColor,
+    chipStyle: ChipStyle = ChipStyle.Default,
     chipVerticalSpacing: Dp = 4.dp,
     chipHorizontalSpacing: Dp = 4.dp,
-    chipShape: Shape = CircleShape,
-    chipTextColor: Color = textColor,
-    chipBorderColor: Color = chipTextColor,
-    chipBackgroundColor: Color = Color.Transparent,
     chipStartWidget: @Composable BoxWithConstraintsScope.(chip: T) -> Unit = {},
     chipEndWidget: @Composable BoxWithConstraintsScope.(chip: T) -> Unit = { chip: T ->
         CloseButtonWidget(state = state, chip = chip)
@@ -98,10 +94,13 @@ fun <T : Chip> ChipTextField(
 
     val editable = !readOnly
 
+    val keyboardController = LocalSoftwareKeyboardController.current
+
     FlowRow(
         modifier = modifier
             .combineIf(editable) {
-                it.drawIndicatorLine(indicatorWidth, currIndicatorColor)
+                it
+                    .drawIndicatorLine(indicatorWidth, currIndicatorColor)
                     .padding(bottom = chipVerticalSpacing + 4.dp)
             }
             .clickable(
@@ -109,6 +108,7 @@ fun <T : Chip> ChipTextField(
                 indication = null,
                 onClick = {
                     if (editable) {
+                        keyboardController?.show()
                         focusRequester.requestFocus()
                         // Move cursor to end
                         val text = textFieldValue.text
@@ -128,11 +128,9 @@ fun <T : Chip> ChipTextField(
             readOnly = readOnly,
             onChipClick = onChipClick,
             interactionSource = interactionSource,
+            newChipFieldFocusRequester = focusRequester,
             textStyle = textStyle,
-            chipShape = chipShape,
-            chipTextColor = chipTextColor,
-            chipBorderColor = chipBorderColor,
-            chipBackgroundColor = chipBackgroundColor,
+            chipStyle = chipStyle,
             chipStartWidget = chipStartWidget,
             chipEndWidget = chipEndWidget
         )
@@ -143,8 +141,13 @@ fun <T : Chip> ChipTextField(
                 onValueChange = filterNewLine { value, hasNewLine ->
                     textFieldValueState = if (hasNewLine) {
                         // Add chip
-                        state.addChip(chip = onCreateChip(value.text))
-                        TextFieldValue()
+                        val newChip = onCreateChip(value.text)
+                        if (newChip != null) {
+                            state.addChip(newChip)
+                            TextFieldValue()
+                        } else {
+                            value
+                        }
                     } else {
                         value
                     }
@@ -172,8 +175,11 @@ fun <T : Chip> ChipTextField(
                             return@KeyboardActions
                         }
                         // Add chip
-                        state.addChip(chip = onCreateChip(valueText))
-                        textFieldValueState = TextFieldValue()
+                        val newChip = onCreateChip(valueText)
+                        if (newChip != null) {
+                            state.addChip(newChip)
+                            textFieldValueState = TextFieldValue()
+                        }
                     }
                 ),
                 singleLine = true,
@@ -190,11 +196,9 @@ private fun <T : Chip> ChipGroup(
     readOnly: Boolean,
     onChipClick: (chip: T) -> Unit,
     interactionSource: MutableInteractionSource,
+    newChipFieldFocusRequester: FocusRequester,
     textStyle: TextStyle,
-    chipShape: Shape,
-    chipTextColor: Color,
-    chipBorderColor: Color,
-    chipBackgroundColor: Color,
+    chipStyle: ChipStyle,
     chipStartWidget: @Composable BoxWithConstraintsScope.(chip: T) -> Unit,
     chipEndWidget: @Composable BoxWithConstraintsScope.(chip: T) -> Unit
 ) {
@@ -204,28 +208,25 @@ private fun <T : Chip> ChipGroup(
             readOnly = readOnly,
             onClick = onChipClick,
             interactionSource = interactionSource,
+            newChipFieldFocusRequester = newChipFieldFocusRequester,
             textStyle = textStyle,
-            shape = chipShape,
-            textColor = chipTextColor,
-            borderColor = chipBorderColor,
-            backgroundColor = chipBackgroundColor,
+            chipStyle = chipStyle,
             chipStartWidget = chipStartWidget,
             chipEndWidget = chipEndWidget
         )
     }
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 private fun <T : Chip> ChipItem(
     chip: T,
     readOnly: Boolean,
     onClick: (chip: T) -> Unit,
     interactionSource: MutableInteractionSource,
+    newChipFieldFocusRequester: FocusRequester,
     textStyle: TextStyle,
-    shape: Shape,
-    textColor: Color,
-    borderColor: Color,
-    backgroundColor: Color,
+    chipStyle: ChipStyle,
     chipStartWidget: @Composable BoxWithConstraintsScope.(chip: T) -> Unit,
     chipEndWidget: @Composable BoxWithConstraintsScope.(chip: T) -> Unit,
     modifier: Modifier = Modifier
@@ -233,7 +234,7 @@ private fun <T : Chip> ChipItem(
     var textFieldValueState by remember(chip) { mutableStateOf(TextFieldValue(chip.value)) }
     val textFieldValue = textFieldValueState.copy(text = textFieldValueState.text)
 
-    val chipTextStyle = remember(textColor) { textStyle.copy(color = textColor) }
+    val chipTextStyle = remember(chipStyle) { textStyle.copy(color = chipStyle.textColor) }
 
     val focusRequester = remember { FocusRequester() }
 
@@ -242,12 +243,14 @@ private fun <T : Chip> ChipItem(
     val density = LocalDensity.current
     val textFieldHeightDp = remember(textFieldHeight) { with(density) { textFieldHeight.toDp() } }
 
+    val keyboardController = LocalSoftwareKeyboardController.current
     Row(
         modifier = modifier
-            .clip(shape = shape)
-            .background(color = backgroundColor)
-            .border(width = 1.dp, color = borderColor, shape = shape)
+            .clip(shape = chipStyle.shape)
+            .background(color = chipStyle.backgroundColor)
+            .border(width = 1.dp, color = chipStyle.borderColor, shape = chipStyle.shape)
             .clickable {
+                keyboardController?.show()
                 focusRequester.requestFocus()
                 onClick(chip)
             },
@@ -267,6 +270,7 @@ private fun <T : Chip> ChipItem(
                 chip.value = value.text
                 if (hasNewLine) {
                     focusRequester.freeFocus()
+                    newChipFieldFocusRequester.requestFocus()
                 }
             },
             modifier = Modifier

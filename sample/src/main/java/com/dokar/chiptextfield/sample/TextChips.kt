@@ -5,8 +5,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.dokar.chiptextfield.Chip
+import com.dokar.chiptextfield.ChipStyle
 import com.dokar.chiptextfield.ChipTextField
 import com.dokar.chiptextfield.rememberChipTextFieldState
 import com.dokar.chiptextfield.sample.data.SampleChips
@@ -22,12 +25,17 @@ internal fun TextChips(
     ChipTextField(
         state = state,
         onCreateChip = Chip::textChip,
-        modifier = Modifier.fillMaxWidth().padding(8.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp),
         initialTextFieldValue = name,
+        textStyle = TextStyle.Default.copy(fontSize = 18.sp),
         cursorColor = chipColors.border,
         indicatorColor = chipColors.border,
-        chipTextColor = chipColors.text,
-        chipBorderColor = chipColors.border,
-        chipBackgroundColor = chipColors.background
+        chipStyle = ChipStyle.Default.copy(
+            textColor = chipColors.text,
+            borderColor = chipColors.border,
+            backgroundColor = chipColors.background
+        )
     )
 }

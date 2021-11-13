@@ -12,6 +12,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.dokar.chiptextfield.ChipStyle
 import com.dokar.chiptextfield.ChipTextField
 import com.dokar.chiptextfield.rememberChipTextFieldState
 import com.dokar.chiptextfield.sample.data.CheckableChip
@@ -28,15 +29,19 @@ internal fun CheckableChips(
     ChipTextField(
         state = state,
         onCreateChip = ::CheckableChip,
-        modifier = Modifier.fillMaxWidth().padding(8.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp),
         initialTextFieldValue = name,
         readOnly = true,
         textStyle = TextStyle.Default.copy(fontSize = 18.sp),
         cursorColor = chipColors.border,
         indicatorColor = chipColors.border,
-        chipTextColor = chipColors.text,
-        chipBorderColor = chipColors.border,
-        chipBackgroundColor = chipColors.background,
+        chipStyle = ChipStyle.Default.copy(
+            textColor = chipColors.text,
+            borderColor = chipColors.border,
+            backgroundColor = chipColors.background
+        ),
         chipStartWidget = {
             if (it.isChecked) {
                 CheckedIcon(chipColors = chipColors)

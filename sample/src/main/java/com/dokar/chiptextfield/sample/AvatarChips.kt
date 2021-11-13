@@ -17,6 +17,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberImagePainter
+import com.dokar.chiptextfield.ChipStyle
 import com.dokar.chiptextfield.ChipTextField
 import com.dokar.chiptextfield.rememberChipTextFieldState
 import com.dokar.chiptextfield.sample.data.AvatarChip
@@ -38,9 +39,11 @@ internal fun AvatarChips(
         textStyle = TextStyle.Default.copy(fontSize = 18.sp),
         cursorColor = chipColors.border,
         indicatorColor = chipColors.border,
-        chipTextColor = chipColors.text,
-        chipBorderColor = chipColors.border,
-        chipBackgroundColor = chipColors.background,
+        chipStyle = ChipStyle.Default.copy(
+            textColor = chipColors.text,
+            borderColor = chipColors.border,
+            backgroundColor = chipColors.background
+        ),
         chipStartWidget = { Avatar(it) },
     )
 }
