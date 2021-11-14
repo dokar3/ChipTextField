@@ -5,12 +5,11 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
-import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.foundation.layout.BoxWithConstraintsScope
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
@@ -64,8 +63,8 @@ fun <T : Chip> ChipTextField(
     chipStyle: ChipStyle = ChipStyle.Default,
     chipVerticalSpacing: Dp = 4.dp,
     chipHorizontalSpacing: Dp = 4.dp,
-    chipStartWidget: @Composable BoxWithConstraintsScope.(chip: T) -> Unit = {},
-    chipEndWidget: @Composable BoxWithConstraintsScope.(chip: T) -> Unit = { chip: T ->
+    chipStartWidget: @Composable (chip: T) -> Unit = {},
+    chipEndWidget: @Composable (chip: T) -> Unit = { chip: T ->
         CloseButtonWidget(state = state, chip = chip)
     },
     onChipClick: (chip: T) -> Unit = {},
@@ -199,8 +198,8 @@ private fun <T : Chip> ChipGroup(
     newChipFieldFocusRequester: FocusRequester,
     textStyle: TextStyle,
     chipStyle: ChipStyle,
-    chipStartWidget: @Composable BoxWithConstraintsScope.(chip: T) -> Unit,
-    chipEndWidget: @Composable BoxWithConstraintsScope.(chip: T) -> Unit
+    chipStartWidget: @Composable (chip: T) -> Unit,
+    chipEndWidget: @Composable (chip: T) -> Unit
 ) {
     for (chip in state.chips) {
         ChipItem(
@@ -227,8 +226,8 @@ private fun <T : Chip> ChipItem(
     newChipFieldFocusRequester: FocusRequester,
     textStyle: TextStyle,
     chipStyle: ChipStyle,
-    chipStartWidget: @Composable BoxWithConstraintsScope.(chip: T) -> Unit,
-    chipEndWidget: @Composable BoxWithConstraintsScope.(chip: T) -> Unit,
+    chipStartWidget: @Composable (chip: T) -> Unit,
+    chipEndWidget: @Composable (chip: T) -> Unit,
     modifier: Modifier = Modifier
 ) {
     var textFieldValueState by remember(chip) { mutableStateOf(TextFieldValue(chip.value)) }
@@ -244,20 +243,25 @@ private fun <T : Chip> ChipItem(
     val textFieldHeightDp = remember(textFieldHeight) { with(density) { textFieldHeight.toDp() } }
 
     val keyboardController = LocalSoftwareKeyboardController.current
+
+    val editable = !readOnly
+
     Row(
         modifier = modifier
             .clip(shape = chipStyle.shape)
             .background(color = chipStyle.backgroundColor)
             .border(width = 1.dp, color = chipStyle.borderColor, shape = chipStyle.shape)
             .clickable {
-                keyboardController?.show()
-                focusRequester.requestFocus()
+                if (editable) {
+                    keyboardController?.show()
+                    focusRequester.requestFocus()
+                }
                 onClick(chip)
             },
         verticalAlignment = Alignment.CenterVertically
     ) {
-        BoxWithConstraints(
-            modifier = Modifier.height(textFieldHeightDp),
+        Box(
+            modifier = Modifier.requiredHeight(32.dp),
             contentAlignment = Alignment.Center
         ) {
             chipStartWidget(chip)
@@ -280,14 +284,14 @@ private fun <T : Chip> ChipItem(
                 .focusRequester(focusRequester),
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Send),
             keyboardActions = KeyboardActions(onSend = { focusRequester.freeFocus() }),
-            enabled = !readOnly,
+            enabled = editable,
             readOnly = readOnly,
             textStyle = chipTextStyle,
             interactionSource = interactionSource
         )
 
-        BoxWithConstraints(
-            modifier = Modifier.height(textFieldHeightDp),
+        Box(
+            modifier = Modifier.requiredHeight(textFieldHeightDp),
             contentAlignment = Alignment.Center
         ) {
             chipEndWidget(chip)
