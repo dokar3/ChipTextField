@@ -63,9 +63,7 @@ fun <T : Chip> ChipTextField(
     chipVerticalSpacing: Dp = 4.dp,
     chipHorizontalSpacing: Dp = 4.dp,
     chipStartWidget: @Composable (chip: T) -> Unit = {},
-    chipEndWidget: @Composable (chip: T) -> Unit = { chip: T ->
-        CloseButtonWidget(state = state, chip = chip)
-    },
+    chipEndWidget: @Composable (chip: T) -> Unit = { CloseButtonWidget(state, it) },
     onChipClick: ((chip: T) -> Unit)? = null,
     onChipLongClick: ((chip: T) -> Unit)? = null,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
@@ -295,9 +293,7 @@ private fun <T : Chip> ChipItem(
                 .width(IntrinsicSize.Min)
                 .focusRequester(focusRequester)
                 .onBackspaceUp {
-                    if (textFieldValue.selection.start == 0
-                        && textFieldValue.selection.end == 0
-                    ) {
+                    if (textFieldValue.text.isEmpty()) {
                         state.removeChip(chip)
                     }
                 },
