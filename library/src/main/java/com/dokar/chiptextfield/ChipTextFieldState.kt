@@ -7,7 +7,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 
 @Composable
-fun <T : Chip> rememberChipTextFieldState(chips: List<T>): ChipInputFieldState<T> {
+fun <T : Chip> rememberChipTextFieldState(
+    chips: List<T> = emptyList()
+): ChipInputFieldState<T> {
     return remember {
         ChipInputFieldState(chips)
     }
