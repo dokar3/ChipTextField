@@ -52,6 +52,7 @@ fun <T : Chip> ChipTextField(
     modifier: Modifier = Modifier,
     initialTextFieldValue: String = "",
     readOnly: Boolean = false,
+    keyboardOptions: KeyboardOptions = KeyboardOptions(),
     textStyle: TextStyle = TextStyle.Default,
     textColor: Color = MaterialTheme.colors.onBackground,
     cursorColor: Color = MaterialTheme.colors.primary,
@@ -121,6 +122,7 @@ fun <T : Chip> ChipTextField(
         ChipGroup(
             state = state,
             readOnly = readOnly,
+            keyboardOptions = keyboardOptions,
             onChipClick = onChipClick,
             interactionSource = interactionSource,
             newChipFieldFocusRequester = focusRequester,
@@ -159,7 +161,7 @@ fun <T : Chip> ChipTextField(
                     },
                 readOnly = readOnly,
                 textStyle = fieldTextStyle,
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Send),
+                keyboardOptions = keyboardOptions.copy(imeAction = ImeAction.Send),
                 keyboardActions = KeyboardActions(
                     onSend = {
                         val valueText = textFieldValue.text
@@ -186,6 +188,7 @@ fun <T : Chip> ChipTextField(
 private fun <T : Chip> ChipGroup(
     state: ChipInputFieldState<T>,
     readOnly: Boolean,
+    keyboardOptions: KeyboardOptions,
     onChipClick: (chip: T) -> Unit,
     interactionSource: MutableInteractionSource,
     newChipFieldFocusRequester: FocusRequester,
@@ -199,6 +202,7 @@ private fun <T : Chip> ChipGroup(
             state = state,
             chip = chip,
             readOnly = readOnly,
+            keyboardOptions = keyboardOptions,
             onClick = onChipClick,
             interactionSource = interactionSource,
             newChipFieldFocusRequester = newChipFieldFocusRequester,
@@ -216,6 +220,7 @@ private fun <T : Chip> ChipItem(
     state: ChipInputFieldState<T>,
     chip: T,
     readOnly: Boolean,
+    keyboardOptions: KeyboardOptions,
     onClick: (chip: T) -> Unit,
     interactionSource: MutableInteractionSource,
     newChipFieldFocusRequester: FocusRequester,
@@ -284,7 +289,7 @@ private fun <T : Chip> ChipItem(
                         state.removeChip(chip)
                     }
                 },
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Send),
+            keyboardOptions = keyboardOptions.copy(imeAction = ImeAction.Send),
             keyboardActions = KeyboardActions(onSend = { focusRequester.freeFocus() }),
             enabled = editable,
             readOnly = readOnly,
