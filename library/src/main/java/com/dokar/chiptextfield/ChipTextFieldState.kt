@@ -5,6 +5,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import kotlin.math.max
 
 @Composable
 fun <T : Chip> rememberChipTextFieldState(
@@ -19,6 +20,10 @@ class ChipInputFieldState<T : Chip>(
     chips: List<T> = emptyList()
 ) {
     var chips by mutableStateOf(chips)
+
+    fun indexOf(chip: T): Int = chips.indexOf(chip)
+
+    fun previousIndex(chip: T): Int = max(0, indexOf(chip) - 1)
 
     fun addChip(chip: T) {
         val list = chips.toMutableList()

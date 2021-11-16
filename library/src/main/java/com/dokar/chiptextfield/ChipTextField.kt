@@ -18,6 +18,8 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -200,10 +202,12 @@ private fun <T : Chip> ChipGroup(
     chipStartWidget: @Composable (chip: T) -> Unit,
     chipEndWidget: @Composable (chip: T) -> Unit
 ) {
+    val focusedItem = remember { mutableStateOf(-1) }
     for (chip in state.chips) {
         ChipItem(
             state = state,
             chip = chip,
+            focusedItem = focusedItem,
             readOnly = readOnly,
             keyboardOptions = keyboardOptions,
             onClick = onChipClick,
@@ -223,6 +227,7 @@ private fun <T : Chip> ChipGroup(
 private fun <T : Chip> ChipItem(
     state: ChipInputFieldState<T>,
     chip: T,
+    focusedItem: MutableState<Int>,
     readOnly: Boolean,
     keyboardOptions: KeyboardOptions,
     onClick: ((chip: T) -> Unit)?,
@@ -250,6 +255,15 @@ private fun <T : Chip> ChipItem(
     val keyboardController = LocalSoftwareKeyboardController.current
 
     val editable = !readOnly
+
+    LaunchedEffect(chip, focusedItem.value) {
+        if (focusedItem.value == state.indexOf(chip)) {
+            focusRequester.requestFocus()
+            textFieldValueState = textFieldValue.copy(
+                selection = TextRange(textFieldValue.text.length)
+            )
+        }
+    }
 
     Row(
         modifier = modifier
@@ -294,6 +308,7 @@ private fun <T : Chip> ChipItem(
                 .focusRequester(focusRequester)
                 .onBackspaceUp {
                     if (textFieldValue.text.isEmpty()) {
+                        focusedItem.value = state.previousIndex(chip)
                         state.removeChip(chip)
                     }
                 },
