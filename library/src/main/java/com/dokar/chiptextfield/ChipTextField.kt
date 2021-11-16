@@ -28,11 +28,6 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.input.key.Key
-import androidx.compose.ui.input.key.KeyEventType
-import androidx.compose.ui.input.key.key
-import androidx.compose.ui.input.key.onKeyEvent
-import androidx.compose.ui.input.key.type
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -44,6 +39,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.dokar.chiptextfield.util.combineIf
 import com.dokar.chiptextfield.util.filterNewLine
+import com.dokar.chiptextfield.util.onBackspaceUp
 import com.dokar.chiptextfield.widget.CloseButtonWidget
 import com.google.accompanist.flowlayout.FlowCrossAxisAlignment
 import com.google.accompanist.flowlayout.FlowRow
@@ -153,16 +149,13 @@ fun <T : Chip> ChipTextField(
                 },
                 modifier = Modifier
                     .focusRequester(focusRequester)
-                    .onKeyEvent {
-                        if (it.type == KeyEventType.KeyUp
-                            && it.key == Key.Backspace
-                            && textFieldValue.text.isEmpty()
+                    .onBackspaceUp {
+                        if (textFieldValue.text.isEmpty()
                             && state.chips.isNotEmpty()
                         ) {
                             // Remove previous chip
                             state.removeLastChip()
                         }
-                        false
                     },
                 readOnly = readOnly,
                 textStyle = fieldTextStyle,
@@ -203,6 +196,7 @@ private fun <T : Chip> ChipGroup(
 ) {
     for (chip in state.chips) {
         ChipItem(
+            state = state,
             chip = chip,
             readOnly = readOnly,
             onClick = onChipClick,
@@ -219,6 +213,7 @@ private fun <T : Chip> ChipGroup(
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 private fun <T : Chip> ChipItem(
+    state: ChipInputFieldState<T>,
     chip: T,
     readOnly: Boolean,
     onClick: (chip: T) -> Unit,
@@ -281,7 +276,14 @@ private fun <T : Chip> ChipItem(
                 .onSizeChanged { textFieldHeight = it.height }
                 .padding(horizontal = 8.dp, vertical = 3.dp)
                 .width(IntrinsicSize.Min)
-                .focusRequester(focusRequester),
+                .focusRequester(focusRequester)
+                .onBackspaceUp {
+                    if (textFieldValue.selection.start == 0
+                        && textFieldValue.selection.end == 0
+                    ) {
+                        state.removeChip(chip)
+                    }
+                },
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Send),
             keyboardActions = KeyboardActions(onSend = { focusRequester.freeFocus() }),
             enabled = editable,
