@@ -1,8 +1,10 @@
 package com.dokar.chiptextfield
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Box
@@ -64,7 +66,8 @@ fun <T : Chip> ChipTextField(
     chipEndWidget: @Composable (chip: T) -> Unit = { chip: T ->
         CloseButtonWidget(state = state, chip = chip)
     },
-    onChipClick: (chip: T) -> Unit = {},
+    onChipClick: ((chip: T) -> Unit)? = null,
+    onChipLongClick: ((chip: T) -> Unit)? = null,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
 ) {
     var textFieldValueState by remember {
@@ -124,6 +127,7 @@ fun <T : Chip> ChipTextField(
             readOnly = readOnly,
             keyboardOptions = keyboardOptions,
             onChipClick = onChipClick,
+            onChipLongClick = onChipLongClick,
             interactionSource = interactionSource,
             newChipFieldFocusRequester = focusRequester,
             textStyle = textStyle,
@@ -189,7 +193,8 @@ private fun <T : Chip> ChipGroup(
     state: ChipInputFieldState<T>,
     readOnly: Boolean,
     keyboardOptions: KeyboardOptions,
-    onChipClick: (chip: T) -> Unit,
+    onChipClick: ((chip: T) -> Unit)?,
+    onChipLongClick: ((chip: T) -> Unit)?,
     interactionSource: MutableInteractionSource,
     newChipFieldFocusRequester: FocusRequester,
     textStyle: TextStyle,
@@ -204,6 +209,7 @@ private fun <T : Chip> ChipGroup(
             readOnly = readOnly,
             keyboardOptions = keyboardOptions,
             onClick = onChipClick,
+            onLongClick = onChipLongClick,
             interactionSource = interactionSource,
             newChipFieldFocusRequester = newChipFieldFocusRequester,
             textStyle = textStyle,
@@ -214,14 +220,15 @@ private fun <T : Chip> ChipGroup(
     }
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalComposeUiApi::class, ExperimentalFoundationApi::class)
 @Composable
 private fun <T : Chip> ChipItem(
     state: ChipInputFieldState<T>,
     chip: T,
     readOnly: Boolean,
     keyboardOptions: KeyboardOptions,
-    onClick: (chip: T) -> Unit,
+    onClick: ((chip: T) -> Unit)?,
+    onLongClick: ((chip: T) -> Unit)?,
     interactionSource: MutableInteractionSource,
     newChipFieldFocusRequester: FocusRequester,
     textStyle: TextStyle,
@@ -251,13 +258,18 @@ private fun <T : Chip> ChipItem(
             .clip(shape = chipStyle.shape)
             .background(color = chipStyle.backgroundColor)
             .border(width = 1.dp, color = chipStyle.borderColor, shape = chipStyle.shape)
-            .clickable {
-                if (editable) {
-                    keyboardController?.show()
-                    focusRequester.requestFocus()
+            .combinedClickable(
+                onClick = {
+                    if (editable) {
+                        keyboardController?.show()
+                        focusRequester.requestFocus()
+                    }
+                    onClick?.invoke(chip)
+                },
+                onLongClick = {
+                    onLongClick?.invoke(chip)
                 }
-                onClick(chip)
-            },
+            ),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box(
