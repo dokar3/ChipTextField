@@ -30,7 +30,7 @@ fun <T : Chip> CloseButtonWidget(
 ) {
     Row {
         CloseButton(onClick = { state.removeChip(chip) })
-        Spacer(modifier = Modifier.width(4.dp))
+        Spacer(modifier = Modifier.width(6.dp))
     }
 }
 
