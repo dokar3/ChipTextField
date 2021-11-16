@@ -17,6 +17,6 @@ internal fun ChipsHeader(
         text = name,
         modifier = modifier.padding(8.dp, 4.dp),
         fontSize = 15.sp,
-        color = MaterialTheme.colors.onSecondary
+        color = MaterialTheme.colors.onBackground
     )
 }
