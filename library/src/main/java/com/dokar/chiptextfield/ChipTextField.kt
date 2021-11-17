@@ -314,6 +314,7 @@ private fun <T : Chip> ChipItem(
                 },
             keyboardOptions = keyboardOptions.copy(imeAction = ImeAction.Send),
             keyboardActions = KeyboardActions(onSend = { focusRequester.freeFocus() }),
+            singleLine = true,
             enabled = editable,
             readOnly = readOnly,
             textStyle = chipTextStyle,
