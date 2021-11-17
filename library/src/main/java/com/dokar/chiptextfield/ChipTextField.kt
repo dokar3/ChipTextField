@@ -12,7 +12,9 @@ import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
+import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -20,6 +22,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -247,10 +250,25 @@ private fun <T : Chip> ChipItem(
 
     val focusRequester = remember { FocusRequester() }
 
-    var textFieldHeight by remember { mutableStateOf(0) }
-
     val density = LocalDensity.current
+
+    var startWidgetWidth by remember { mutableStateOf(0) }
+    var endWidgetWidth by remember { mutableStateOf(0) }
+
+    var textFieldWidth by remember { mutableStateOf(0) }
+    var textFieldHeight by remember { mutableStateOf(0) }
     val textFieldHeightDp = remember(textFieldHeight) { with(density) { textFieldHeight.toDp() } }
+
+    var maxTextFieldWidth by remember { mutableStateOf(-1) }
+    val maxTextFieldWidthDp by remember(maxTextFieldWidth) {
+        derivedStateOf {
+            if (maxTextFieldWidth > 0) {
+                with(density) { maxTextFieldWidth.toDp() }
+            } else {
+                Dp.Unspecified
+            }
+        }
+    }
 
     val keyboardController = LocalSoftwareKeyboardController.current
 
@@ -281,11 +299,25 @@ private fun <T : Chip> ChipItem(
                 onLongClick = {
                     onLongClick?.invoke(chip)
                 }
-            ),
+            )
+            .onSizeChanged {
+                val chipWidth = it.width
+                val currWidth = startWidgetWidth + textFieldWidth + endWidgetWidth
+                if (currWidth > chipWidth) {
+                    // Restrict text field max width to keep end widget visible
+                    maxTextFieldWidth = chipWidth - startWidgetWidth - endWidgetWidth
+                } else if (currWidth < chipWidth) {
+                    maxTextFieldWidth = -1
+                }
+            },
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box(
-            modifier = Modifier.requiredHeight(32.dp),
+            modifier = Modifier
+                .requiredHeight(textFieldHeightDp)
+                .onSizeChanged {
+                    startWidgetWidth = it.width
+                },
             contentAlignment = Alignment.Center
         ) {
             chipStartWidget(chip)
@@ -302,9 +334,13 @@ private fun <T : Chip> ChipItem(
                 }
             },
             modifier = Modifier
-                .onSizeChanged { textFieldHeight = it.height }
-                .padding(horizontal = 8.dp, vertical = 3.dp)
+                .onSizeChanged {
+                    textFieldWidth = it.width
+                    textFieldHeight = it.height
+                }
                 .width(IntrinsicSize.Min)
+                .widthIn(max = maxTextFieldWidthDp)
+                .padding(horizontal = 8.dp, vertical = 3.dp)
                 .focusRequester(focusRequester)
                 .onBackspaceUp {
                     if (textFieldValue.text.isEmpty()) {
@@ -322,7 +358,12 @@ private fun <T : Chip> ChipItem(
         )
 
         Box(
-            modifier = Modifier.requiredHeight(textFieldHeightDp),
+            modifier = Modifier
+                .requiredWidth(IntrinsicSize.Max)
+                .requiredHeight(textFieldHeightDp)
+                .onSizeChanged {
+                    endWidgetWidth = it.width
+                },
             contentAlignment = Alignment.Center
         ) {
             chipEndWidget(chip)
