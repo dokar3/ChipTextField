@@ -240,7 +240,7 @@ private fun <T : Chip> ChipItem(
     chipEndWidget: @Composable (chip: T) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var textFieldValueState by remember(chip) { mutableStateOf(TextFieldValue(chip.value)) }
+    var textFieldValueState by remember(chip) { mutableStateOf(TextFieldValue(chip.text)) }
     val textFieldValue = textFieldValueState.copy(text = textFieldValueState.text)
 
     val chipTextStyle = remember(chipStyle) { textStyle.copy(color = chipStyle.textColor) }
@@ -295,7 +295,7 @@ private fun <T : Chip> ChipItem(
             value = textFieldValue,
             onValueChange = filterNewLine { value, hasNewLine ->
                 textFieldValueState = value
-                chip.value = value.text
+                chip.text = value.text
                 if (hasNewLine) {
                     focusRequester.freeFocus()
                     newChipFieldFocusRequester.requestFocus()

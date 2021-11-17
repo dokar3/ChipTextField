@@ -1,7 +1,7 @@
 package com.dokar.chiptextfield
 
-data class TextChip(override var value: String) : Chip
+data class TextChip(override var text: String) : Chip
 
 interface Chip {
-    var value: String
+    var text: String
 }
