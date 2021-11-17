@@ -1,6 +1,6 @@
 package com.dokar.chiptextfield.sample.data
 
-import com.dokar.chiptextfield.Chip
+import com.dokar.chiptextfield.TextChip
 import kotlin.random.Random
 
 object SampleChips {
@@ -8,7 +8,7 @@ object SampleChips {
 
     private const val PICSUM_SEED_URL = "https://picsum.photos/seed/{seed}/100/100"
 
-    fun getTextChips() = LOREM_IPSUM.split(" ").map(Chip::textChip)
+    fun getTextChips() = LOREM_IPSUM.split(" ").map(::TextChip)
 
     fun getCheckableChips() = LOREM_IPSUM.split(" ").map {
         CheckableChip(value = it, checked = Random.nextBoolean())
