@@ -12,5 +12,11 @@
 
 # Usage
 
-**TODO**
+```kotlin
+val state = rememberChipTextFieldState<TextChip>()
+ChipTextField(
+    state = state,
+    onCreateChip = { text -> TextChip(text) }
+)
+```
 
