@@ -183,7 +183,6 @@ fun <T : Chip> ChipTextField(
                         }
                     }
                 ),
-                singleLine = true,
                 interactionSource = interactionSource,
                 cursorBrush = SolidColor(cursorColor)
             )
