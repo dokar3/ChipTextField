@@ -50,6 +50,7 @@ import com.dokar.chiptextfield.util.onBackspaceUp
 import com.dokar.chiptextfield.widget.CloseButtonWidget
 import com.google.accompanist.flowlayout.FlowCrossAxisAlignment
 import com.google.accompanist.flowlayout.FlowRow
+import kotlin.math.max
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -274,7 +275,7 @@ private fun <T : Chip> ChipItem(
     val editable = !readOnly
 
     LaunchedEffect(chip, focusedItem.value) {
-        if (focusedItem.value == state.indexOf(chip)) {
+        if (focusedItem.value == state.chips.indexOf(chip)) {
             focusRequester.requestFocus()
             textFieldValueState = textFieldValue.copy(
                 selection = TextRange(textFieldValue.text.length)
@@ -343,7 +344,7 @@ private fun <T : Chip> ChipItem(
                 .focusRequester(focusRequester)
                 .onBackspaceUp {
                     if (textFieldValue.text.isEmpty()) {
-                        focusedItem.value = state.previousIndex(chip)
+                        focusedItem.value = max(0, state.chips.indexOf(chip) - 1)
                         state.removeChip(chip)
                     }
                 },
