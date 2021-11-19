@@ -12,6 +12,10 @@
 
 # Usage
 
+```groovy
+implementation "io.github.dokar3:chiptextfield:0.1.0"
+```
+
 ```kotlin
 val state = rememberChipTextFieldState<TextChip>()
 ChipTextField(
