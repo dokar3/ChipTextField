@@ -3,8 +3,8 @@ package com.dokar.chiptextfield
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Box
@@ -20,6 +20,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.derivedStateOf
@@ -35,6 +36,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -73,11 +75,6 @@ fun <T : Chip> ChipTextField(
     onChipLongClick: ((chip: T) -> Unit)? = null,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
 ) {
-    var textFieldValueState by remember {
-        mutableStateOf(TextFieldValue(text = initialTextFieldValue))
-    }
-    val textFieldValue = textFieldValueState.copy(text = textFieldValueState.text)
-
     val fieldTextStyle = remember(textStyle, textColor) { textStyle.copy(color = textColor) }
 
     val focusRequester = remember { FocusRequester() }
@@ -98,6 +95,27 @@ fun <T : Chip> ChipTextField(
 
     val keyboardController = LocalSoftwareKeyboardController.current
 
+    fun createNewChip(value: TextFieldValue): Boolean {
+        val newChip = onCreateChip(value.text)
+        return if (newChip != null) {
+            state.addChip(newChip)
+            state.textFieldValue = TextFieldValue()
+            true
+        } else {
+            false
+        }
+    }
+
+    LaunchedEffect(state) {
+        state.textFieldValue = TextFieldValue(initialTextFieldValue)
+    }
+
+    DisposableEffect(state) {
+        onDispose {
+            state.disposed = true
+        }
+    }
+
     FlowRow(
         modifier = modifier
             .combineIf(editable) {
@@ -105,22 +123,23 @@ fun <T : Chip> ChipTextField(
                     .drawIndicatorLine(indicatorWidth, currIndicatorColor)
                     .padding(bottom = chipVerticalSpacing + 4.dp)
             }
-            .clickable(
-                interactionSource = remember { MutableInteractionSource() },
-                indication = null,
-                onClick = {
-                    if (editable) {
-                        keyboardController?.show()
-                        focusRequester.requestFocus()
-                        // Move cursor to end
-                        val text = textFieldValue.text
-                        textFieldValueState = TextFieldValue(
-                            text = text,
-                            selection = TextRange(text.length, text.length)
-                        )
+            .pointerInput(Unit) {
+                detectTapGestures(
+                    onTap = {
+                        // onClick in clickable modifier may triggered after pressing
+                        // enter key, move it in onTap to prevent this behavior(issue?)
+                        if (editable) {
+                            keyboardController?.show()
+                            focusRequester.requestFocus()
+                            // Move cursor to end
+                            val selection = state.textFieldValue.text.length
+                            state.textFieldValue = state.textFieldValue.copy(
+                                selection = TextRange(selection)
+                            )
+                        }
                     }
-                }
-            ),
+                )
+            },
         mainAxisSpacing = chipHorizontalSpacing,
         crossAxisSpacing = chipVerticalSpacing,
         crossAxisAlignment = FlowCrossAxisAlignment.Center
@@ -141,25 +160,24 @@ fun <T : Chip> ChipTextField(
 
         if (editable) {
             BasicTextField(
-                value = textFieldValue,
+                value = state.textFieldValue,
                 onValueChange = filterNewLine { value, hasNewLine ->
-                    textFieldValueState = if (hasNewLine) {
+                    if (hasNewLine && value.text.isNotEmpty()) {
                         // Add chip
-                        val newChip = onCreateChip(value.text)
-                        if (newChip != null) {
-                            state.addChip(newChip)
-                            TextFieldValue()
-                        } else {
-                            value
+                        if (createNewChip(value)) {
+                            return@filterNewLine
                         }
-                    } else {
-                        value
                     }
+                    if (value.text.isEmpty()) {
+                        // Fix new lines cannot be trimmed
+                        state.textFieldValue = TextFieldValue("\b")
+                    }
+                    state.textFieldValue = value
                 },
                 modifier = Modifier
                     .focusRequester(focusRequester)
                     .onBackspaceUp {
-                        if (textFieldValue.text.isEmpty()
+                        if (state.textFieldValue.text.isEmpty()
                             && state.chips.isNotEmpty()
                         ) {
                             // Remove previous chip
@@ -168,18 +186,13 @@ fun <T : Chip> ChipTextField(
                     },
                 readOnly = readOnly,
                 textStyle = fieldTextStyle,
-                keyboardOptions = keyboardOptions.copy(imeAction = ImeAction.Send),
+                keyboardOptions = keyboardOptions.copy(imeAction = ImeAction.Done),
                 keyboardActions = KeyboardActions(
-                    onSend = {
-                        val valueText = textFieldValue.text
-                        if (valueText.isEmpty()) {
-                            return@KeyboardActions
-                        }
-                        // Add chip
-                        val newChip = onCreateChip(valueText)
-                        if (newChip != null) {
-                            state.addChip(newChip)
-                            textFieldValueState = TextFieldValue()
+                    onDone = {
+                        val valueText = state.textFieldValue.text
+                        if (valueText.isNotEmpty()) {
+                            // Add chip
+                            createNewChip(state.textFieldValue)
                         }
                     }
                 ),
@@ -243,7 +256,6 @@ private fun <T : Chip> ChipItem(
     modifier: Modifier = Modifier
 ) {
     var textFieldValueState by remember(chip) { mutableStateOf(TextFieldValue(chip.text)) }
-    val textFieldValue = textFieldValueState.copy(text = textFieldValueState.text)
 
     val chipTextStyle = remember(chipStyle) { textStyle.copy(color = chipStyle.textColor) }
 
@@ -276,8 +288,8 @@ private fun <T : Chip> ChipItem(
     LaunchedEffect(chip, focusedItem.value) {
         if (focusedItem.value == state.indexOf(chip)) {
             focusRequester.requestFocus()
-            textFieldValueState = textFieldValue.copy(
-                selection = TextRange(textFieldValue.text.length)
+            textFieldValueState = textFieldValueState.copy(
+                selection = TextRange(textFieldValueState.text.length)
             )
         }
     }
@@ -323,7 +335,7 @@ private fun <T : Chip> ChipItem(
         }
 
         BasicTextField(
-            value = textFieldValue,
+            value = textFieldValueState,
             onValueChange = filterNewLine { value, hasNewLine ->
                 textFieldValueState = value
                 chip.text = value.text
@@ -342,13 +354,13 @@ private fun <T : Chip> ChipItem(
                 .padding(horizontal = 8.dp, vertical = 3.dp)
                 .focusRequester(focusRequester)
                 .onBackspaceUp {
-                    if (textFieldValue.text.isEmpty()) {
+                    if (textFieldValueState.text.isEmpty()) {
                         focusedItem.value = state.previousIndex(chip)
                         state.removeChip(chip)
                     }
                 },
-            keyboardOptions = keyboardOptions.copy(imeAction = ImeAction.Send),
-            keyboardActions = KeyboardActions(onSend = { focusRequester.freeFocus() }),
+            keyboardOptions = keyboardOptions.copy(imeAction = ImeAction.Done),
+            keyboardActions = KeyboardActions(onDone = { focusRequester.freeFocus() }),
             singleLine = true,
             enabled = editable,
             readOnly = readOnly,
