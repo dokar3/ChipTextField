@@ -17,6 +17,40 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
+internal data class ChipColors(
+    val text: Color,
+    val border: Color,
+    val background: Color,
+    val cursor: Color
+)
+
+internal val THEME_COLORS = listOf(
+    ChipColors(
+        text = Color.Black,
+        border = Color.Black,
+        background = Color.Transparent,
+        cursor = Color.Black
+    ),
+    ChipColors(
+        text = Color.White,
+        border = Color(0xff94d2bd),
+        background = Color(0xff94d2bd),
+        cursor = Color(0xff94d2bd)
+    ),
+    ChipColors(
+        text = Color.White,
+        border = Color(0xffe85d04),
+        background = Color(0xffe85d04),
+        cursor = Color(0xffe85d04)
+    ),
+    ChipColors(
+        text = Color.White,
+        border = Color(0xff9fa0ff),
+        background = Color(0xff9fa0ff),
+        cursor = Color(0xff9fa0ff)
+    )
+)
+
 @Composable
 internal fun ThemeColorSelector(
     selectedPosition: MutableState<Int>,
@@ -63,13 +97,9 @@ private fun ColorItem(
 
 @Composable
 internal fun getDefaultChipColors(): ChipColors {
-    return if (MaterialTheme.colors.isLight) {
-        THEME_COLORS[0]
-    } else {
-        ChipColors(
-            text = Color.White,
-            border = Color.White,
-            background = Color.Transparent
-        )
-    }
+    return THEME_COLORS[0].copy(
+        text = MaterialTheme.colors.onBackground,
+        border = MaterialTheme.colors.onBackground,
+        cursor = MaterialTheme.colors.primary
+    )
 }

@@ -40,8 +40,8 @@ internal fun AvatarChips(
             .padding(8.dp),
         initialTextFieldValue = name,
         textStyle = TextStyle.Default.copy(fontSize = 18.sp),
-        cursorColor = chipColors.border,
-        indicatorColor = chipColors.border,
+        cursorColor = chipColors.cursor,
+        indicatorColor = chipColors.cursor,
         chipStyle = ChipStyle.Default.copy(
             textColor = chipColors.text,
             borderColor = chipColors.border,
