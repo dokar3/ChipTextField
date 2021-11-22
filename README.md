@@ -1,5 +1,8 @@
 # ChipTextField
 
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.dokar3/chiptextfield/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.dokar3/chiptextfield)
+
+
 ![](/images/screenshot_light.png)
 
 ![](/images/screenshot_dark.png)
@@ -13,7 +16,7 @@
 # Usage
 
 ```groovy
-implementation "io.github.dokar3:chiptextfield:0.1.0"
+implementation "io.github.dokar3:chiptextfield:latest_version"
 ```
 
 ```kotlin
