@@ -1,7 +1,6 @@
 package com.dokar.chiptextfield
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -15,13 +14,8 @@ fun <T : Chip> rememberChipTextFieldState(
 ): ChipInputFieldState<T> {
     return remember(chips) {
         ChipInputFieldState(chips)
-    }.also { state ->
-        LaunchedEffect(state, state.disposed) {
-            if (state.disposed) {
-                state.chips = chips
-                state.disposed = false
-            }
-        }
+    }.apply {
+        this.defaultChips = chips
     }
 }
 
@@ -29,6 +23,8 @@ class ChipInputFieldState<T : Chip>(
     chips: List<T> = emptyList()
 ) {
     internal var disposed = false
+
+    internal var defaultChips: List<T> = chips
 
     var textFieldValue by mutableStateOf(TextFieldValue())
 

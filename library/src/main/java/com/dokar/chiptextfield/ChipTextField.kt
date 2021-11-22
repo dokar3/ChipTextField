@@ -106,7 +106,11 @@ fun <T : Chip> ChipTextField(
         }
     }
 
-    LaunchedEffect(state) {
+    LaunchedEffect(state, state.disposed) {
+        if (state.disposed) {
+            state.chips = state.defaultChips
+            state.disposed = false
+        }
         state.textFieldValue = TextFieldValue(initialTextFieldValue)
     }
 
