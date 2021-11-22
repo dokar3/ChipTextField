@@ -22,8 +22,10 @@ private fun String.hasNewLine(): Boolean {
 private fun String.removeNewLine(): String {
     val index = indexOf('\n')
     return if (index != -1) {
-        substring(0, index) + substring(index + 1)
+        replace(NEW_LINE_REGEX, "")
     } else {
         this
     }
 }
+
+private val NEW_LINE_REGEX = Regex("\\n")
