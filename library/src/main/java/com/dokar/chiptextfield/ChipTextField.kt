@@ -49,7 +49,7 @@ import androidx.compose.ui.unit.dp
 import com.dokar.chiptextfield.util.combineIf
 import com.dokar.chiptextfield.util.filterNewLine
 import com.dokar.chiptextfield.util.onBackspaceUp
-import com.dokar.chiptextfield.widget.CloseButtonWidget
+import com.dokar.chiptextfield.widget.CloseButton
 import com.google.accompanist.flowlayout.FlowCrossAxisAlignment
 import com.google.accompanist.flowlayout.FlowRow
 
@@ -70,7 +70,7 @@ fun <T : Chip> ChipTextField(
     chipVerticalSpacing: Dp = 4.dp,
     chipHorizontalSpacing: Dp = 4.dp,
     chipStartWidget: @Composable (chip: T) -> Unit = {},
-    chipEndWidget: @Composable (chip: T) -> Unit = { CloseButtonWidget(state, it) },
+    chipEndWidget: @Composable (chip: T) -> Unit = { CloseButton(state, it) },
     onChipClick: ((chip: T) -> Unit)? = null,
     onChipLongClick: ((chip: T) -> Unit)? = null,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }

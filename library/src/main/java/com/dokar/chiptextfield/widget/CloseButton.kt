@@ -4,9 +4,8 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -18,34 +17,47 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalViewConfiguration
 import androidx.compose.ui.platform.ViewConfiguration
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import com.dokar.chiptextfield.Chip
 import com.dokar.chiptextfield.ChipInputFieldState
 
 @Composable
-fun <T : Chip> CloseButtonWidget(
+fun <T : Chip> CloseButton(
     state: ChipInputFieldState<T>,
-    chip: T
+    chip: T,
+    modifier: Modifier = Modifier,
+    backgroundColor: Color = if (MaterialTheme.colors.isLight) {
+        Color.Black.copy(alpha = 0.3f)
+    } else {
+        Color.White.copy(alpha = 0.3f)
+    },
+    strokeColor: Color = Color.White,
+    startPadding: Dp = 0.dp,
+    endPadding: Dp = 6.dp
 ) {
-    Row {
-        CloseButton(onClick = { state.removeChip(chip) })
-        Spacer(modifier = Modifier.width(6.dp))
+    Row(
+        modifier = modifier
+            .padding(start = startPadding, end = endPadding)
+    ) {
+        CloseButtonImpl(
+            onClick = { state.removeChip(chip) },
+            backgroundColor = backgroundColor,
+            strokeColor = strokeColor
+        )
     }
 }
 
 @Composable
-fun CloseButton(
+private fun CloseButtonImpl(
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    backgroundColor: Color,
+    strokeColor: Color,
+    modifier: Modifier = Modifier,
 ) {
     val padding = with(LocalDensity.current) { 6.dp.toPx() }
     val strokeWidth = with(LocalDensity.current) { 1.2.dp.toPx() }
-    val backgroundColor = if (MaterialTheme.colors.isLight) {
-        Color.Black.copy(alpha = 0.3f)
-    } else {
-        Color.White.copy(alpha = 0.3f)
-    }
     val viewConfiguration = ViewConfigurationOverride(
         base = LocalViewConfiguration.current,
         minimumTouchTargetSize = DpSize(24.dp, 24.dp)
@@ -59,13 +71,13 @@ fun CloseButton(
                 .clickable(onClick = onClick)
         ) {
             drawLine(
-                color = Color.White,
+                color = strokeColor,
                 start = Offset(padding, padding),
                 end = Offset(size.width - padding, size.height - padding),
                 strokeWidth = strokeWidth
             )
             drawLine(
-                color = Color.White,
+                color = strokeColor,
                 start = Offset(padding, size.height - padding),
                 end = Offset(size.width - padding, padding),
                 strokeWidth = strokeWidth
