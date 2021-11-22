@@ -10,6 +10,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
@@ -58,11 +59,14 @@ private fun CloseButtonImpl(
 ) {
     val padding = with(LocalDensity.current) { 6.dp.toPx() }
     val strokeWidth = with(LocalDensity.current) { 1.2.dp.toPx() }
-    val viewConfiguration = ViewConfigurationOverride(
-        base = LocalViewConfiguration.current,
-        minimumTouchTargetSize = DpSize(24.dp, 24.dp)
-    )
-    CompositionLocalProvider(LocalViewConfiguration provides viewConfiguration) {
+    val viewConfiguration = LocalViewConfiguration.current
+    val viewConfigurationOverride = remember(viewConfiguration) {
+        ViewConfigurationOverride(
+            base = viewConfiguration,
+            minimumTouchTargetSize = DpSize(24.dp, 24.dp)
+        )
+    }
+    CompositionLocalProvider(LocalViewConfiguration provides viewConfigurationOverride) {
         Canvas(
             modifier = modifier
                 .size(18.dp)
