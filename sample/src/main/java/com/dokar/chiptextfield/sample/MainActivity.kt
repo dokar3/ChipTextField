@@ -39,18 +39,18 @@ class MainActivity : ComponentActivity() {
 fun SampleScreen(name: String) {
     val selectedColorPosition = remember { mutableStateOf(0) }
 
-    val chipColors = getChipColors(selectedColorPosition.value)
+    val chipFieldStyle = getChipFieldStyle(selectedColorPosition.value)
 
     Column(modifier = Modifier.fillMaxSize()) {
-        TextChips(name = name, chipColors = chipColors)
+        TextChips(name = name, chipFieldStyle = chipFieldStyle)
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        CheckableChips(name = name, chipColors = chipColors)
+        CheckableChips(name = name, chipFieldStyle = chipFieldStyle)
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        AvatarChips(name = name, chipColors = chipColors)
+        AvatarChips(name = name, chipFieldStyle = chipFieldStyle)
 
         Spacer(modifier = Modifier.height(32.dp))
 
@@ -62,13 +62,13 @@ fun SampleScreen(name: String) {
 }
 
 @Composable
-private fun getChipColors(selectedPos: Int): ChipColors {
+private fun getChipFieldStyle(selectedPos: Int): ChipFieldStyle {
     return when (selectedPos) {
         0 -> {
-            getDefaultChipColors()
+            getDefaultChipFieldStyle()
         }
         else -> {
-            THEME_COLORS[selectedPos]
+            CHIP_TEXT_FILED_STYLES[selectedPos]
         }
     }
 }

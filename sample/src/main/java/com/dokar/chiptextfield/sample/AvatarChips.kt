@@ -27,7 +27,7 @@ import com.dokar.chiptextfield.sample.data.SampleChips
 @Composable
 internal fun AvatarChips(
     name: String,
-    chipColors: ChipColors
+    chipFieldStyle: ChipFieldStyle
 ) {
     val chips = remember { SampleChips.getAvatarChips() }
     val state = rememberChipTextFieldState(chips = chips)
@@ -40,12 +40,12 @@ internal fun AvatarChips(
             .padding(8.dp),
         initialTextFieldValue = name,
         textStyle = TextStyle.Default.copy(fontSize = 18.sp),
-        cursorColor = chipColors.cursor,
-        indicatorColor = chipColors.cursor,
+        cursorColor = chipFieldStyle.cursorColor,
+        indicatorColor = chipFieldStyle.cursorColor,
         chipStyle = ChipStyle.Default.copy(
-            textColor = chipColors.text,
-            borderColor = chipColors.border,
-            backgroundColor = chipColors.background
+            textColor = chipFieldStyle.textColor,
+            borderColor = chipFieldStyle.borderColor,
+            backgroundColor = chipFieldStyle.backgroundColor
         ),
         chipStartWidget = { Avatar(it) },
     )

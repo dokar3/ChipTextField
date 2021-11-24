@@ -21,7 +21,7 @@ import com.dokar.chiptextfield.sample.data.SampleChips
 @Composable
 internal fun CheckableChips(
     name: String,
-    chipColors: ChipColors
+    chipFieldStyle: ChipFieldStyle
 ) {
     val chips = remember { SampleChips.getCheckableChips() }
     val state = rememberChipTextFieldState(chips = chips)
@@ -35,16 +35,16 @@ internal fun CheckableChips(
         initialTextFieldValue = name,
         readOnly = true,
         textStyle = TextStyle.Default.copy(fontSize = 18.sp),
-        cursorColor = chipColors.cursor,
-        indicatorColor = chipColors.cursor,
+        cursorColor = chipFieldStyle.cursorColor,
+        indicatorColor = chipFieldStyle.cursorColor,
         chipStyle = ChipStyle.Default.copy(
-            textColor = chipColors.text,
-            borderColor = chipColors.border,
-            backgroundColor = chipColors.background
+            textColor = chipFieldStyle.textColor,
+            borderColor = chipFieldStyle.borderColor,
+            backgroundColor = chipFieldStyle.backgroundColor
         ),
         chipStartWidget = {
             if (it.isChecked) {
-                CheckedIcon(chipColors = chipColors)
+                CheckedIcon(chipFieldStyle = chipFieldStyle)
             }
         },
         chipEndWidget = {},
@@ -56,7 +56,7 @@ internal fun CheckableChips(
 
 @Composable
 private fun CheckedIcon(
-    chipColors: ChipColors,
+    chipFieldStyle: ChipFieldStyle,
     modifier: Modifier = Modifier
 ) {
     Image(
@@ -65,6 +65,6 @@ private fun CheckedIcon(
         modifier = modifier
             .size(24.dp)
             .padding(start = 6.dp),
-        colorFilter = ColorFilter.tint(chipColors.text)
+        colorFilter = ColorFilter.tint(chipFieldStyle.textColor)
     )
 }

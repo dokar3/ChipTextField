@@ -8,7 +8,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.dokar.chiptextfield.Chip
 import com.dokar.chiptextfield.ChipStyle
 import com.dokar.chiptextfield.ChipTextField
 import com.dokar.chiptextfield.TextChip
@@ -18,7 +17,7 @@ import com.dokar.chiptextfield.sample.data.SampleChips
 @Composable
 internal fun TextChips(
     name: String,
-    chipColors: ChipColors
+    chipFieldStyle: ChipFieldStyle
 ) {
     val chips = remember { SampleChips.getTextChips() }
     val state = rememberChipTextFieldState(chips = chips)
@@ -31,12 +30,12 @@ internal fun TextChips(
             .padding(8.dp),
         initialTextFieldValue = name,
         textStyle = TextStyle.Default.copy(fontSize = 18.sp),
-        cursorColor = chipColors.cursor,
-        indicatorColor = chipColors.cursor,
+        cursorColor = chipFieldStyle.cursorColor,
+        indicatorColor = chipFieldStyle.cursorColor,
         chipStyle = ChipStyle.Default.copy(
-            textColor = chipColors.text,
-            borderColor = chipColors.border,
-            backgroundColor = chipColors.background
+            textColor = chipFieldStyle.textColor,
+            borderColor = chipFieldStyle.borderColor,
+            backgroundColor = chipFieldStyle.backgroundColor
         )
     )
 }

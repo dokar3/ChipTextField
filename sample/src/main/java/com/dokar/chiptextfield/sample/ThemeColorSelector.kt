@@ -17,37 +17,37 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
-internal data class ChipColors(
-    val text: Color,
-    val border: Color,
-    val background: Color,
-    val cursor: Color
+internal data class ChipFieldStyle(
+    val textColor: Color,
+    val borderColor: Color,
+    val backgroundColor: Color,
+    val cursorColor: Color
 )
 
-internal val THEME_COLORS = listOf(
-    ChipColors(
-        text = Color.Black,
-        border = Color.Black,
-        background = Color.Transparent,
-        cursor = Color.Black
+internal val CHIP_TEXT_FILED_STYLES = listOf(
+    ChipFieldStyle(
+        textColor = Color.Black,
+        borderColor = Color.Black,
+        backgroundColor = Color.Transparent,
+        cursorColor = Color.Black
     ),
-    ChipColors(
-        text = Color.White,
-        border = Color(0xff94d2bd),
-        background = Color(0xff94d2bd),
-        cursor = Color(0xff94d2bd)
+    ChipFieldStyle(
+        textColor = Color.White,
+        borderColor = Color(0xff94d2bd),
+        backgroundColor = Color(0xff94d2bd),
+        cursorColor = Color(0xff94d2bd)
     ),
-    ChipColors(
-        text = Color.White,
-        border = Color(0xffe85d04),
-        background = Color(0xffe85d04),
-        cursor = Color(0xffe85d04)
+    ChipFieldStyle(
+        textColor = Color.White,
+        borderColor = Color(0xffe85d04),
+        backgroundColor = Color(0xffe85d04),
+        cursorColor = Color(0xffe85d04)
     ),
-    ChipColors(
-        text = Color.White,
-        border = Color(0xff9fa0ff),
-        background = Color(0xff9fa0ff),
-        cursor = Color(0xff9fa0ff)
+    ChipFieldStyle(
+        textColor = Color.White,
+        borderColor = Color(0xff9fa0ff),
+        backgroundColor = Color(0xff9fa0ff),
+        cursorColor = Color(0xff9fa0ff)
     )
 )
 
@@ -60,14 +60,14 @@ internal fun ThemeColorSelector(
         modifier = modifier,
         horizontalArrangement = Arrangement.SpaceAround
     ) {
-        for ((index, colors) in THEME_COLORS.withIndex()) {
+        for ((index, colors) in CHIP_TEXT_FILED_STYLES.withIndex()) {
             val chipColors = if (index == 0) {
-                getDefaultChipColors()
+                getDefaultChipFieldStyle()
             } else {
                 colors
             }
             ColorItem(
-                color = chipColors.border,
+                color = chipColors.borderColor,
                 isSelected = index == selectedPosition.value,
                 modifier = Modifier.clickable { selectedPosition.value = index }
             )
@@ -96,10 +96,10 @@ private fun ColorItem(
 }
 
 @Composable
-internal fun getDefaultChipColors(): ChipColors {
-    return THEME_COLORS[0].copy(
-        text = MaterialTheme.colors.onBackground,
-        border = MaterialTheme.colors.onBackground,
-        cursor = MaterialTheme.colors.primary
+internal fun getDefaultChipFieldStyle(): ChipFieldStyle {
+    return CHIP_TEXT_FILED_STYLES[0].copy(
+        textColor = MaterialTheme.colors.onBackground,
+        borderColor = MaterialTheme.colors.onBackground,
+        cursorColor = MaterialTheme.colors.primary
     )
 }
