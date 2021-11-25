@@ -329,6 +329,7 @@ private fun <T : Chip> ChipItem(
     ) {
         Box(
             modifier = Modifier
+                .padding(1.dp)
                 .requiredHeight(textFieldHeightDp)
                 .onSizeChanged {
                     startWidgetWidth = it.width
