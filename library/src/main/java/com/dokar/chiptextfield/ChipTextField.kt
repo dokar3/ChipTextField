@@ -302,7 +302,11 @@ private fun <T : Chip> ChipItem(
         modifier = modifier
             .clip(shape = chipStyle.shape)
             .background(color = chipStyle.backgroundColor)
-            .border(width = 1.dp, color = chipStyle.borderColor, shape = chipStyle.shape)
+            .border(
+                width = chipStyle.borderWidth,
+                color = chipStyle.borderColor,
+                shape = chipStyle.shape
+            )
             .combinedClickable(
                 onClick = {
                     if (editable) {
@@ -329,7 +333,7 @@ private fun <T : Chip> ChipItem(
     ) {
         Box(
             modifier = Modifier
-                .padding(1.dp)
+                .padding(chipStyle.borderWidth)
                 .requiredHeight(textFieldHeightDp)
                 .onSizeChanged {
                     startWidgetWidth = it.width
