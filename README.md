@@ -2,10 +2,10 @@
 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.dokar3/chiptextfield/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.dokar3/chiptextfield)
 
+![](/images/screenshot_dark.png)
+
 
 ![](/images/screenshot_light.png)
-
-![](/images/screenshot_dark.png)
 
 ![](/images/screenshot_checkable.png)
 
