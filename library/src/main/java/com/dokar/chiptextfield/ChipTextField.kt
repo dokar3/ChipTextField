@@ -95,6 +95,10 @@ fun <T : Chip> ChipTextField(
 
     val keyboardController = LocalSoftwareKeyboardController.current
 
+    val emptyTextField = remember(state.textFieldValue) {
+        state.textFieldValue.text.isEmpty()
+    }
+
     fun createNewChip(value: TextFieldValue): Boolean {
         val newChip = onCreateChip(value.text)
         return if (newChip != null) {
@@ -181,9 +185,7 @@ fun <T : Chip> ChipTextField(
                 modifier = Modifier
                     .focusRequester(focusRequester)
                     .onBackspaceUp {
-                        if (state.textFieldValue.text.isEmpty()
-                            && state.chips.isNotEmpty()
-                        ) {
+                        if (emptyTextField && state.chips.isNotEmpty()) {
                             // Remove previous chip
                             state.removeLastChip()
                         }
@@ -289,6 +291,10 @@ private fun <T : Chip> ChipItem(
 
     val editable = !readOnly
 
+    val emptyTextField = remember(chip.text) {
+        chip.text.isEmpty()
+    }
+
     LaunchedEffect(chip, focusedItem.value) {
         if (focusedItem.value == state.indexOf(chip)) {
             focusRequester.requestFocus()
@@ -363,7 +369,7 @@ private fun <T : Chip> ChipItem(
                 .padding(horizontal = 8.dp, vertical = 3.dp)
                 .focusRequester(focusRequester)
                 .onBackspaceUp {
-                    if (textFieldValueState.text.isEmpty()) {
+                    if (emptyTextField) {
                         focusedItem.value = state.previousIndex(chip)
                         state.removeChip(chip)
                     }
