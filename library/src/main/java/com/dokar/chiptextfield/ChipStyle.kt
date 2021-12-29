@@ -6,6 +6,9 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
+/**
+ * Chip style
+ */
 class ChipStyle(
     val shape: Shape = CircleShape,
     val textColor: Color = Color.Black,

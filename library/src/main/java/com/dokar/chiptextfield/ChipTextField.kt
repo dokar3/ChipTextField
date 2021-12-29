@@ -53,10 +53,33 @@ import com.dokar.chiptextfield.widget.CloseButton
 import com.google.accompanist.flowlayout.FlowCrossAxisAlignment
 import com.google.accompanist.flowlayout.FlowRow
 
+/**
+ * A text field can display chips, press enter to create a new chip.
+ *
+ * @param state Use [rememberChipTextFieldState] to create new state.
+ * @param onCreateChip Create a new chip, will be called after pressing enter key. Return null will
+ * create nothing.
+ * @param modifier Modifier for text field.
+ * @param initialTextFieldValue Initial text field value.
+ * @param readOnly If true, keyboard and text field indicator will be disabled.
+ * @param keyboardOptions Keyboard actions, see [KeyboardActions].
+ * @param textStyle Text field text style, see [TextStyle].
+ * @param textColor Text field text color.
+ * @param cursorColor Text Field cursor color.
+ * @param indicatorColor Text field indicator color.
+ * @param chipStyle Chip style, include shape, text color, background color, etc. See [ChipStyle].
+ * @param chipVerticalSpacing Vertical spacing between chips.
+ * @param chipHorizontalSpacing Horizontal spacing between chips.
+ * @param chipStartWidget Chip start widget, nothing will be displayed by default.
+ * @param chipEndWidget Chip end widget, by default, a [CloseButton] will be displayed.
+ * @param onChipClick Chip click action.
+ * @param onChipLongClick Chip long click action.
+ * @param interactionSource Interaction source for text field.
+ */
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun <T : Chip> ChipTextField(
-    state: ChipInputFieldState<T>,
+    state: ChipTextFieldState<T>,
     onCreateChip: (text: String) -> T?,
     modifier: Modifier = Modifier,
     initialTextFieldValue: String = "",
@@ -211,7 +234,7 @@ fun <T : Chip> ChipTextField(
 
 @Composable
 private fun <T : Chip> ChipGroup(
-    state: ChipInputFieldState<T>,
+    state: ChipTextFieldState<T>,
     readOnly: Boolean,
     keyboardOptions: KeyboardOptions,
     onChipClick: ((chip: T) -> Unit)?,
@@ -246,7 +269,7 @@ private fun <T : Chip> ChipGroup(
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalFoundationApi::class)
 @Composable
 private fun <T : Chip> ChipItem(
-    state: ChipInputFieldState<T>,
+    state: ChipTextFieldState<T>,
     chip: T,
     focusedItem: MutableState<Int>,
     readOnly: Boolean,

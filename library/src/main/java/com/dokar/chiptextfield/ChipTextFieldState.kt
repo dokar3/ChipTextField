@@ -8,18 +8,26 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.text.input.TextFieldValue
 import kotlin.math.max
 
+/**
+ * Return a new remembered [ChipTextFieldState]
+ */
 @Composable
 fun <T : Chip> rememberChipTextFieldState(
     chips: List<T> = emptyList()
-): ChipInputFieldState<T> {
+): ChipTextFieldState<T> {
     return remember(chips) {
-        ChipInputFieldState(chips)
+        ChipTextFieldState(chips)
     }.apply {
         this.defaultChips = chips
     }
 }
 
-class ChipInputFieldState<T : Chip>(
+/**
+ * State class for [ChipTextField]
+ *
+ * @param chips Default chips
+ */
+class ChipTextFieldState<T : Chip>(
     chips: List<T> = emptyList()
 ) {
     internal var disposed = false
@@ -30,27 +38,36 @@ class ChipInputFieldState<T : Chip>(
 
     var chips by mutableStateOf(chips)
 
-    fun indexOf(chip: T): Int = chips.indexOf(chip)
+    internal fun indexOf(chip: T): Int = chips.indexOf(chip)
 
-    fun previousIndex(chip: T): Int = max(0, indexOf(chip) - 1)
+    internal fun previousIndex(chip: T): Int = max(0, indexOf(chip) - 1)
 
+    /**
+     * Add a chip
+     */
     fun addChip(chip: T) {
         val list = chips.toMutableList()
         list.add(chip)
         chips = list
     }
 
+    /**
+     * Remove chip
+     */
     fun removeChip(chip: T) {
         val list = chips.toMutableList()
         list.remove(chip)
         chips = list
     }
 
-    fun removeLastChip() {
+    internal fun removeLastChip() {
         val list = chips.subList(0, chips.size - 1)
         chips = list
     }
 
+    /**
+     * Clear all chips
+     */
     fun clearChips() {
         chips = emptyList()
     }

@@ -22,11 +22,11 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import com.dokar.chiptextfield.Chip
-import com.dokar.chiptextfield.ChipInputFieldState
+import com.dokar.chiptextfield.ChipTextFieldState
 
 @Composable
 fun <T : Chip> CloseButton(
-    state: ChipInputFieldState<T>,
+    state: ChipTextFieldState<T>,
     chip: T,
     modifier: Modifier = Modifier,
     backgroundColor: Color = if (MaterialTheme.colors.isLight) {

@@ -2,6 +2,9 @@ package com.dokar.chiptextfield.util
 
 import androidx.compose.ui.text.input.TextFieldValue
 
+/**
+ * Remove all `\n` in [TextFieldValue]
+ */
 internal fun filterNewLine(
     block: (value: TextFieldValue, hasNewLine: Boolean) -> Unit
 ): (TextFieldValue) -> Unit = {
