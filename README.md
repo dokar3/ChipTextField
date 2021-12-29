@@ -22,8 +22,8 @@ implementation "io.github.dokar3:chiptextfield:latest_version"
 ### Default chips
 
 ```kotlin
-val state = rememberChipTextFieldState<TextChip>()
-ChipTextField(state = state, onCreateChip = ::TextChip)
+val state = rememberChipTextFieldState<Chip>()
+ChipTextField(state = state, onCreateChip = ::Chip)
 ```
 
 ### Custom chips
