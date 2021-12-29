@@ -10,7 +10,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.dokar.chiptextfield.ChipStyle
 import com.dokar.chiptextfield.ChipTextField
-import com.dokar.chiptextfield.TextChip
+import com.dokar.chiptextfield.Chip
 import com.dokar.chiptextfield.rememberChipTextFieldState
 import com.dokar.chiptextfield.sample.data.SampleChips
 
@@ -24,7 +24,7 @@ internal fun TextChips(
     ChipsHeader("Text chips")
     ChipTextField(
         state = state,
-        onCreateChip = ::TextChip,
+        onCreateChip = ::Chip,
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp),
