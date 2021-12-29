@@ -42,7 +42,7 @@ val state = rememberChipTextFieldState<CheckableChip>()
 ChipTextField(
         state = state,
         onCreateChip = ::CheckableChip,
-        chipStartWidget = { chip -> CheckedIcon(chip) }, // Show check icon if checked
+        chipStartWidget = { chip -> CheckIcon(chip) }, // Show check icon if checked
         chipEndWidget = {}, // Hide default close button
         onChipClick = { chip -> chip.isChecked = !chip.isChecked }
 )

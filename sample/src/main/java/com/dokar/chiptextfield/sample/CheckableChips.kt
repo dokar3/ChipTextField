@@ -42,29 +42,26 @@ internal fun CheckableChips(
             borderColor = chipFieldStyle.borderColor,
             backgroundColor = chipFieldStyle.backgroundColor
         ),
-        chipStartWidget = {
-            if (it.isChecked) {
-                CheckedIcon(chipFieldStyle = chipFieldStyle)
-            }
-        },
+        chipStartWidget = { CheckIcon(it, chipFieldStyle) },
         chipEndWidget = {},
-        onChipClick = {
-            it.isChecked = !it.isChecked
-        }
+        onChipClick = { it.isChecked = !it.isChecked }
     )
 }
 
 @Composable
-private fun CheckedIcon(
+private fun CheckIcon(
+    chip: CheckableChip,
     chipFieldStyle: ChipFieldStyle,
     modifier: Modifier = Modifier
 ) {
-    Image(
-        painter = painterResource(R.drawable.ic_baseline_check_24),
-        contentDescription = null,
-        modifier = modifier
-            .size(24.dp)
-            .padding(start = 6.dp),
-        colorFilter = ColorFilter.tint(chipFieldStyle.textColor)
-    )
+    if (chip.isChecked) {
+        Image(
+            painter = painterResource(R.drawable.ic_baseline_check_24),
+            contentDescription = null,
+            modifier = modifier
+                .size(24.dp)
+                .padding(start = 6.dp),
+            colorFilter = ColorFilter.tint(chipFieldStyle.textColor)
+        )
+    }
 }
