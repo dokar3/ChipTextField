@@ -5,9 +5,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.dokar.chiptextfield.Chip
 
-class CheckableChip(
-    override var text: String,
-    checked: Boolean = false
-) : Chip {
-    var isChecked by mutableStateOf(checked)
+class CheckableChip(text: String, isChecked: Boolean = false) : Chip(text) {
+    var isChecked by mutableStateOf(isChecked)
 }

@@ -11,7 +11,7 @@ object SampleChips {
     fun getTextChips() = LOREM_IPSUM.split(" ").map(::TextChip)
 
     fun getCheckableChips() = LOREM_IPSUM.split(" ").map {
-        CheckableChip(text = it, checked = Random.nextBoolean())
+        CheckableChip(text = it, isChecked = Random.nextBoolean())
     }
 
     fun getAvatarChips(): List<AvatarChip> {
