@@ -4,7 +4,6 @@
 
 ![](/images/screenshot_dark.png)
 
-
 ![](/images/screenshot_light.png)
 
 ![](/images/screenshot_checkable.png)
@@ -38,7 +37,6 @@ class CheckableChip(text: String, isChecked: Boolean = false) : Chip(text) {
 }
 
 val state = rememberChipTextFieldState<CheckableChip>()
-
 ChipTextField(
         state = state,
         onCreateChip = ::CheckableChip,
@@ -51,13 +49,13 @@ ChipTextField(
 fun CheckIcon(chip: CheckableChip) { ... }
 ```
 
+
 **Avatar chips**
 
 ```kotlin
 class AvatarChip(text: String, val avatarUrl: String) : Chip(text)
 
 val state = rememberChipTextFieldState<AvatarChip>()
-
 ChipTextField(
         state = state,
         onCreateChip = { text -> AvatarChip(text, avatarUrl) },
