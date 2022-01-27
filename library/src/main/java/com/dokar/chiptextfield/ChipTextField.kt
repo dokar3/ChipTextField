@@ -5,12 +5,8 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.IntrinsicSize
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.requiredHeight
-import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -19,12 +15,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -32,14 +26,16 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.layout.onSizeChanged
-import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.dokar.chiptextfield.util.combineIf
 import com.dokar.chiptextfield.util.filterNewLine
@@ -281,26 +277,6 @@ private fun <T : Chip> ChipItem(
 
     val focusRequester = remember { FocusRequester() }
 
-    val density = LocalDensity.current
-
-    var startWidgetWidth by remember { mutableStateOf(0) }
-    var endWidgetWidth by remember { mutableStateOf(0) }
-
-    var textFieldWidth by remember { mutableStateOf(0) }
-    var textFieldHeight by remember { mutableStateOf(0) }
-    val textFieldHeightDp = remember(textFieldHeight) { with(density) { textFieldHeight.toDp() } }
-
-    var maxTextFieldWidth by remember { mutableStateOf(-1) }
-    val maxTextFieldWidthDp by remember(maxTextFieldWidth) {
-        derivedStateOf {
-            if (maxTextFieldWidth > 0) {
-                with(density) { maxTextFieldWidth.toDp() }
-            } else {
-                Dp.Unspecified
-            }
-        }
-    }
-
     val keyboardController = LocalSoftwareKeyboardController.current
 
     val editable = !readOnly
@@ -318,7 +294,13 @@ private fun <T : Chip> ChipItem(
         }
     }
 
-    Row(
+    ChipItemLayout(
+        leadingIcon = {
+            chipStartWidget(chip)
+        },
+        trailingIcon = {
+            chipEndWidget(chip)
+        },
         modifier = modifier
             .clip(shape = chipStyle.shape)
             .background(color = chipStyle.backgroundColor)
@@ -338,31 +320,8 @@ private fun <T : Chip> ChipItem(
                 onLongClick = {
                     onLongClick?.invoke(chip)
                 }
-            )
-            .onSizeChanged {
-                val chipWidth = it.width
-                val currWidth = startWidgetWidth + textFieldWidth + endWidgetWidth
-                if (currWidth > chipWidth) {
-                    // Restrict text field max width to keep end widget visible
-                    maxTextFieldWidth = chipWidth - startWidgetWidth - endWidgetWidth
-                } else if (currWidth < chipWidth) {
-                    maxTextFieldWidth = -1
-                }
-            },
-        verticalAlignment = Alignment.CenterVertically
+            ),
     ) {
-        Box(
-            modifier = Modifier
-                .padding(chipStyle.borderWidth)
-                .requiredHeight(textFieldHeightDp)
-                .onSizeChanged {
-                    startWidgetWidth = it.width
-                },
-            contentAlignment = Alignment.Center
-        ) {
-            chipStartWidget(chip)
-        }
-
         BasicTextField(
             value = textFieldValueState,
             onValueChange = filterNewLine { value, hasNewLine ->
@@ -374,12 +333,7 @@ private fun <T : Chip> ChipItem(
                 }
             },
             modifier = Modifier
-                .onSizeChanged {
-                    textFieldWidth = it.width
-                    textFieldHeight = it.height
-                }
                 .width(IntrinsicSize.Min)
-                .widthIn(max = maxTextFieldWidthDp)
                 .padding(horizontal = 8.dp, vertical = 3.dp)
                 .focusRequester(focusRequester)
                 .onBackspaceUp {
@@ -396,17 +350,70 @@ private fun <T : Chip> ChipItem(
             textStyle = chipTextStyle,
             interactionSource = interactionSource
         )
+    }
+}
 
-        Box(
-            modifier = Modifier
-                .requiredWidth(IntrinsicSize.Max)
-                .requiredHeight(textFieldHeightDp)
-                .onSizeChanged {
-                    endWidgetWidth = it.width
-                },
-            contentAlignment = Alignment.Center
-        ) {
-            chipEndWidget(chip)
+@Composable
+private fun ChipItemLayout(
+    leadingIcon: @Composable () -> Unit,
+    trailingIcon: @Composable () -> Unit,
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit,
+) {
+    val isLtr = LocalLayoutDirection.current == LayoutDirection.Ltr
+    Layout(
+        modifier = modifier,
+        content = {
+            Box { leadingIcon() }
+            Box { content() }
+            Box { trailingIcon() }
+        },
+    ) { measurables, constraints ->
+        val maxWidth = constraints.maxWidth
+
+        val leadingMeasurable = measurables[0]
+        val contentMeasurable = measurables[1]
+        val trailingMeasurable = measurables[2]
+
+        var restWidth = maxWidth
+
+        val leadingPlaceable = leadingMeasurable.measure(constraints = constraints)
+        restWidth -= leadingPlaceable.width
+
+        val trailingPlaceable = trailingMeasurable.measure(Constraints(maxWidth = restWidth))
+        restWidth -= trailingPlaceable.width
+
+        val contentPlaceable = contentMeasurable.measure(Constraints(maxWidth = restWidth))
+
+        val width = leadingPlaceable.width + contentPlaceable.width + trailingPlaceable.width
+        val height = maxOf(
+            leadingPlaceable.height,
+            contentPlaceable.height,
+            trailingPlaceable.height,
+        )
+
+        val placeables = arrayOf(leadingPlaceable, contentPlaceable, trailingPlaceable)
+
+        layout(width = width, height = height) {
+            val start: Int
+            val end: Int
+            if (isLtr) {
+                start = 0
+                end = placeables.size - 1
+            } else {
+                start = placeables.size - 1
+                end = 0
+            }
+
+            var x = 0
+            for (i in start..end) {
+                val placeable = placeables[i]
+                placeable.place(
+                    x = x,
+                    y = (height - placeable.height) / 2,
+                )
+                x += placeable.width
+            }
         }
     }
 }

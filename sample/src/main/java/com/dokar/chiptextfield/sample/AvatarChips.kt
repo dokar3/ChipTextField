@@ -2,12 +2,7 @@ package com.dokar.chiptextfield.sample
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.IntrinsicSize
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.requiredWidth
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -61,9 +56,7 @@ private fun Avatar(
         painter = painter,
         contentDescription = null,
         modifier = modifier
-            .fillMaxHeight()
-            .requiredWidth(IntrinsicSize.Min)
-            .aspectRatio(1f)
+            .size(32.dp)
             .clip(shape = CircleShape)
             .background(MaterialTheme.colors.onBackground.copy(alpha = 0.2f))
     )
