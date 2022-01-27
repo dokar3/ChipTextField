@@ -69,7 +69,8 @@ import com.google.accompanist.flowlayout.FlowRow
  * @param onChipLongClick Chip long click action.
  * @param interactionSource Interaction source for text field.
  */
-@OptIn(ExperimentalComposeUiApi::class)
+@ExperimentalComposeUiApi
+@ExperimentalFoundationApi
 @Composable
 fun <T : Chip> ChipTextField(
     state: ChipTextFieldState<T>,
@@ -220,6 +221,8 @@ fun <T : Chip> ChipTextField(
     }
 }
 
+@ExperimentalComposeUiApi
+@ExperimentalFoundationApi
 @Composable
 private fun <T : Chip> ChipGroup(
     state: ChipTextFieldState<T>,
@@ -254,7 +257,8 @@ private fun <T : Chip> ChipGroup(
     }
 }
 
-@OptIn(ExperimentalComposeUiApi::class, ExperimentalFoundationApi::class)
+@ExperimentalComposeUiApi
+@ExperimentalFoundationApi
 @Composable
 private fun <T : Chip> ChipItem(
     state: ChipTextFieldState<T>,

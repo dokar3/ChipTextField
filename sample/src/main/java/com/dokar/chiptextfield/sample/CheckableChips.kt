@@ -1,11 +1,13 @@
 package com.dokar.chiptextfield.sample
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
@@ -18,6 +20,8 @@ import com.dokar.chiptextfield.rememberChipTextFieldState
 import com.dokar.chiptextfield.sample.data.CheckableChip
 import com.dokar.chiptextfield.sample.data.SampleChips
 
+@ExperimentalComposeUiApi
+@ExperimentalFoundationApi
 @Composable
 internal fun CheckableChips(
     name: String,
