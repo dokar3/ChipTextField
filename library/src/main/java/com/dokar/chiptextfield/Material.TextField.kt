@@ -6,7 +6,6 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 
 /**
  * A draw modifier that draws a bottom indicator line in [TextField]
@@ -23,7 +22,3 @@ internal fun Modifier.drawIndicatorLine(lineWidth: Dp, color: Color): Modifier {
         )
     }
 }
-
-
-internal val IndicatorUnfocusedWidth = 1.dp
-internal val IndicatorFocusedWidth = 2.dp

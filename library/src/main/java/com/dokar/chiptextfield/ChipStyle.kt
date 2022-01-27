@@ -1,28 +1,28 @@
 package com.dokar.chiptextfield
 
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.interaction.InteractionSource
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 
 /**
  * Chip style
  */
-data class ChipStyle(
-    val shape: Shape,
-    val borderWidth: Dp,
-    val borderColor: Color,
-    val textColor: Color,
-    val backgroundColor: Color,
-) {
-    companion object {
-        val Default = ChipStyle(
-            shape = CircleShape,
-            borderWidth = 1.dp,
-            borderColor = Color.Black,
-            textColor = Color.Black,
-            backgroundColor = Color.Transparent,
-        )
-    }
+interface ChipStyle {
+    @Composable
+    fun shape(readOnly: Boolean, interactionSource: InteractionSource): State<Shape>
+
+    @Composable
+    fun borderWidth(readOnly: Boolean, interactionSource: InteractionSource): State<Dp>
+
+    @Composable
+    fun borderColor(readOnly: Boolean, interactionSource: InteractionSource): State<Color>
+
+    @Composable
+    fun textColor(readOnly: Boolean, interactionSource: InteractionSource): State<Color>
+
+    @Composable
+    fun backgroundColor(readOnly: Boolean, interactionSource: InteractionSource): State<Color>
 }

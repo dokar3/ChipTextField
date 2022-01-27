@@ -6,7 +6,6 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.padding
@@ -53,19 +52,19 @@ import com.google.accompanist.flowlayout.FlowRow
  * @param state Use [rememberChipTextFieldState] to create new state.
  * @param onCreateChip Create a new chip, will be called after pressing enter key. Return null will
  * create nothing.
- * @param modifier Modifier for text field.
+ * @param modifier Modifier for chip text field.
  * @param initialTextFieldValue Initial text field value.
  * @param readOnly If true, keyboard and text field indicator will be disabled.
  * @param keyboardOptions Keyboard actions, see [KeyboardActions].
- * @param textStyle Text field text style, see [TextStyle].
- * @param textColor Text field text color.
- * @param cursorColor Text Field cursor color.
- * @param indicatorColor Text field indicator color.
+ * @param textStyle Text style of text field, see [TextStyle].
+ * @param textColor Text color of text field.
+ * @param cursorColor Cursor color of text field.
+ * @param indicatorStyle Indicator style of text field.
  * @param chipStyle Chip style, include shape, text color, background color, etc. See [ChipStyle].
  * @param chipVerticalSpacing Vertical spacing between chips.
  * @param chipHorizontalSpacing Horizontal spacing between chips.
- * @param chipLeadingIcon Chip start widget, nothing will be displayed by default.
- * @param chipTrailingIcon Chip end widget, by default, a [CloseButton] will be displayed.
+ * @param chipLeadingIcon Leading chip icon, nothing will be displayed by default.
+ * @param chipTrailingIcon Trailing chip icon, by default, a [CloseButton] will be displayed.
  * @param onChipClick Chip click action.
  * @param onChipLongClick Chip long click action.
  * @param interactionSource Interaction source for text field.
@@ -82,8 +81,8 @@ fun <T : Chip> ChipTextField(
     textStyle: TextStyle = TextStyle.Default,
     textColor: Color = MaterialTheme.colors.onBackground,
     cursorColor: Color = MaterialTheme.colors.primary,
-    indicatorColor: Color = cursorColor,
-    chipStyle: ChipStyle = ChipStyle.Default,
+    indicatorStyle: IndicatorStyle = ChipTextFieldDefaults.indicatorStyle(),
+    chipStyle: ChipStyle = ChipTextFieldDefaults.chipStyle(),
     chipVerticalSpacing: Dp = 4.dp,
     chipHorizontalSpacing: Dp = 4.dp,
     chipLeadingIcon: @Composable (chip: T) -> Unit = {},
@@ -96,17 +95,15 @@ fun <T : Chip> ChipTextField(
 
     val focusRequester = remember { FocusRequester() }
 
-    val isFocused by interactionSource.collectIsFocusedAsState()
+    val indicatorHeight by indicatorStyle.height(
+        readOnly = readOnly,
+        interactionSource = interactionSource,
+    )
 
-    val indicatorWidth = when {
-        isFocused -> IndicatorFocusedWidth
-        else -> IndicatorUnfocusedWidth
-    }
-
-    val currIndicatorColor = when {
-        isFocused -> indicatorColor
-        else -> MaterialTheme.colors.onBackground.copy(alpha = 0.45f)
-    }
+    val indicatorColor by indicatorStyle.color(
+        readOnly = readOnly,
+        interactionSource = interactionSource,
+    )
 
     val editable = !readOnly
 
@@ -145,7 +142,7 @@ fun <T : Chip> ChipTextField(
         modifier = modifier
             .combineIf(editable) {
                 it
-                    .drawIndicatorLine(indicatorWidth, currIndicatorColor)
+                    .drawIndicatorLine(indicatorHeight, indicatorColor)
                     .padding(bottom = chipVerticalSpacing + 4.dp)
             }
             .clickable(
@@ -176,8 +173,8 @@ fun <T : Chip> ChipTextField(
             newChipFieldFocusRequester = focusRequester,
             textStyle = textStyle,
             chipStyle = chipStyle,
-            chipStartWidget = chipLeadingIcon,
-            chipEndWidget = chipTrailingIcon
+            chipLeadingIcon = chipLeadingIcon,
+            chipTrailingIcon = chipTrailingIcon
         )
 
         if (editable) {
@@ -234,8 +231,8 @@ private fun <T : Chip> ChipGroup(
     newChipFieldFocusRequester: FocusRequester,
     textStyle: TextStyle,
     chipStyle: ChipStyle,
-    chipStartWidget: @Composable (chip: T) -> Unit,
-    chipEndWidget: @Composable (chip: T) -> Unit
+    chipLeadingIcon: @Composable (chip: T) -> Unit,
+    chipTrailingIcon: @Composable (chip: T) -> Unit
 ) {
     val focusedItem = remember { mutableStateOf(-1) }
     for (chip in state.chips) {
@@ -251,8 +248,8 @@ private fun <T : Chip> ChipGroup(
             newChipFieldFocusRequester = newChipFieldFocusRequester,
             textStyle = textStyle,
             chipStyle = chipStyle,
-            chipStartWidget = chipStartWidget,
-            chipEndWidget = chipEndWidget
+            chipLeadingIcon = chipLeadingIcon,
+            chipTrailingIcon = chipTrailingIcon
         )
     }
 }
@@ -271,13 +268,37 @@ private fun <T : Chip> ChipItem(
     newChipFieldFocusRequester: FocusRequester,
     textStyle: TextStyle,
     chipStyle: ChipStyle,
-    chipStartWidget: @Composable (chip: T) -> Unit,
-    chipEndWidget: @Composable (chip: T) -> Unit,
+    chipLeadingIcon: @Composable (chip: T) -> Unit,
+    chipTrailingIcon: @Composable (chip: T) -> Unit,
     modifier: Modifier = Modifier
 ) {
     var textFieldValueState by remember(chip) { mutableStateOf(TextFieldValue(chip.text)) }
 
-    val chipTextStyle = remember(chipStyle) { textStyle.copy(color = chipStyle.textColor) }
+    val shape by chipStyle.shape(
+        readOnly = readOnly,
+        interactionSource = interactionSource,
+    )
+
+    val borderWidth by chipStyle.borderWidth(
+        readOnly = readOnly,
+        interactionSource = interactionSource,
+    )
+
+    val borderColor by chipStyle.borderColor(
+        readOnly = readOnly,
+        interactionSource = interactionSource,
+    )
+
+    val textColor by chipStyle.textColor(
+        readOnly = readOnly,
+        interactionSource = interactionSource,
+    )
+    val chipTextStyle = remember(textColor) { textStyle.copy(color = textColor) }
+
+    val backgroundColor by chipStyle.backgroundColor(
+        readOnly = readOnly,
+        interactionSource = interactionSource,
+    )
 
     val focusRequester = remember { FocusRequester() }
 
@@ -300,18 +321,18 @@ private fun <T : Chip> ChipItem(
 
     ChipItemLayout(
         leadingIcon = {
-            chipStartWidget(chip)
+            chipLeadingIcon(chip)
         },
         trailingIcon = {
-            chipEndWidget(chip)
+            chipTrailingIcon(chip)
         },
         modifier = modifier
-            .clip(shape = chipStyle.shape)
-            .background(color = chipStyle.backgroundColor)
+            .clip(shape = shape)
+            .background(color = backgroundColor)
             .border(
-                width = chipStyle.borderWidth,
-                color = chipStyle.borderColor,
-                shape = chipStyle.shape
+                width = borderWidth,
+                color = borderColor,
+                shape = shape
             )
             .combinedClickable(
                 onClick = {
