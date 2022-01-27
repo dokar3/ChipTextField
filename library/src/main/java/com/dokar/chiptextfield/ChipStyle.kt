@@ -9,28 +9,20 @@ import androidx.compose.ui.unit.dp
 /**
  * Chip style
  */
-class ChipStyle(
-    val shape: Shape = CircleShape,
-    val textColor: Color = Color.Black,
-    val borderColor: Color = textColor,
-    val borderWidth: Dp = 1.dp,
-    val backgroundColor: Color = Color.Transparent
+data class ChipStyle(
+    val shape: Shape,
+    val borderWidth: Dp,
+    val borderColor: Color,
+    val textColor: Color,
+    val backgroundColor: Color,
 ) {
-    fun copy(
-        shape: Shape = this.shape,
-        textColor: Color = this.textColor,
-        borderColor: Color = this.borderColor,
-        backgroundColor: Color = this.backgroundColor
-    ): ChipStyle {
-        return ChipStyle(
-            shape = shape,
-            textColor = textColor,
-            borderColor = borderColor,
-            backgroundColor = backgroundColor
-        )
-    }
-
     companion object {
-        val Default = ChipStyle()
+        val Default = ChipStyle(
+            shape = CircleShape,
+            borderWidth = 1.dp,
+            borderColor = Color.Black,
+            textColor = Color.Black,
+            backgroundColor = Color.Transparent,
+        )
     }
 }
