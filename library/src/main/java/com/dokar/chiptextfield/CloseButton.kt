@@ -1,4 +1,4 @@
-package com.dokar.chiptextfield.widget
+package com.dokar.chiptextfield
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background

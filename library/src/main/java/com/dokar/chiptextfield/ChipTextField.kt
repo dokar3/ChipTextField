@@ -1,10 +1,6 @@
 package com.dokar.chiptextfield
 
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Box
@@ -36,7 +32,6 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -49,7 +44,6 @@ import androidx.compose.ui.unit.dp
 import com.dokar.chiptextfield.util.combineIf
 import com.dokar.chiptextfield.util.filterNewLine
 import com.dokar.chiptextfield.util.onBackspaceUp
-import com.dokar.chiptextfield.widget.CloseButton
 import com.google.accompanist.flowlayout.FlowCrossAxisAlignment
 import com.google.accompanist.flowlayout.FlowRow
 
@@ -70,8 +64,8 @@ import com.google.accompanist.flowlayout.FlowRow
  * @param chipStyle Chip style, include shape, text color, background color, etc. See [ChipStyle].
  * @param chipVerticalSpacing Vertical spacing between chips.
  * @param chipHorizontalSpacing Horizontal spacing between chips.
- * @param chipStartWidget Chip start widget, nothing will be displayed by default.
- * @param chipEndWidget Chip end widget, by default, a [CloseButton] will be displayed.
+ * @param chipLeadingIcon Chip start widget, nothing will be displayed by default.
+ * @param chipTrailingIcon Chip end widget, by default, a [CloseButton] will be displayed.
  * @param onChipClick Chip click action.
  * @param onChipLongClick Chip long click action.
  * @param interactionSource Interaction source for text field.
@@ -92,8 +86,8 @@ fun <T : Chip> ChipTextField(
     chipStyle: ChipStyle = ChipStyle.Default,
     chipVerticalSpacing: Dp = 4.dp,
     chipHorizontalSpacing: Dp = 4.dp,
-    chipStartWidget: @Composable (chip: T) -> Unit = {},
-    chipEndWidget: @Composable (chip: T) -> Unit = { CloseButton(state, it) },
+    chipLeadingIcon: @Composable (chip: T) -> Unit = {},
+    chipTrailingIcon: @Composable (chip: T) -> Unit = { CloseButton(state, it) },
     onChipClick: ((chip: T) -> Unit)? = null,
     onChipLongClick: ((chip: T) -> Unit)? = null,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
@@ -154,23 +148,20 @@ fun <T : Chip> ChipTextField(
                     .drawIndicatorLine(indicatorWidth, currIndicatorColor)
                     .padding(bottom = chipVerticalSpacing + 4.dp)
             }
-            .pointerInput(Unit) {
-                detectTapGestures(
-                    onTap = {
-                        // onClick in clickable modifier may triggered after pressing
-                        // enter key, move it in onTap to prevent this behavior(issue?)
-                        if (editable) {
-                            keyboardController?.show()
-                            focusRequester.requestFocus()
-                            // Move cursor to end
-                            val selection = state.textFieldValue.text.length
-                            state.textFieldValue = state.textFieldValue.copy(
-                                selection = TextRange(selection)
-                            )
-                        }
-                    }
-                )
-            },
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null,
+                onClick = {
+                    keyboardController?.show()
+                    focusRequester.requestFocus()
+                    // Move cursor to end
+                    val selection = state.textFieldValue.text.length
+                    state.textFieldValue = state.textFieldValue.copy(
+                        selection = TextRange(selection)
+                    )
+                },
+                enabled = editable,
+            ),
         mainAxisSpacing = chipHorizontalSpacing,
         crossAxisSpacing = chipVerticalSpacing,
         crossAxisAlignment = FlowCrossAxisAlignment.Center
@@ -185,8 +176,8 @@ fun <T : Chip> ChipTextField(
             newChipFieldFocusRequester = focusRequester,
             textStyle = textStyle,
             chipStyle = chipStyle,
-            chipStartWidget = chipStartWidget,
-            chipEndWidget = chipEndWidget
+            chipStartWidget = chipLeadingIcon,
+            chipEndWidget = chipTrailingIcon
         )
 
         if (editable) {

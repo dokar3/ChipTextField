@@ -42,8 +42,8 @@ internal fun CheckableChips(
             borderColor = chipFieldStyle.borderColor,
             backgroundColor = chipFieldStyle.backgroundColor
         ),
-        chipStartWidget = { CheckIcon(it, chipFieldStyle) },
-        chipEndWidget = {},
+        chipLeadingIcon = { CheckIcon(it, chipFieldStyle) },
+        chipTrailingIcon = {},
         onChipClick = { it.isChecked = !it.isChecked }
     )
 }

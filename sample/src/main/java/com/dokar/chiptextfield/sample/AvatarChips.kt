@@ -47,7 +47,7 @@ internal fun AvatarChips(
             borderColor = chipFieldStyle.borderColor,
             backgroundColor = chipFieldStyle.backgroundColor
         ),
-        chipStartWidget = { Avatar(it) },
+        chipLeadingIcon = { Avatar(it) },
     )
 }
 
