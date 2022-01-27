@@ -1,6 +1,12 @@
 # ChipTextField
 
+Editable and customizable chips.
+
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.dokar3/chiptextfield/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.dokar3/chiptextfield)
+
+
+
+# Screenshots
 
 ![](/images/screenshot_dark.png)
 
@@ -18,16 +24,12 @@
 implementation "io.github.dokar3:chiptextfield:latest_version"
 ```
 
-### Default chips
+**Default chips**
 
 ```kotlin
 val state = rememberChipTextFieldState<Chip>()
 ChipTextField(state = state, onCreateChip = ::Chip)
 ```
-
-### Custom chips
-
-`chipStartWidget` and `chipEndWidget` are provided to implement custom chips.
 
 **Checkable chips**
 
@@ -40,13 +42,13 @@ val state = rememberChipTextFieldState<CheckableChip>()
 ChipTextField(
         state = state,
         onCreateChip = ::CheckableChip,
-        chipStartWidget = { chip -> CheckIcon(chip) }, // Show check icon if checked
-        chipEndWidget = {}, // Hide default close button
+        chipLeadingIcon = { chip -> CheckIcon(chip) }, // Show check icon if checked
+        chipTrailingIcon = {}, // Hide default close button
         onChipClick = { chip -> chip.isChecked = !chip.isChecked }
 )
 
 @Composable
-fun CheckIcon(chip: CheckableChip) { ... }
+fun CheckIcon(chip: CheckableChip, modifier: Modifier = Modifier) { ... }
 ```
 
 
@@ -59,11 +61,11 @@ val state = rememberChipTextFieldState<AvatarChip>()
 ChipTextField(
         state = state,
         onCreateChip = { text -> AvatarChip(text, avatarUrl) },
-        chipStartWidget = { chip -> Avatar(chip) } // Load and display avatar
+        chipLeadingIcon = { chip -> Avatar(chip) } // Load and display avatar
 )
 
 @Composable
-fun Avatar(chip: AvatarChip) { ... }
+fun Avatar(chip: AvatarChip, modifier: Modifier = Modifier) { ... }
 ```
 
 
