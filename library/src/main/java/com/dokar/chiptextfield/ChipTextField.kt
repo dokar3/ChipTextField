@@ -40,7 +40,7 @@ import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import com.dokar.chiptextfield.util.combineIf
+import com.dokar.chiptextfield.util.combinedIf
 import com.dokar.chiptextfield.util.filterNewLine
 import com.dokar.chiptextfield.util.onBackspaceUp
 import com.google.accompanist.flowlayout.FlowCrossAxisAlignment
@@ -141,10 +141,9 @@ fun <T : Chip> ChipTextField(
 
     FlowRow(
         modifier = modifier
-            .combineIf(editable) {
-                it
-                    .drawIndicatorLine(indicatorHeight, indicatorColor)
-                    .padding(bottom = chipVerticalSpacing + 4.dp)
+            .drawIndicatorLine(indicatorHeight, indicatorColor)
+            .combinedIf(indicatorHeight != 0.dp) {
+                padding(bottom = chipVerticalSpacing + indicatorHeight)
             }
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },

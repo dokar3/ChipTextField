@@ -8,12 +8,12 @@ import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.input.key.type
 
-internal inline fun Modifier.combineIf(
+internal inline fun Modifier.combinedIf(
     value: Boolean,
-    combined: (Modifier) -> Modifier
+    block: Modifier.() -> Modifier
 ): Modifier {
     return if (value) {
-        combined(this)
+        this.block()
     } else {
         this
     }
