@@ -337,6 +337,7 @@ private fun <T : Chip> ChipItem(
                 color = borderColor,
                 shape = shape
             )
+            .padding(borderWidth)
             .combinedClickable(
                 onClick = {
                     if (editable) {
