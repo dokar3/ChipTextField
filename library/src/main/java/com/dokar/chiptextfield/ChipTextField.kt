@@ -424,20 +424,9 @@ private fun ChipItemLayout(
         val placeables = arrayOf(leadingPlaceable, contentPlaceable, trailingPlaceable)
 
         layout(width = width, height = height) {
-            val start: Int
-            val end: Int
-            if (isLtr) {
-                start = 0
-                end = placeables.size - 1
-            } else {
-                start = placeables.size - 1
-                end = 0
-            }
-
             var x = 0
-            for (i in start..end) {
-                val placeable = placeables[i]
-                placeable.place(
+            for (placeable in placeables) {
+                placeable.placeRelative(
                     x = x,
                     y = (height - placeable.height) / 2,
                 )
