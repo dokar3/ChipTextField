@@ -1,35 +1,48 @@
 # ChipTextField
 
-Editable and customizable chips.
-
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.dokar3/chiptextfield/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.dokar3/chiptextfield)
-
-
-
-# Screenshots
-
-![](/images/screenshot_dark.png)
-
-![](/images/screenshot_light.png)
-
-![](/images/screenshot_checkable.png)
-
-![](/images/screenshot_avatar.png)
-
-
+Editable and customizable chips for Jetpack Compose.
 
 # Usage
+
+Gradle dependency [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.dokar3/chiptextfield/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.dokar3/chiptextfield):
 
 ```groovy
 implementation "io.github.dokar3:chiptextfield:latest_version"
 ```
 
-**Default chips**
+**Default (filled style)** 
 
 ```kotlin
 val state = rememberChipTextFieldState<Chip>()
 ChipTextField(state = state, onCreateChip = ::Chip)
 ```
+
+![](/images/screenshot_filled.jpg)
+
+**Outlined**
+
+```kotlin
+val state = rememberChipTextFieldState<Chip>()
+OutlinedChipTextField(state = state, onCreateChip = ::Chip)
+```
+
+![](/images/screenshot_outlined.jpg)
+
+**Need a classic underline style?**
+
+```kotlin
+val state = rememberChipTextFieldState<Chip>()
+ChipTextField(
+    state = state, 
+    onCreateChip = ::Chip,
+    colors = TextFieldDefaults.textFieldColors(
+        backgroundColor = Color.Transparent
+    ),
+    contentPadding = PaddingValues(bottom = 8.dp),
+)
+```
+
+![](/images/screenshot_light.png)
 
 **Checkable chips**
 
@@ -39,9 +52,10 @@ class CheckableChip(text: String, isChecked: Boolean = false) : Chip(text) {
 }
 
 val state = rememberChipTextFieldState<CheckableChip>()
-ChipTextField(
+BasicChipTextField(
         state = state,
         onCreateChip = ::CheckableChip,
+        enabled = false, // Disable editing to handle clicks
         chipLeadingIcon = { chip -> CheckIcon(chip) }, // Show check icon if checked
         chipTrailingIcon = {}, // Hide default close button
         onChipClick = { chip -> chip.isChecked = !chip.isChecked }
@@ -51,6 +65,7 @@ ChipTextField(
 fun CheckIcon(chip: CheckableChip, modifier: Modifier = Modifier) { ... }
 ```
 
+![](/images/screenshot_checkable.jpg)
 
 **Avatar chips**
 
@@ -67,6 +82,8 @@ ChipTextField(
 @Composable
 fun Avatar(chip: AvatarChip, modifier: Modifier = Modifier) { ... }
 ```
+
+![](/images/screenshot_avatar.png)
 
 
 
