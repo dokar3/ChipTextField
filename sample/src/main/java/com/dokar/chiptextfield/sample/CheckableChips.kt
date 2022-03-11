@@ -5,16 +5,15 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.dokar.chiptextfield.ChipTextField
+import com.dokar.chiptextfield.BasicChipTextField
 import com.dokar.chiptextfield.ChipTextFieldDefaults
 import com.dokar.chiptextfield.rememberChipTextFieldState
 import com.dokar.chiptextfield.sample.data.CheckableChip
@@ -24,24 +23,20 @@ import com.dokar.chiptextfield.sample.data.SampleChips
 @ExperimentalFoundationApi
 @Composable
 internal fun CheckableChips(
-    name: String,
     chipFieldStyle: ChipFieldStyle
 ) {
     val chips = remember { SampleChips.getCheckableChips() }
     val state = rememberChipTextFieldState(chips = chips)
     ChipsHeader("Checkable chips")
-    ChipTextField(
+    BasicChipTextField(
         state = state,
         onCreateChip = ::CheckableChip,
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp),
-        initialTextFieldValue = name,
-        readOnly = true,
-        textStyle = TextStyle.Default.copy(fontSize = 18.sp),
-        cursorColor = chipFieldStyle.cursorColor,
-        indicatorStyle = ChipTextFieldDefaults.indicatorStyle(
-            focusedColor = chipFieldStyle.cursorColor,
+        enabled = false,
+        colors = TextFieldDefaults.textFieldColors(
+            cursorColor = chipFieldStyle.cursorColor
         ),
         chipStyle = ChipTextFieldDefaults.chipStyle(
             textColor = chipFieldStyle.textColor,
@@ -50,7 +45,7 @@ internal fun CheckableChips(
         ),
         chipLeadingIcon = { CheckIcon(it, chipFieldStyle) },
         chipTrailingIcon = {},
-        onChipClick = { it.isChecked = !it.isChecked }
+        onChipClick = { it.isChecked = !it.isChecked },
     )
 }
 

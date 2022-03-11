@@ -8,6 +8,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
@@ -29,32 +32,38 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background,
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    SampleScreen("Android")
+                    SampleScreen()
                 }
             }
         }
     }
 }
 
-@OptIn(ExperimentalComposeUiApi::class,
+@OptIn(
+    ExperimentalComposeUiApi::class,
     androidx.compose.foundation.ExperimentalFoundationApi::class
 )
 @Composable
-fun SampleScreen(name: String) {
+fun SampleScreen() {
     val selectedColorPosition = remember { mutableStateOf(0) }
 
     val chipFieldStyle = getChipFieldStyle(selectedColorPosition.value)
 
-    Column(modifier = Modifier.fillMaxSize()) {
-        TextChips(name = name, chipFieldStyle = chipFieldStyle)
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(state = rememberScrollState())
+            .padding(bottom = 32.dp)
+    ) {
+        TextChips(chipFieldStyle = chipFieldStyle)
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        CheckableChips(name = name, chipFieldStyle = chipFieldStyle)
+        CheckableChips(chipFieldStyle = chipFieldStyle)
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        AvatarChips(name = name, chipFieldStyle = chipFieldStyle)
+        AvatarChips(chipFieldStyle = chipFieldStyle)
 
         Spacer(modifier = Modifier.height(32.dp))
 
@@ -81,6 +90,6 @@ private fun getChipFieldStyle(selectedPos: Int): ChipFieldStyle {
 @Composable
 fun DefaultPreview() {
     ChipTextFieldTheme {
-        SampleScreen("Android")
+        SampleScreen()
     }
 }

@@ -23,7 +23,7 @@ fun <T : Chip> rememberChipTextFieldState(
 }
 
 /**
- * State class for [ChipTextField]
+ * State class for [BasicChipTextField]
  *
  * @param chips Default chips
  */
@@ -41,6 +41,10 @@ class ChipTextFieldState<T : Chip>(
     internal fun indexOf(chip: T): Int = chips.indexOf(chip)
 
     internal fun previousIndex(chip: T): Int = max(0, indexOf(chip) - 1)
+
+    internal fun isEmpty(): Boolean {
+        return textFieldValue.text.isEmpty() && chips.isEmpty()
+    }
 
     /**
      * Add a chip

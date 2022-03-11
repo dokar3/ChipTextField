@@ -8,7 +8,7 @@ import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.input.key.type
 
-internal inline fun Modifier.combinedIf(
+internal inline fun Modifier.runIf(
     value: Boolean,
     block: Modifier.() -> Modifier
 ): Modifier {

@@ -3,19 +3,20 @@ package com.dokar.chiptextfield.sample
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import coil.compose.rememberImagePainter
 import com.dokar.chiptextfield.ChipTextField
 import com.dokar.chiptextfield.ChipTextFieldDefaults
@@ -27,7 +28,6 @@ import com.dokar.chiptextfield.sample.data.SampleChips
 @ExperimentalFoundationApi
 @Composable
 internal fun AvatarChips(
-    name: String,
     chipFieldStyle: ChipFieldStyle
 ) {
     val chips = remember { SampleChips.getAvatarChips() }
@@ -39,11 +39,11 @@ internal fun AvatarChips(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp),
-        initialTextFieldValue = name,
-        textStyle = TextStyle.Default.copy(fontSize = 18.sp),
-        cursorColor = chipFieldStyle.cursorColor,
-        indicatorStyle = ChipTextFieldDefaults.indicatorStyle(
-            focusedColor = chipFieldStyle.cursorColor,
+        initialTextFieldValue = "Android",
+        colors = TextFieldDefaults.textFieldColors(
+            cursorColor = chipFieldStyle.cursorColor,
+            backgroundColor = Color.Transparent,
+            focusedIndicatorColor = chipFieldStyle.cursorColor,
         ),
         chipStyle = ChipTextFieldDefaults.chipStyle(
             textColor = chipFieldStyle.textColor,
@@ -51,6 +51,7 @@ internal fun AvatarChips(
             backgroundColor = chipFieldStyle.backgroundColor
         ),
         chipLeadingIcon = { Avatar(it) },
+        contentPadding = PaddingValues(bottom = 8.dp),
     )
 }
 

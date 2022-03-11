@@ -2,16 +2,16 @@ package com.dokar.chiptextfield
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.LocalTextStyle
-import androidx.compose.material.TextField
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.TextFieldColors
 import androidx.compose.material.TextFieldDefaults
-import androidx.compose.material.TextFieldDefaults.indicatorLine
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -20,16 +20,17 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.dokar.chiptextfield.util.runIf
 
 /**
- * Chip text field with Material Design filled style.
+ * Chip text field with Material Design outlined style.
  *
  * @see [BasicChipTextField]
- * @see [TextField]
+ * @see [OutlinedTextField]
  */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun <T : Chip> ChipTextField(
+fun <T : Chip> OutlinedChipTextField(
     state: ChipTextFieldState<T>,
     onCreateChip: (text: String) -> T?,
     modifier: Modifier = Modifier,
@@ -51,19 +52,13 @@ fun <T : Chip> ChipTextField(
     onChipClick: ((chip: T) -> Unit)? = null,
     onChipLongClick: ((chip: T) -> Unit)? = null,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    shape: Shape = TextFieldDefaults.TextFieldShape,
-    colors: TextFieldColors = TextFieldDefaults.textFieldColors(),
-    contentPadding: PaddingValues =
-        if (label == null) {
-            TextFieldDefaults.textFieldWithoutLabelPadding()
-        } else {
-            TextFieldDefaults.textFieldWithLabelPadding()
-        }
+    shape: Shape = MaterialTheme.shapes.small,
+    colors: TextFieldColors = TextFieldDefaults.outlinedTextFieldColors(),
 ) {
-    Box(
+    BoxWithConstraints(
         modifier = modifier
+            .runIf(label != null) { modifier.padding(top = 8.dp) }
             .background(colors.backgroundColor(enabled).value, shape)
-            .indicatorLine(enabled, isError, interactionSource, colors)
     ) {
         BasicChipTextField(
             state = state,
@@ -85,7 +80,7 @@ fun <T : Chip> ChipTextField(
             interactionSource = interactionSource,
             colors = colors,
             decorationBox = { innerTextField ->
-                TextFieldDefaults.TextFieldDecorationBox(
+                TextFieldDefaults.OutlinedTextFieldDecorationBox(
                     value = if (state.isEmpty()) "" else " ",
                     innerTextField = innerTextField,
                     enabled = !readOnly,
@@ -98,7 +93,15 @@ fun <T : Chip> ChipTextField(
                     leadingIcon = leadingIcon,
                     trailingIcon = trailingIcon,
                     colors = colors,
-                    contentPadding = contentPadding,
+                    border = {
+                        TextFieldDefaults.BorderStroke(
+                            enabled,
+                            isError,
+                            interactionSource,
+                            colors,
+                            shape
+                        )
+                    },
                 )
             },
         )
