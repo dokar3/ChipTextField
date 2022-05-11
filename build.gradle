@@ -2,7 +2,7 @@
 buildscript {
     ext {
         compose_version = '1.2.0-alpha08'
-        kotlin_version = '1.6.20'
+        kotlin_version = '1.6.21'
         accompanist_version = '0.24.7-alpha'
     }
     repositories {
