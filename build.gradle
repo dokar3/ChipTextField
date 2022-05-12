@@ -1,9 +1,9 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
     ext {
-        compose_version = '1.2.0-alpha08'
-        kotlin_version = '1.6.20'
-        accompanist_version = '0.24.7-alpha'
+        compose_version = '1.2.0-beta01'
+        kotlin_version = '1.6.21'
+        accompanist_version = '0.24.8-beta'
     }
     repositories {
         google()
