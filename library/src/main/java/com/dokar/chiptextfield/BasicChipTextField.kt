@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.LocalTextStyle
 import androidx.compose.material.TextFieldColors
 import androidx.compose.material.TextFieldDefaults
@@ -71,7 +70,6 @@ import com.google.accompanist.flowlayout.FlowRow
  * @see BasicTextField
  */
 @OptIn(
-    ExperimentalMaterialApi::class,
     ExperimentalComposeUiApi::class,
     ExperimentalFoundationApi::class
 )

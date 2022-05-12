@@ -94,7 +94,7 @@ fun <T : Chip> OutlinedChipTextField(
                     trailingIcon = trailingIcon,
                     colors = colors,
                     border = {
-                        TextFieldDefaults.BorderStroke(
+                        TextFieldDefaults.BorderBox(
                             enabled,
                             isError,
                             interactionSource,

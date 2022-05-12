@@ -1,6 +1,7 @@
 package com.dokar.chiptextfield
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -27,6 +28,7 @@ fun <T : Chip> rememberChipTextFieldState(
  *
  * @param chips Default chips
  */
+@Stable
 class ChipTextFieldState<T : Chip>(
     chips: List<T> = emptyList()
 ) {
