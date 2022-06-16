@@ -1,9 +1,9 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
     ext {
-        compose_version = '1.2.0-beta03'
+        compose_version = '1.2.0-rc01'
         kotlin_version = '1.6.21'
-        accompanist_version = '0.24.10-beta'
+        accompanist_version = '0.24.11-rc'
     }
     repositories {
         google()
@@ -22,6 +22,9 @@ buildscript {
 
 allprojects {
     plugins.withId("com.vanniktech.maven.publish") {
+        mavenPublish {
+            androidVariantToPublish = "release"
+        }
         mavenPublishing {
             publishToMavenCentral("S01")
             signAllPublications()
