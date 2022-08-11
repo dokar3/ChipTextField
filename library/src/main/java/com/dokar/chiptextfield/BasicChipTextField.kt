@@ -46,7 +46,6 @@ import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.dokar.chiptextfield.util.filterNewLine
-import com.dokar.chiptextfield.util.onBackspaceUp
 import com.google.accompanist.flowlayout.FlowCrossAxisAlignment
 import com.google.accompanist.flowlayout.FlowRow
 
@@ -58,6 +57,8 @@ import com.google.accompanist.flowlayout.FlowRow
  * @param onSubmit Called after pressing enter key.
  * @param enabled Enabled state, if false, user will not able to edit and select.
  * @param readOnly If true, edit will be disabled, but user can still select text.
+ * @param readOnlyChips If true, chips are no more editable, but the text field can still be edited
+ * if [readOnly] is not true.
  * @param isError Error state, it is used to change cursor color.
  * @param keyboardOptions See [BasicTextField] for the details.
  * @param textStyle Text style, also apply to text in chips.
@@ -84,6 +85,7 @@ fun <T : Chip> BasicChipTextField(
     onSubmit: (() -> Unit)? = null,
     enabled: Boolean = true,
     readOnly: Boolean = false,
+    readOnlyChips: Boolean = readOnly,
     isError: Boolean = false,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     textStyle: TextStyle = LocalTextStyle.current,
@@ -128,7 +130,7 @@ fun <T : Chip> BasicChipTextField(
                         keyboardController?.show()
                         textFieldFocusRequester.requestFocus()
                         state.currentFocusedChipIndex = -1
-                        // Move cursor to end
+                        // Move cursor to the end
                         val selection = state.value.text.length
                         state.value = state.value.copy(selection = TextRange(selection))
                     },
@@ -141,7 +143,7 @@ fun <T : Chip> BasicChipTextField(
             Chips(
                 state = state,
                 enabled = enabled,
-                readOnly = readOnly,
+                readOnly = readOnly || readOnlyChips,
                 onRemoveRequest = { state.removeChip(it) },
                 onFocused = { interactionSource.tryEmit(it) },
                 onFreeFocus = { interactionSource.tryEmit(FocusInteraction.Unfocus(it)) },
@@ -263,6 +265,7 @@ private fun <T : Chip> Chips(
     }
 }
 
+@ExperimentalComposeUiApi
 @Composable
 private fun <T : Chip> Input(
     state: ChipTextFieldState<T>,
@@ -293,11 +296,15 @@ private fun <T : Chip> Input(
         modifier = modifier
             .focusRequester(focusRequester)
             .onFocusChanged { onFocusChange(it.isFocused) }
-            .onBackspaceUp {
-                if (value.text.isEmpty() && state.chips.isNotEmpty()) {
-                    // Remove previous chip
-                    state.removeLastChip()
+            .onPreviewKeyEvent {
+                if (it.type == KeyEventType.KeyDown && it.key == Key.Backspace) {
+                    if (value.text.isEmpty() && state.chips.isNotEmpty()) {
+                        // Remove previous chip
+                        state.removeLastChip()
+                        return@onPreviewKeyEvent true
+                    }
                 }
+                false
             },
         enabled = enabled,
         readOnly = readOnly,
@@ -431,8 +438,8 @@ private fun <T : Chip> ChipItem(
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
             keyboardActions = KeyboardActions(onDone = { onFocusNextRequest() }),
             singleLine = false,
-            enabled = enabled,
-            readOnly = readOnly,
+            enabled = !readOnly && enabled,
+            readOnly = readOnly || !enabled,
             textStyle = chipTextStyle,
             interactionSource = interactionSource
         )
