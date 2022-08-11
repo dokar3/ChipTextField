@@ -282,6 +282,9 @@ private fun <T : Chip> Input(
     modifier: Modifier = Modifier,
 ) {
     val value = state.value
+    if (value.text.isEmpty() && (!enabled || readOnly)) {
+        return
+    }
     val textColor = textStyle.color.takeOrElse {
         colors.textColor(enabled).value
     }
