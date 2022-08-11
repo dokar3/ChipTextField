@@ -7,7 +7,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.text.input.TextFieldValue
-import kotlin.math.max
 
 /**
  * Return a new remembered [ChipTextFieldState]
@@ -39,10 +38,6 @@ class ChipTextFieldState<T : Chip>(
     var textFieldValue by mutableStateOf(TextFieldValue())
 
     var chips by mutableStateOf(chips)
-
-    internal fun indexOf(chip: T): Int = chips.indexOf(chip)
-
-    internal fun previousIndex(chip: T): Int = max(0, indexOf(chip) - 1)
 
     internal fun isEmpty(): Boolean {
         return textFieldValue.text.isEmpty() && chips.isEmpty()

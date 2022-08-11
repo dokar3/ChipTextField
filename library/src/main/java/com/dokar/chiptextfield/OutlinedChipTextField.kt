@@ -2,7 +2,7 @@ package com.dokar.chiptextfield
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
@@ -55,7 +55,7 @@ fun <T : Chip> OutlinedChipTextField(
     shape: Shape = MaterialTheme.shapes.small,
     colors: TextFieldColors = TextFieldDefaults.outlinedTextFieldColors(),
 ) {
-    BoxWithConstraints(
+    Box(
         modifier = modifier
             .runIf(label != null) { modifier.padding(top = 8.dp) }
             .background(colors.backgroundColor(enabled).value, shape)
