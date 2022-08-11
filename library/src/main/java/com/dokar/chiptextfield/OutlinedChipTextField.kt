@@ -32,9 +32,8 @@ import com.dokar.chiptextfield.util.runIf
 @Composable
 fun <T : Chip> OutlinedChipTextField(
     state: ChipTextFieldState<T>,
-    onCreateChip: (text: String) -> T?,
     modifier: Modifier = Modifier,
-    initialTextFieldValue: String = "",
+    onSubmit: (() -> Unit)? = null,
     enabled: Boolean = true,
     readOnly: Boolean = false,
     isError: Boolean = false,
@@ -62,9 +61,8 @@ fun <T : Chip> OutlinedChipTextField(
     ) {
         BasicChipTextField(
             state = state,
-            onCreateChip = onCreateChip,
+            onSubmit = onSubmit,
             modifier = Modifier.fillMaxWidth(),
-            initialTextFieldValue = initialTextFieldValue,
             enabled = enabled,
             readOnly = readOnly,
             isError = isError,
@@ -81,7 +79,7 @@ fun <T : Chip> OutlinedChipTextField(
             colors = colors,
             decorationBox = { innerTextField ->
                 TextFieldDefaults.OutlinedTextFieldDecorationBox(
-                    value = if (state.isEmpty()) "" else " ",
+                    value = if (state.chips.isEmpty() && state.value.text.isEmpty()) "" else " ",
                     innerTextField = innerTextField,
                     enabled = !readOnly,
                     singleLine = false,

@@ -26,11 +26,16 @@ internal fun CheckableChips(
     chipFieldStyle: ChipFieldStyle
 ) {
     val chips = remember { SampleChips.getCheckableChips() }
-    val state = rememberChipTextFieldState(chips = chips)
+    val state = rememberChipTextFieldState(
+        value = "",
+        onValueChange = {},
+        chips = chips,
+    )
+
     ChipsHeader("Checkable chips")
+
     BasicChipTextField(
         state = state,
-        onCreateChip = ::CheckableChip,
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp),

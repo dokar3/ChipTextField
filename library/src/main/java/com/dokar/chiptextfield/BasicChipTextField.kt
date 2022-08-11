@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.interaction.FocusInteraction
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -28,14 +29,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.takeOrElse
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.KeyEventType
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.onPreviewKeyEvent
+import androidx.compose.ui.input.key.type
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -48,9 +54,8 @@ import com.google.accompanist.flowlayout.FlowRow
  * A text field can display chips, press enter to create a new chip.
  *
  * @param state Use [rememberChipTextFieldState] to create new state.
- * @param onCreateChip Create a new chip, will be called after pressing enter key. Return null to prevent creating new chip.
  * @param modifier Modifier for chip text field.
- * @param initialTextFieldValue Initial text field value.
+ * @param onSubmit Called after pressing enter key.
  * @param enabled Enabled state, if false, user will not able to edit and select.
  * @param readOnly If true, edit will be disabled, but user can still select text.
  * @param isError Error state, it is used to change cursor color.
@@ -75,9 +80,8 @@ import com.google.accompanist.flowlayout.FlowRow
 @Composable
 fun <T : Chip> BasicChipTextField(
     state: ChipTextFieldState<T>,
-    onCreateChip: (text: String) -> T?,
     modifier: Modifier = Modifier,
-    initialTextFieldValue: String = "",
+    onSubmit: (() -> Unit)? = null,
     enabled: Boolean = true,
     readOnly: Boolean = false,
     isError: Boolean = false,
@@ -95,29 +99,17 @@ fun <T : Chip> BasicChipTextField(
     decorationBox: @Composable (innerTextField: @Composable () -> Unit) -> Unit =
         @Composable { innerTextField -> innerTextField() },
 ) {
-    val focusRequester = remember { FocusRequester() }
+    val textFieldFocusRequester = remember { FocusRequester() }
 
     val editable = enabled && !readOnly
 
     val keyboardController = LocalSoftwareKeyboardController.current
-
-    fun createNewChip(value: String): Boolean {
-        val newChip = onCreateChip(value)
-        return if (newChip != null) {
-            state.addChip(newChip)
-            state.textFieldValue = TextFieldValue()
-            true
-        } else {
-            false
-        }
-    }
 
     LaunchedEffect(state, state.disposed) {
         if (state.disposed) {
             state.chips = state.defaultChips
             state.disposed = false
         }
-        state.textFieldValue = TextFieldValue(initialTextFieldValue)
     }
 
     DisposableEffect(state) {
@@ -134,12 +126,11 @@ fun <T : Chip> BasicChipTextField(
                     indication = null,
                     onClick = {
                         keyboardController?.show()
-                        focusRequester.requestFocus()
+                        textFieldFocusRequester.requestFocus()
+                        state.currentFocusedChipIndex = -1
                         // Move cursor to end
-                        val selection = state.textFieldValue.text.length
-                        state.textFieldValue = state.textFieldValue.copy(
-                            selection = TextRange(selection)
-                        )
+                        val selection = state.value.text.length
+                        state.value = state.value.copy(selection = TextRange(selection))
                     },
                     enabled = editable,
                 ),
@@ -148,11 +139,16 @@ fun <T : Chip> BasicChipTextField(
             crossAxisAlignment = FlowCrossAxisAlignment.Center
         ) {
             Chips(
-                chips = state.chips,
+                state = state,
                 enabled = enabled,
                 readOnly = readOnly,
                 onRemoveRequest = { state.removeChip(it) },
-                onChipFreeFocus = { focusRequester.requestFocus() },
+                onFocused = { interactionSource.tryEmit(it) },
+                onFreeFocus = { interactionSource.tryEmit(FocusInteraction.Unfocus(it)) },
+                onGiveUpFocuses = {
+                    textFieldFocusRequester.requestFocus()
+                    state.currentFocusedChipIndex = -1
+                },
                 onChipClick = onChipClick,
                 onChipLongClick = onChipLongClick,
                 textStyle = textStyle,
@@ -163,24 +159,114 @@ fun <T : Chip> BasicChipTextField(
 
             Input(
                 state = state,
-                onCreateNewChip = ::createNewChip,
+                onSubmit = onSubmit,
                 enabled = enabled,
                 readOnly = readOnly,
                 isError = isError,
                 textStyle = textStyle,
                 colors = colors,
                 keyboardOptions = keyboardOptions,
-                focusRequester = focusRequester,
+                focusRequester = textFieldFocusRequester,
                 interactionSource = interactionSource,
+                onFocusChange = { isFocused ->
+                    if (isFocused) {
+                        state.currentFocusedChipIndex = -1
+                    }
+                },
             )
         }
+    }
+}
+
+@ExperimentalComposeUiApi
+@ExperimentalFoundationApi
+@Composable
+private fun <T : Chip> Chips(
+    state: ChipTextFieldState<T>,
+    enabled: Boolean,
+    readOnly: Boolean,
+    onRemoveRequest: (T) -> Unit,
+    onFocused: (FocusInteraction.Focus) -> Unit,
+    onFreeFocus: (FocusInteraction.Focus) -> Unit,
+    onGiveUpFocuses: () -> Unit,
+    onChipClick: ((chip: T) -> Unit)?,
+    onChipLongClick: ((chip: T) -> Unit)?,
+    textStyle: TextStyle,
+    chipStyle: ChipStyle,
+    chipLeadingIcon: @Composable (chip: T) -> Unit,
+    chipTrailingIcon: @Composable (chip: T) -> Unit
+) {
+    val chips = state.chips
+
+    val focusRequesters = remember(chips.size) {
+        List(chips.size) { FocusRequester() }
+    }
+
+    fun focusChip(index: Int) {
+        focusRequesters[index].requestFocus()
+        val targetChip = chips[index]
+        targetChip.textFieldValue = targetChip.textFieldValue.copy(
+            selection = TextRange(targetChip.text.length),
+        )
+    }
+
+    LaunchedEffect(chips, state.currentFocusedChipIndex) {
+        val index = state.currentFocusedChipIndex
+        if (index in 0..chips.lastIndex) {
+            focusRequesters[index].requestFocus()
+            onFocused(chips[index].focus)
+        } else if (index != -1) {
+            onGiveUpFocuses()
+        }
+    }
+
+    for ((index, chip) in chips.withIndex()) {
+        ChipItem(
+            focusRequester = focusRequesters[index],
+            chip = chip,
+            enabled = enabled,
+            readOnly = readOnly,
+            onRemoveRequest = {
+                // Call before removing chip
+                onFreeFocus(chip.focus)
+                if (chips.size > 1) {
+                    focusChip((index - 1).coerceAtLeast(0))
+                } else {
+                    onGiveUpFocuses()
+                }
+                onRemoveRequest(chip)
+            },
+            onFocusNextRequest = {
+                onFreeFocus(chip.focus)
+                if (index < chips.lastIndex) {
+                    focusChip(index + 1)
+                } else {
+                    onGiveUpFocuses()
+                    focusRequesters[index].freeFocus()
+                }
+            },
+            onFocusChange = { isFocused ->
+                if (isFocused) {
+                    state.currentFocusedChipIndex = index
+                    onFocused(chip.focus)
+                } else {
+                    onFreeFocus(chip.focus)
+                }
+            },
+            onClick = { onChipClick?.invoke(chip) },
+            onLongClick = { onChipLongClick?.invoke(chip) },
+            textStyle = textStyle,
+            chipStyle = chipStyle,
+            chipLeadingIcon = chipLeadingIcon,
+            chipTrailingIcon = chipTrailingIcon
+        )
     }
 }
 
 @Composable
 private fun <T : Chip> Input(
     state: ChipTextFieldState<T>,
-    onCreateNewChip: (String) -> Boolean,
+    onSubmit: (() -> Unit)?,
     enabled: Boolean,
     readOnly: Boolean,
     isError: Boolean,
@@ -189,30 +275,26 @@ private fun <T : Chip> Input(
     keyboardOptions: KeyboardOptions,
     focusRequester: FocusRequester,
     interactionSource: MutableInteractionSource,
+    onFocusChange: (isFocused: Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val value = state.value
     val textColor = textStyle.color.takeOrElse {
         colors.textColor(enabled).value
     }
     BasicTextField(
-        value = state.textFieldValue,
-        onValueChange = filterNewLine { value, hasNewLine ->
-            if (hasNewLine && value.text.isNotEmpty()) {
-                // Add chip
-                if (onCreateNewChip(value.text)) {
-                    return@filterNewLine
-                }
+        value = value,
+        onValueChange = filterNewLine { newValue, hasNewLine ->
+            state.onValueChange(newValue)
+            if (hasNewLine && newValue.text.isNotEmpty()) {
+                onSubmit?.invoke()
             }
-            if (value.text.isEmpty()) {
-                // Fix new lines cannot be trimmed
-                state.textFieldValue = TextFieldValue("\b")
-            }
-            state.textFieldValue = value
         },
         modifier = modifier
             .focusRequester(focusRequester)
+            .onFocusChanged { onFocusChange(it.isFocused) }
             .onBackspaceUp {
-                if (state.textFieldValue.text.isEmpty() && state.chips.isNotEmpty()) {
+                if (value.text.isEmpty() && state.chips.isNotEmpty()) {
                     // Remove previous chip
                     state.removeLastChip()
                 }
@@ -223,10 +305,8 @@ private fun <T : Chip> Input(
         keyboardOptions = keyboardOptions.copy(imeAction = ImeAction.Done),
         keyboardActions = KeyboardActions(
             onDone = {
-                val valueText = state.textFieldValue.text
-                if (valueText.isNotEmpty()) {
-                    // Add chip
-                    onCreateNewChip(state.textFieldValue.text)
+                if (value.text.isNotEmpty()) {
+                    onSubmit?.invoke()
                 }
             }
         ),
@@ -238,53 +318,16 @@ private fun <T : Chip> Input(
 @ExperimentalComposeUiApi
 @ExperimentalFoundationApi
 @Composable
-private fun <T : Chip> Chips(
-    chips: List<T>,
-    enabled: Boolean,
-    readOnly: Boolean,
-    onRemoveRequest: (T) -> Unit,
-    onChipFreeFocus: () -> Unit,
-    onChipClick: ((chip: T) -> Unit)?,
-    onChipLongClick: ((chip: T) -> Unit)?,
-    textStyle: TextStyle,
-    chipStyle: ChipStyle,
-    chipLeadingIcon: @Composable (chip: T) -> Unit,
-    chipTrailingIcon: @Composable (chip: T) -> Unit
-) {
-    var focusedChipIndex by remember { mutableStateOf(-1) }
-    for ((index, chip) in chips.withIndex()) {
-        ChipItem(
-            isFocused = index == focusedChipIndex,
-            chip = chip,
-            enabled = enabled,
-            readOnly = readOnly,
-            onRemoveRequest = {
-                focusedChipIndex = (index - 1).coerceAtLeast(0)
-                onRemoveRequest(chip)
-            },
-            onFreeFocus = onChipFreeFocus,
-            onClick = onChipClick,
-            onLongClick = onChipLongClick,
-            textStyle = textStyle,
-            chipStyle = chipStyle,
-            chipLeadingIcon = chipLeadingIcon,
-            chipTrailingIcon = chipTrailingIcon
-        )
-    }
-}
-
-@ExperimentalComposeUiApi
-@ExperimentalFoundationApi
-@Composable
 private fun <T : Chip> ChipItem(
-    isFocused: Boolean,
+    focusRequester: FocusRequester,
     chip: T,
     enabled: Boolean,
     readOnly: Boolean,
     onRemoveRequest: () -> Unit,
-    onFreeFocus: () -> Unit,
-    onClick: ((chip: T) -> Unit)?,
-    onLongClick: ((chip: T) -> Unit)?,
+    onFocusNextRequest: () -> Unit,
+    onFocusChange: (isFocused: Boolean) -> Unit,
+    onClick: (() -> Unit)?,
+    onLongClick: (() -> Unit)?,
     textStyle: TextStyle,
     chipStyle: ChipStyle,
     chipLeadingIcon: @Composable (chip: T) -> Unit,
@@ -292,8 +335,6 @@ private fun <T : Chip> ChipItem(
     modifier: Modifier = Modifier
 ) {
     val interactionSource = remember { MutableInteractionSource() }
-
-    var textFieldValue by remember(chip) { mutableStateOf(TextFieldValue(chip.text)) }
 
     val shape by chipStyle.shape(
         readOnly = readOnly,
@@ -321,18 +362,13 @@ private fun <T : Chip> ChipItem(
         interactionSource = interactionSource,
     )
 
-    val focusRequester = remember { FocusRequester() }
-
     val keyboardController = LocalSoftwareKeyboardController.current
 
     val editable = enabled && !readOnly
 
-    LaunchedEffect(chip, isFocused) {
-        if (isFocused) {
-            focusRequester.requestFocus()
-            textFieldValue = textFieldValue.copy(
-                selection = TextRange(textFieldValue.text.length)
-            )
+    DisposableEffect(chip) {
+        onDispose {
+            onFocusChange(false)
         }
     }
 
@@ -358,35 +394,43 @@ private fun <T : Chip> ChipItem(
                         keyboardController?.show()
                         focusRequester.requestFocus()
                     }
-                    onClick?.invoke(chip)
+                    onClick?.invoke()
                 },
                 onLongClick = {
-                    onLongClick?.invoke(chip)
+                    onLongClick?.invoke()
                 }
             ),
     ) {
+        var canRemoveChip by remember { mutableStateOf(false) }
         BasicTextField(
-            value = textFieldValue,
+            value = chip.textFieldValue,
             onValueChange = filterNewLine { value, hasNewLine ->
-                textFieldValue = value
-                chip.text = value.text
+                chip.textFieldValue = value
                 if (hasNewLine) {
-                    focusRequester.freeFocus()
-                    onFreeFocus()
+                    onFocusNextRequest()
                 }
             },
             modifier = Modifier
                 .width(IntrinsicSize.Min)
                 .padding(horizontal = 8.dp, vertical = 3.dp)
                 .focusRequester(focusRequester)
-                .onBackspaceUp {
-                    if (chip.text.isEmpty()) {
-                        onRemoveRequest()
+                .onFocusChanged { onFocusChange(it.isFocused) }
+                .onPreviewKeyEvent {
+                    if (it.key == Key.Backspace) {
+                        if (it.type == KeyEventType.KeyDown) {
+                            canRemoveChip = chip.text.isEmpty()
+                        } else if (it.type == KeyEventType.KeyUp) {
+                            if (canRemoveChip) {
+                                onRemoveRequest()
+                                return@onPreviewKeyEvent true
+                            }
+                        }
                     }
+                    false
                 },
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-            keyboardActions = KeyboardActions(onDone = { focusRequester.freeFocus() }),
-            singleLine = true,
+            keyboardActions = KeyboardActions(onDone = { onFocusNextRequest() }),
+            singleLine = false,
             enabled = enabled,
             readOnly = readOnly,
             textStyle = chipTextStyle,

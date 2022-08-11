@@ -11,7 +11,11 @@ internal fun filterNewLine(
     val text = it.text
     val hasNewLine = text.hasNewLine()
     val value = if (hasNewLine) {
-        TextFieldValue(text = text.removeNewLine())
+        TextFieldValue(
+            text = text.removeNewLine(),
+            selection = it.selection,
+            composition = it.composition,
+        )
     } else {
         it
     }
