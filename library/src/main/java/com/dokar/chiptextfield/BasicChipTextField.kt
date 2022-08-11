@@ -347,27 +347,32 @@ private fun <T : Chip> ChipItem(
     val interactionSource = remember { MutableInteractionSource() }
 
     val shape by chipStyle.shape(
+        enabled = enabled,
         readOnly = readOnly,
         interactionSource = interactionSource,
     )
 
     val borderWidth by chipStyle.borderWidth(
+        enabled = enabled,
         readOnly = readOnly,
         interactionSource = interactionSource,
     )
 
     val borderColor by chipStyle.borderColor(
+        enabled = enabled,
         readOnly = readOnly,
         interactionSource = interactionSource,
     )
 
     val textColor by chipStyle.textColor(
+        enabled = enabled,
         readOnly = readOnly,
         interactionSource = interactionSource,
     )
     val chipTextStyle = remember(textColor) { textStyle.copy(color = textColor) }
 
     val backgroundColor by chipStyle.backgroundColor(
+        enabled = enabled,
         readOnly = readOnly,
         interactionSource = interactionSource,
     )
@@ -399,6 +404,7 @@ private fun <T : Chip> ChipItem(
             )
             .padding(borderWidth)
             .combinedClickable(
+                enabled = enabled,
                 onClick = {
                     if (editable) {
                         keyboardController?.show()

@@ -55,7 +55,6 @@ private fun UnderlineStyleChips(chipFieldStyle: ChipFieldStyle) {
     ChipTextField(
         state = state,
         modifier = Modifier.padding(8.dp),
-        readOnlyChips = true,
         onSubmit = {
             state.addChip(Chip(value))
             value = ""

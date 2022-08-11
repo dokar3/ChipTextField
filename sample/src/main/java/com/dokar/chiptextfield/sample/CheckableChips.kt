@@ -39,7 +39,7 @@ internal fun CheckableChips(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp),
-        enabled = false,
+        readOnly = true,
         colors = TextFieldDefaults.textFieldColors(
             cursorColor = chipFieldStyle.cursorColor
         ),

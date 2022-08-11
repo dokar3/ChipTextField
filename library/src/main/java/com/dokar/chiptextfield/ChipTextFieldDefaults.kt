@@ -2,6 +2,7 @@ package com.dokar.chiptextfield
 
 import androidx.compose.foundation.interaction.InteractionSource
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.ContentAlpha
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.rememberUpdatedState
@@ -38,6 +39,7 @@ private class DefaultChipStyle(
 ) : ChipStyle {
     @Composable
     override fun shape(
+        enabled: Boolean,
         readOnly: Boolean,
         interactionSource: InteractionSource,
     ): State<Shape> {
@@ -46,6 +48,7 @@ private class DefaultChipStyle(
 
     @Composable
     override fun borderWidth(
+        enabled: Boolean,
         readOnly: Boolean,
         interactionSource: InteractionSource,
     ): State<Dp> {
@@ -54,22 +57,27 @@ private class DefaultChipStyle(
 
     @Composable
     override fun borderColor(
+        enabled: Boolean,
         readOnly: Boolean,
         interactionSource: InteractionSource,
     ): State<Color> {
-        return rememberUpdatedState(borderColor)
+        val alpha = if (enabled) 1f else ContentAlpha.disabled
+        return rememberUpdatedState(borderColor.copy(alpha = alpha))
     }
 
     @Composable
     override fun textColor(
+        enabled: Boolean,
         readOnly: Boolean,
         interactionSource: InteractionSource,
     ): State<Color> {
-        return rememberUpdatedState(textColor)
+        val alpha = if (enabled) 1f else ContentAlpha.disabled
+        return rememberUpdatedState(textColor.copy(alpha = alpha))
     }
 
     @Composable
     override fun backgroundColor(
+        enabled: Boolean,
         readOnly: Boolean,
         interactionSource: InteractionSource,
     ): State<Color> {
