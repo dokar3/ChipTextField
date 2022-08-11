@@ -348,34 +348,31 @@ private fun <T : Chip> ChipItem(
 
     val shape by chipStyle.shape(
         enabled = enabled,
-        readOnly = readOnly,
         interactionSource = interactionSource,
     )
 
     val borderWidth by chipStyle.borderWidth(
         enabled = enabled,
-        readOnly = readOnly,
         interactionSource = interactionSource,
     )
 
     val borderColor by chipStyle.borderColor(
         enabled = enabled,
-        readOnly = readOnly,
         interactionSource = interactionSource,
     )
 
     val textColor by chipStyle.textColor(
         enabled = enabled,
-        readOnly = readOnly,
         interactionSource = interactionSource,
     )
     val chipTextStyle = remember(textColor) { textStyle.copy(color = textColor) }
 
     val backgroundColor by chipStyle.backgroundColor(
         enabled = enabled,
-        readOnly = readOnly,
         interactionSource = interactionSource,
     )
+
+    val cursorColor by chipStyle.cursorColor()
 
     val keyboardController = LocalSoftwareKeyboardController.current
 
@@ -450,7 +447,8 @@ private fun <T : Chip> ChipItem(
             enabled = !readOnly && enabled,
             readOnly = readOnly || !enabled,
             textStyle = chipTextStyle,
-            interactionSource = interactionSource
+            interactionSource = interactionSource,
+            cursorBrush = SolidColor(cursorColor),
         )
     }
 }

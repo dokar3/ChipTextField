@@ -57,9 +57,9 @@ internal fun AvatarChips(
             focusedIndicatorColor = chipFieldStyle.cursorColor,
         ),
         chipStyle = ChipTextFieldDefaults.chipStyle(
-            textColor = chipFieldStyle.textColor,
-            borderColor = chipFieldStyle.borderColor,
-            backgroundColor = chipFieldStyle.backgroundColor
+            focusedTextColor = chipFieldStyle.textColor,
+            focusedBorderColor = chipFieldStyle.borderColor,
+            focusedBackgroundColor = chipFieldStyle.backgroundColor,
         ),
         chipLeadingIcon = { Avatar(it) },
         contentPadding = PaddingValues(bottom = 8.dp),

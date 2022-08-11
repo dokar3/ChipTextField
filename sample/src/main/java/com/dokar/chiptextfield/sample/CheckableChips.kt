@@ -44,9 +44,9 @@ internal fun CheckableChips(
             cursorColor = chipFieldStyle.cursorColor
         ),
         chipStyle = ChipTextFieldDefaults.chipStyle(
-            textColor = chipFieldStyle.textColor,
-            borderColor = chipFieldStyle.borderColor,
-            backgroundColor = chipFieldStyle.backgroundColor
+            focusedTextColor = chipFieldStyle.textColor,
+            focusedBorderColor = chipFieldStyle.borderColor,
+            focusedBackgroundColor = chipFieldStyle.backgroundColor,
         ),
         chipLeadingIcon = { CheckIcon(it, chipFieldStyle) },
         chipTrailingIcon = {},

@@ -16,35 +16,33 @@ interface ChipStyle {
     @Composable
     fun shape(
         enabled: Boolean,
-        readOnly: Boolean,
         interactionSource: InteractionSource
     ): State<Shape>
 
     @Composable
     fun borderWidth(
         enabled: Boolean,
-        readOnly: Boolean,
         interactionSource: InteractionSource
     ): State<Dp>
 
     @Composable
     fun borderColor(
         enabled: Boolean,
-        readOnly: Boolean,
         interactionSource: InteractionSource
     ): State<Color>
 
     @Composable
     fun textColor(
         enabled: Boolean,
-        readOnly: Boolean,
         interactionSource: InteractionSource
     ): State<Color>
 
     @Composable
+    fun cursorColor(): State<Color>
+
+    @Composable
     fun backgroundColor(
         enabled: Boolean,
-        readOnly: Boolean,
         interactionSource: InteractionSource
     ): State<Color>
 }
