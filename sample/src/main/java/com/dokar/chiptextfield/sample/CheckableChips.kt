@@ -26,22 +26,27 @@ internal fun CheckableChips(
     chipFieldStyle: ChipFieldStyle
 ) {
     val chips = remember { SampleChips.getCheckableChips() }
-    val state = rememberChipTextFieldState(chips = chips)
+    val state = rememberChipTextFieldState(
+        value = "",
+        onValueChange = {},
+        chips = chips,
+    )
+
     ChipsHeader("Checkable chips")
+
     BasicChipTextField(
         state = state,
-        onCreateChip = ::CheckableChip,
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp),
-        enabled = false,
+        readOnly = true,
         colors = TextFieldDefaults.textFieldColors(
             cursorColor = chipFieldStyle.cursorColor
         ),
         chipStyle = ChipTextFieldDefaults.chipStyle(
-            textColor = chipFieldStyle.textColor,
-            borderColor = chipFieldStyle.borderColor,
-            backgroundColor = chipFieldStyle.backgroundColor
+            focusedTextColor = chipFieldStyle.textColor,
+            focusedBorderColor = chipFieldStyle.borderColor,
+            focusedBackgroundColor = chipFieldStyle.backgroundColor,
         ),
         chipLeadingIcon = { CheckIcon(it, chipFieldStyle) },
         chipTrailingIcon = {},

@@ -2,7 +2,7 @@ package com.dokar.chiptextfield
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
@@ -32,11 +32,11 @@ import com.dokar.chiptextfield.util.runIf
 @Composable
 fun <T : Chip> OutlinedChipTextField(
     state: ChipTextFieldState<T>,
-    onCreateChip: (text: String) -> T?,
     modifier: Modifier = Modifier,
-    initialTextFieldValue: String = "",
+    onSubmit: (() -> Unit)? = null,
     enabled: Boolean = true,
     readOnly: Boolean = false,
+    readOnlyChips: Boolean = readOnly,
     isError: Boolean = false,
     keyboardOptions: KeyboardOptions = KeyboardOptions(),
     textStyle: TextStyle = LocalTextStyle.current,
@@ -55,18 +55,18 @@ fun <T : Chip> OutlinedChipTextField(
     shape: Shape = MaterialTheme.shapes.small,
     colors: TextFieldColors = TextFieldDefaults.outlinedTextFieldColors(),
 ) {
-    BoxWithConstraints(
+    Box(
         modifier = modifier
             .runIf(label != null) { modifier.padding(top = 8.dp) }
             .background(colors.backgroundColor(enabled).value, shape)
     ) {
         BasicChipTextField(
             state = state,
-            onCreateChip = onCreateChip,
+            onSubmit = onSubmit,
             modifier = Modifier.fillMaxWidth(),
-            initialTextFieldValue = initialTextFieldValue,
             enabled = enabled,
             readOnly = readOnly,
+            readOnlyChips = readOnlyChips,
             isError = isError,
             keyboardOptions = keyboardOptions,
             textStyle = textStyle,
@@ -81,7 +81,7 @@ fun <T : Chip> OutlinedChipTextField(
             colors = colors,
             decorationBox = { innerTextField ->
                 TextFieldDefaults.OutlinedTextFieldDecorationBox(
-                    value = if (state.isEmpty()) "" else " ",
+                    value = if (state.chips.isEmpty() && state.value.text.isEmpty()) "" else " ",
                     innerTextField = innerTextField,
                     enabled = !readOnly,
                     singleLine = false,

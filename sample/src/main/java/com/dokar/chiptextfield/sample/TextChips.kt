@@ -8,7 +8,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -23,20 +26,41 @@ import com.dokar.chiptextfield.sample.data.SampleChips
 @ExperimentalComposeUiApi
 @ExperimentalFoundationApi
 @Composable
-internal fun TextChips(
-    chipFieldStyle: ChipFieldStyle
-) {
-    val chips = remember { SampleChips.getTextChips() }
+internal fun TextChips(chipFieldStyle: ChipFieldStyle) {
     ChipsHeader("Text chips")
+    Underline(chipFieldStyle)
+
+    Spacer(modifier = Modifier.height(8.dp))
+
+    ChipsHeader("Material outlined")
+    MaterialOutlined(chipFieldStyle)
+
+    Spacer(modifier = Modifier.height(8.dp))
+
+    ChipsHeader("Material filled")
+    MaterialFilled(chipFieldStyle)
+}
+
+@Composable
+private fun Underline(chipFieldStyle: ChipFieldStyle) {
+    val chips = remember { SampleChips.getTextChips() }
+    var value by remember { mutableStateOf("Android") }
+    val state = rememberChipTextFieldState(
+        value = value,
+        onValueChange = { value = it },
+        chips = chips,
+    )
     ChipTextField(
-        state = rememberChipTextFieldState(chips = chips),
-        onCreateChip = ::Chip,
+        state = state,
         modifier = Modifier.padding(8.dp),
-        initialTextFieldValue = "Android",
+        onSubmit = {
+            state.addChip(Chip(value))
+            value = ""
+        },
         chipStyle = ChipTextFieldDefaults.chipStyle(
-            textColor = chipFieldStyle.textColor,
-            borderColor = chipFieldStyle.borderColor,
-            backgroundColor = chipFieldStyle.backgroundColor
+            focusedTextColor = chipFieldStyle.textColor,
+            focusedBorderColor = chipFieldStyle.borderColor,
+            focusedBackgroundColor = chipFieldStyle.backgroundColor,
         ),
         colors = TextFieldDefaults.textFieldColors(
             cursorColor = chipFieldStyle.cursorColor,
@@ -45,43 +69,63 @@ internal fun TextChips(
         ),
         contentPadding = PaddingValues(bottom = 8.dp),
     )
+}
 
-    Spacer(modifier = Modifier.height(8.dp))
-
-    ChipsHeader("Material filled")
-    ChipTextField(
-        state = rememberChipTextFieldState(chips = chips),
-        onCreateChip = ::Chip,
-        modifier = Modifier.padding(8.dp),
-        chipStyle = ChipTextFieldDefaults.chipStyle(
-            textColor = chipFieldStyle.textColor,
-            borderColor = chipFieldStyle.borderColor,
-            backgroundColor = chipFieldStyle.backgroundColor
-        ),
-        label = { Text("Label here") },
-        colors = TextFieldDefaults.textFieldColors(
-            cursorColor = chipFieldStyle.cursorColor,
-            focusedIndicatorColor = chipFieldStyle.cursorColor,
-            focusedLabelColor = chipFieldStyle.cursorColor,
-        ),
+@Composable
+private fun MaterialOutlined(chipFieldStyle: ChipFieldStyle) {
+    val chips = remember { SampleChips.getTextChips() }
+    var value by remember { mutableStateOf("Android") }
+    val state = rememberChipTextFieldState(
+        value = value,
+        onValueChange = { value = it },
+        chips = chips,
     )
-
-    Spacer(modifier = Modifier.height(8.dp))
-
-    ChipsHeader("Material outlined")
     OutlinedChipTextField(
-        state = rememberChipTextFieldState(chips = chips),
-        onCreateChip = ::Chip,
+        state = state,
         modifier = Modifier.padding(8.dp),
+        onSubmit = {
+            state.addChip(Chip(value))
+            value = ""
+        },
         chipStyle = ChipTextFieldDefaults.chipStyle(
-            textColor = chipFieldStyle.textColor,
-            borderColor = chipFieldStyle.borderColor,
-            backgroundColor = chipFieldStyle.backgroundColor
+            focusedTextColor = chipFieldStyle.textColor,
+            focusedBorderColor = chipFieldStyle.borderColor,
+            focusedBackgroundColor = chipFieldStyle.backgroundColor,
         ),
         label = { Text("Label here") },
         colors = TextFieldDefaults.outlinedTextFieldColors(
             cursorColor = chipFieldStyle.cursorColor,
             focusedBorderColor = chipFieldStyle.cursorColor,
+            focusedLabelColor = chipFieldStyle.cursorColor,
+        ),
+    )
+}
+
+@Composable
+private fun MaterialFilled(chipFieldStyle: ChipFieldStyle) {
+    val chips = remember { SampleChips.getTextChips() }
+    var value by remember { mutableStateOf("Android") }
+    val state = rememberChipTextFieldState(
+        value = value,
+        onValueChange = { value = it },
+        chips = chips,
+    )
+    ChipTextField(
+        state = state,
+        modifier = Modifier.padding(8.dp),
+        onSubmit = {
+            state.addChip(Chip(value))
+            value = ""
+        },
+        chipStyle = ChipTextFieldDefaults.chipStyle(
+            focusedTextColor = chipFieldStyle.textColor,
+            focusedBorderColor = chipFieldStyle.borderColor,
+            focusedBackgroundColor = chipFieldStyle.backgroundColor,
+        ),
+        label = { Text("Label here") },
+        colors = TextFieldDefaults.textFieldColors(
+            cursorColor = chipFieldStyle.cursorColor,
+            focusedIndicatorColor = chipFieldStyle.cursorColor,
             focusedLabelColor = chipFieldStyle.cursorColor,
         ),
     )

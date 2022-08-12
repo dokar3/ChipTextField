@@ -31,11 +31,11 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun <T : Chip> ChipTextField(
     state: ChipTextFieldState<T>,
-    onCreateChip: (text: String) -> T?,
     modifier: Modifier = Modifier,
-    initialTextFieldValue: String = "",
+    onSubmit: (() -> Unit)? = null,
     enabled: Boolean = true,
     readOnly: Boolean = false,
+    readOnlyChips: Boolean = readOnly,
     isError: Boolean = false,
     keyboardOptions: KeyboardOptions = KeyboardOptions(),
     textStyle: TextStyle = LocalTextStyle.current,
@@ -67,11 +67,11 @@ fun <T : Chip> ChipTextField(
     ) {
         BasicChipTextField(
             state = state,
-            onCreateChip = onCreateChip,
+            onSubmit = onSubmit,
             modifier = Modifier.fillMaxWidth(),
-            initialTextFieldValue = initialTextFieldValue,
             enabled = enabled,
             readOnly = readOnly,
+            readOnlyChips = readOnlyChips,
             isError = isError,
             keyboardOptions = keyboardOptions,
             textStyle = textStyle,
@@ -86,7 +86,7 @@ fun <T : Chip> ChipTextField(
             colors = colors,
             decorationBox = { innerTextField ->
                 TextFieldDefaults.TextFieldDecorationBox(
-                    value = if (state.isEmpty()) "" else " ",
+                    value = if (state.chips.isEmpty() && state.value.text.isEmpty()) "" else " ",
                     innerTextField = innerTextField,
                     enabled = !readOnly,
                     singleLine = false,

@@ -14,17 +14,35 @@ import androidx.compose.ui.unit.Dp
 @Stable
 interface ChipStyle {
     @Composable
-    fun shape(readOnly: Boolean, interactionSource: InteractionSource): State<Shape>
+    fun shape(
+        enabled: Boolean,
+        interactionSource: InteractionSource
+    ): State<Shape>
 
     @Composable
-    fun borderWidth(readOnly: Boolean, interactionSource: InteractionSource): State<Dp>
+    fun borderWidth(
+        enabled: Boolean,
+        interactionSource: InteractionSource
+    ): State<Dp>
 
     @Composable
-    fun borderColor(readOnly: Boolean, interactionSource: InteractionSource): State<Color>
+    fun borderColor(
+        enabled: Boolean,
+        interactionSource: InteractionSource
+    ): State<Color>
 
     @Composable
-    fun textColor(readOnly: Boolean, interactionSource: InteractionSource): State<Color>
+    fun textColor(
+        enabled: Boolean,
+        interactionSource: InteractionSource
+    ): State<Color>
 
     @Composable
-    fun backgroundColor(readOnly: Boolean, interactionSource: InteractionSource): State<Color>
+    fun cursorColor(): State<Color>
+
+    @Composable
+    fun backgroundColor(
+        enabled: Boolean,
+        interactionSource: InteractionSource
+    ): State<Color>
 }

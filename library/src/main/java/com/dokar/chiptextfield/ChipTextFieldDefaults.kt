@@ -1,9 +1,14 @@
 package com.dokar.chiptextfield
 
 import androidx.compose.foundation.interaction.InteractionSource
+import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.ContentAlpha
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
@@ -14,31 +19,59 @@ object ChipTextFieldDefaults {
     @Composable
     fun chipStyle(
         shape: Shape = CircleShape,
-        borderWidth: Dp = 1.dp,
-        borderColor: Color = Color.Black,
-        textColor: Color = Color.Black,
-        backgroundColor: Color = Color.Transparent,
+        cursorColor: Color = MaterialTheme.colors.primary,
+        focusedBorderWidth: Dp = 1.dp,
+        unfocusedBorderWidth: Dp = 1.dp,
+        disabledBorderWidth: Dp = 1.dp,
+        focusedBorderColor: Color = MaterialTheme.colors.onBackground,
+        unfocusedBorderColor: Color = focusedBorderColor,
+        disabledBorderColor: Color = focusedBorderColor.copy(alpha = ContentAlpha.disabled),
+        focusedTextColor: Color = MaterialTheme.colors.onBackground,
+        unfocusedTextColor: Color = focusedTextColor,
+        disabledTextColor: Color = focusedTextColor.copy(alpha = ContentAlpha.disabled),
+        focusedBackgroundColor: Color = Color.Transparent,
+        unfocusedBackgroundColor: Color = focusedBackgroundColor,
+        disabledBackgroundColor: Color = focusedBackgroundColor,
     ): ChipStyle {
         return DefaultChipStyle(
             shape = shape,
-            borderWidth = borderWidth,
-            borderColor = borderColor,
-            textColor = textColor,
-            backgroundColor = backgroundColor,
+            cursorColor = cursorColor,
+            focusedBorderWidth = focusedBorderWidth,
+            unfocusedBorderWidth = unfocusedBorderWidth,
+            disabledBorderWidth = disabledBorderWidth,
+            focusedBorderColor = focusedBorderColor,
+            unfocusedBorderColor = unfocusedBorderColor,
+            disabledBorderColor = disabledBorderColor,
+            focusedTextColor = focusedTextColor,
+            unfocusedTextColor = unfocusedTextColor,
+            disabledTextColor = disabledTextColor,
+            focusedBackgroundColor = focusedBackgroundColor,
+            unfocusedBackgroundColor = unfocusedBackgroundColor,
+            disabledBackgroundColor = disabledBackgroundColor,
         )
     }
 }
 
+@Immutable
 private class DefaultChipStyle(
     private val shape: Shape,
-    private val borderWidth: Dp,
-    private val borderColor: Color,
-    private val textColor: Color,
-    private val backgroundColor: Color,
+    private val cursorColor: Color,
+    private val focusedBorderWidth: Dp,
+    private val unfocusedBorderWidth: Dp,
+    private val disabledBorderWidth: Dp,
+    private val focusedBorderColor: Color,
+    private val unfocusedBorderColor: Color,
+    private val disabledBorderColor: Color,
+    private val focusedTextColor: Color,
+    private val unfocusedTextColor: Color,
+    private val disabledTextColor: Color,
+    private val focusedBackgroundColor: Color,
+    private val unfocusedBackgroundColor: Color,
+    private val disabledBackgroundColor: Color,
 ) : ChipStyle {
     @Composable
     override fun shape(
-        readOnly: Boolean,
+        enabled: Boolean,
         interactionSource: InteractionSource,
     ): State<Shape> {
         return rememberUpdatedState(shape)
@@ -46,34 +79,67 @@ private class DefaultChipStyle(
 
     @Composable
     override fun borderWidth(
-        readOnly: Boolean,
+        enabled: Boolean,
         interactionSource: InteractionSource,
     ): State<Dp> {
-        return rememberUpdatedState(borderWidth)
+        val focused by interactionSource.collectIsFocusedAsState()
+        return rememberUpdatedState(
+            when {
+                !enabled -> disabledBorderWidth
+                focused -> focusedBorderWidth
+                else -> unfocusedBorderWidth
+            }
+        )
     }
 
     @Composable
     override fun borderColor(
-        readOnly: Boolean,
+        enabled: Boolean,
         interactionSource: InteractionSource,
     ): State<Color> {
-        return rememberUpdatedState(borderColor)
+        val focused by interactionSource.collectIsFocusedAsState()
+        return rememberUpdatedState(
+            when {
+                !enabled -> disabledBorderColor
+                focused -> focusedBorderColor
+                else -> unfocusedBorderColor
+            }
+        )
     }
 
     @Composable
     override fun textColor(
-        readOnly: Boolean,
+        enabled: Boolean,
         interactionSource: InteractionSource,
     ): State<Color> {
-        return rememberUpdatedState(textColor)
+        val focused by interactionSource.collectIsFocusedAsState()
+        return rememberUpdatedState(
+            when {
+                !enabled -> disabledTextColor
+                focused -> focusedTextColor
+                else -> unfocusedTextColor
+            }
+        )
+    }
+
+    @Composable
+    override fun cursorColor(): State<Color> {
+        return rememberUpdatedState(cursorColor)
     }
 
     @Composable
     override fun backgroundColor(
-        readOnly: Boolean,
+        enabled: Boolean,
         interactionSource: InteractionSource,
     ): State<Color> {
-        return rememberUpdatedState(backgroundColor)
+        val focused by interactionSource.collectIsFocusedAsState()
+        return rememberUpdatedState(
+            when {
+                !enabled -> disabledBackgroundColor
+                focused -> focusedBackgroundColor
+                else -> unfocusedBackgroundColor
+            }
+        )
     }
 
     override fun equals(other: Any?): Boolean {
@@ -83,20 +149,38 @@ private class DefaultChipStyle(
         other as DefaultChipStyle
 
         if (shape != other.shape) return false
-        if (borderWidth != other.borderWidth) return false
-        if (borderColor != other.borderColor) return false
-        if (textColor != other.textColor) return false
-        if (backgroundColor != other.backgroundColor) return false
+        if (cursorColor != other.cursorColor) return false
+        if (focusedBorderWidth != other.focusedBorderWidth) return false
+        if (unfocusedBorderWidth != other.unfocusedBorderWidth) return false
+        if (disabledBorderWidth != other.disabledBorderWidth) return false
+        if (focusedBorderColor != other.focusedBorderColor) return false
+        if (unfocusedBorderColor != other.unfocusedBorderColor) return false
+        if (disabledBorderColor != other.disabledBorderColor) return false
+        if (focusedTextColor != other.focusedTextColor) return false
+        if (unfocusedTextColor != other.unfocusedTextColor) return false
+        if (disabledTextColor != other.disabledTextColor) return false
+        if (focusedBackgroundColor != other.focusedBackgroundColor) return false
+        if (unfocusedBackgroundColor != other.unfocusedBackgroundColor) return false
+        if (disabledBackgroundColor != other.disabledBackgroundColor) return false
 
         return true
     }
 
     override fun hashCode(): Int {
         var result = shape.hashCode()
-        result = 31 * result + borderWidth.hashCode()
-        result = 31 * result + borderColor.hashCode()
-        result = 31 * result + textColor.hashCode()
-        result = 31 * result + backgroundColor.hashCode()
+        result = 31 * result + cursorColor.hashCode()
+        result = 31 * result + focusedBorderWidth.hashCode()
+        result = 31 * result + unfocusedBorderWidth.hashCode()
+        result = 31 * result + disabledBorderWidth.hashCode()
+        result = 31 * result + focusedBorderColor.hashCode()
+        result = 31 * result + unfocusedBorderColor.hashCode()
+        result = 31 * result + disabledBorderColor.hashCode()
+        result = 31 * result + focusedTextColor.hashCode()
+        result = 31 * result + unfocusedTextColor.hashCode()
+        result = 31 * result + disabledTextColor.hashCode()
+        result = 31 * result + focusedBackgroundColor.hashCode()
+        result = 31 * result + unfocusedBackgroundColor.hashCode()
+        result = 31 * result + disabledBackgroundColor.hashCode()
         return result
     }
 }

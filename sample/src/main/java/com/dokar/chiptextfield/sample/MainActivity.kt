@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
@@ -53,8 +52,16 @@ fun SampleScreen() {
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(state = rememberScrollState())
-            .padding(bottom = 32.dp)
     ) {
+        Spacer(modifier = Modifier.height(32.dp))
+
+        ThemeColorSelector(
+            selectedPosition = selectedColorPosition,
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Spacer(modifier = Modifier.height(32.dp))
+
         TextChips(chipFieldStyle = chipFieldStyle)
 
         Spacer(modifier = Modifier.height(32.dp))
@@ -66,11 +73,6 @@ fun SampleScreen() {
         AvatarChips(chipFieldStyle = chipFieldStyle)
 
         Spacer(modifier = Modifier.height(32.dp))
-
-        ThemeColorSelector(
-            selectedPosition = selectedColorPosition,
-            modifier = Modifier.fillMaxWidth()
-        )
     }
 }
 
