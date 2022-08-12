@@ -24,6 +24,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -48,6 +49,8 @@ import androidx.compose.ui.unit.dp
 import com.dokar.chiptextfield.util.filterNewLine
 import com.google.accompanist.flowlayout.FlowCrossAxisAlignment
 import com.google.accompanist.flowlayout.FlowRow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
 
 /**
  * A text field can display chips, press enter to create a new chip.
@@ -107,6 +110,12 @@ fun <T : Chip> BasicChipTextField(
 
     val keyboardController = LocalSoftwareKeyboardController.current
 
+    LaunchedEffect(state) {
+        snapshotFlow { state.chips }
+            .filter { it.isEmpty() }
+            .collect { textFieldFocusRequester.requestFocus() }
+    }
+
     LaunchedEffect(state, state.disposed) {
         if (state.disposed) {
             state.chips = state.defaultChips
@@ -129,7 +138,7 @@ fun <T : Chip> BasicChipTextField(
                     onClick = {
                         keyboardController?.show()
                         textFieldFocusRequester.requestFocus()
-                        state.currentFocusedChipIndex = -1
+                        state.focusedChip = null
                         // Move cursor to the end
                         val selection = state.value.text.length
                         state.value = state.value.copy(selection = TextRange(selection))
@@ -140,16 +149,25 @@ fun <T : Chip> BasicChipTextField(
             crossAxisSpacing = chipVerticalSpacing,
             crossAxisAlignment = FlowCrossAxisAlignment.Center
         ) {
+            val focuses = remember { mutableSetOf<FocusInteraction.Focus>() }
             Chips(
                 state = state,
                 enabled = enabled,
                 readOnly = readOnly || readOnlyChips,
                 onRemoveRequest = { state.removeChip(it) },
-                onFocused = { interactionSource.tryEmit(it) },
-                onFreeFocus = { interactionSource.tryEmit(FocusInteraction.Unfocus(it)) },
-                onGiveUpFocuses = {
+                onFocused = {
+                    if (!focuses.contains(it)) {
+                        focuses.add(it)
+                        interactionSource.tryEmit(it)
+                    }
+                },
+                onFreeFocus = {
+                    focuses.remove(it)
+                    interactionSource.tryEmit(FocusInteraction.Unfocus(it))
+                },
+                onLoseFocus = {
                     textFieldFocusRequester.requestFocus()
-                    state.currentFocusedChipIndex = -1
+                    state.focusedChip = null
                 },
                 onChipClick = onChipClick,
                 onChipLongClick = onChipLongClick,
@@ -172,7 +190,7 @@ fun <T : Chip> BasicChipTextField(
                 interactionSource = interactionSource,
                 onFocusChange = { isFocused ->
                     if (isFocused) {
-                        state.currentFocusedChipIndex = -1
+                        state.focusedChip = null
                     }
                 },
             )
@@ -190,7 +208,7 @@ private fun <T : Chip> Chips(
     onRemoveRequest: (T) -> Unit,
     onFocused: (FocusInteraction.Focus) -> Unit,
     onFreeFocus: (FocusInteraction.Focus) -> Unit,
-    onGiveUpFocuses: () -> Unit,
+    onLoseFocus: () -> Unit,
     onChipClick: ((chip: T) -> Unit)?,
     onChipLongClick: ((chip: T) -> Unit)?,
     textStyle: TextStyle,
@@ -212,18 +230,39 @@ private fun <T : Chip> Chips(
         )
     }
 
-    LaunchedEffect(chips, state.currentFocusedChipIndex) {
-        val index = state.currentFocusedChipIndex
-        if (index in 0..chips.lastIndex) {
-            focusRequesters[index].requestFocus()
-            onFocused(chips[index].focus)
-        } else if (index != -1) {
-            onGiveUpFocuses()
+    LaunchedEffect(chips, state.focusedChip) {
+        state.recordFocusedChip = true
+        val chip = state.focusedChip ?: return@LaunchedEffect
+        for (i in chips.indices) {
+            if (chips[i] == chip) {
+                focusRequesters[i].requestFocus()
+                onFocused(chips[i].focus)
+            }
         }
+    }
+
+    LaunchedEffect(chips) {
+        snapshotFlow { state.nextFocusedChipIndex }
+            .distinctUntilChanged()
+            .filter { it != -1 }
+            .collect { index ->
+                if (index in 0..chips.lastIndex) {
+                    focusRequesters[index].requestFocus()
+                    onFocused(chips[index].focus)
+                } else if (index != -1) {
+                    if (chips.isNotEmpty()) {
+                        focusRequesters[chips.lastIndex].requestFocus()
+                    } else {
+                        onLoseFocus()
+                    }
+                }
+                state.nextFocusedChipIndex = -1
+            }
     }
 
     for ((index, chip) in chips.withIndex()) {
         ChipItem(
+            state = state,
             focusRequester = focusRequesters[index],
             chip = chip,
             enabled = enabled,
@@ -234,7 +273,7 @@ private fun <T : Chip> Chips(
                 if (chips.size > 1) {
                     focusChip((index - 1).coerceAtLeast(0))
                 } else {
-                    onGiveUpFocuses()
+                    onLoseFocus()
                 }
                 onRemoveRequest(chip)
             },
@@ -243,13 +282,15 @@ private fun <T : Chip> Chips(
                 if (index < chips.lastIndex) {
                     focusChip(index + 1)
                 } else {
-                    onGiveUpFocuses()
+                    onLoseFocus()
                     focusRequesters[index].freeFocus()
                 }
             },
             onFocusChange = { isFocused ->
                 if (isFocused) {
-                    state.currentFocusedChipIndex = index
+                    if (state.recordFocusedChip) {
+                        state.focusedChip = chip
+                    }
                     onFocused(chip.focus)
                 } else {
                     onFreeFocus(chip.focus)
@@ -329,6 +370,7 @@ private fun <T : Chip> Input(
 @ExperimentalFoundationApi
 @Composable
 private fun <T : Chip> ChipItem(
+    state: ChipTextFieldState<T>,
     focusRequester: FocusRequester,
     chip: T,
     enabled: Boolean,
@@ -380,7 +422,12 @@ private fun <T : Chip> ChipItem(
 
     DisposableEffect(chip) {
         onDispose {
-            onFocusChange(false)
+            val chips = state.chips
+            if (!chips.contains(chip)) {
+                // The current chip is removed, onFocusChanged() will not get called,
+                // free the focus manually
+                onFocusChange(false)
+            }
         }
     }
 
