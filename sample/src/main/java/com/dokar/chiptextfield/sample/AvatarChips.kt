@@ -10,10 +10,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -32,25 +29,18 @@ import com.dokar.chiptextfield.sample.data.SampleChips
 internal fun AvatarChips(
     chipFieldStyle: ChipFieldStyle
 ) {
-    val chips = remember { SampleChips.getAvatarChips() }
-    var value by remember { mutableStateOf("Android") }
     val state = rememberChipTextFieldState(
-        value = value,
-        onValueChange = { value = it },
-        chips = chips,
+        chips = remember { SampleChips.getAvatarChips() },
     )
 
     ChipsHeader("Avatar chips")
 
     ChipTextField(
         state = state,
+        onSubmit = { AvatarChip(it.text, SampleChips.randomAvatarUrl()) },
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp),
-        onSubmit = {
-            state.addChip(AvatarChip(value, SampleChips.randomAvatarUrl()))
-            value = ""
-        },
         colors = TextFieldDefaults.textFieldColors(
             cursorColor = chipFieldStyle.cursorColor,
             backgroundColor = Color.Transparent,

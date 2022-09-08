@@ -43,20 +43,16 @@ internal fun TextChips(chipFieldStyle: ChipFieldStyle) {
 
 @Composable
 private fun Underline(chipFieldStyle: ChipFieldStyle) {
-    val chips = remember { SampleChips.getTextChips() }
     var value by remember { mutableStateOf("Android") }
     val state = rememberChipTextFieldState(
         value = value,
         onValueChange = { value = it },
-        chips = chips,
+        chips = remember { SampleChips.getTextChips() },
     )
     ChipTextField(
         state = state,
+        onSubmit = { Chip(it.text) },
         modifier = Modifier.padding(8.dp),
-        onSubmit = {
-            state.addChip(Chip(value))
-            value = ""
-        },
         chipStyle = ChipTextFieldDefaults.chipStyle(
             focusedTextColor = chipFieldStyle.textColor,
             focusedBorderColor = chipFieldStyle.borderColor,
@@ -73,20 +69,13 @@ private fun Underline(chipFieldStyle: ChipFieldStyle) {
 
 @Composable
 private fun MaterialOutlined(chipFieldStyle: ChipFieldStyle) {
-    val chips = remember { SampleChips.getTextChips() }
-    var value by remember { mutableStateOf("Android") }
     val state = rememberChipTextFieldState(
-        value = value,
-        onValueChange = { value = it },
-        chips = chips,
+        chips = remember { SampleChips.getTextChips() },
     )
     OutlinedChipTextField(
         state = state,
+        onSubmit = { Chip(it.text) },
         modifier = Modifier.padding(8.dp),
-        onSubmit = {
-            state.addChip(Chip(value))
-            value = ""
-        },
         chipStyle = ChipTextFieldDefaults.chipStyle(
             focusedTextColor = chipFieldStyle.textColor,
             focusedBorderColor = chipFieldStyle.borderColor,
@@ -103,20 +92,13 @@ private fun MaterialOutlined(chipFieldStyle: ChipFieldStyle) {
 
 @Composable
 private fun MaterialFilled(chipFieldStyle: ChipFieldStyle) {
-    val chips = remember { SampleChips.getTextChips() }
-    var value by remember { mutableStateOf("Android") }
     val state = rememberChipTextFieldState(
-        value = value,
-        onValueChange = { value = it },
-        chips = chips,
+        chips = remember { SampleChips.getTextChips() },
     )
     ChipTextField(
         state = state,
         modifier = Modifier.padding(8.dp),
-        onSubmit = {
-            state.addChip(Chip(value))
-            value = ""
-        },
+        onSubmit = { Chip(it.text) },
         chipStyle = ChipTextFieldDefaults.chipStyle(
             focusedTextColor = chipFieldStyle.textColor,
             focusedBorderColor = chipFieldStyle.borderColor,

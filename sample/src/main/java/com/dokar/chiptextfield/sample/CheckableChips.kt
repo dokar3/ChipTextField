@@ -25,17 +25,15 @@ import com.dokar.chiptextfield.sample.data.SampleChips
 internal fun CheckableChips(
     chipFieldStyle: ChipFieldStyle
 ) {
-    val chips = remember { SampleChips.getCheckableChips() }
     val state = rememberChipTextFieldState(
-        value = "",
-        onValueChange = {},
-        chips = chips,
+        chips = remember { SampleChips.getCheckableChips() }
     )
 
     ChipsHeader("Checkable chips")
 
     BasicChipTextField(
         state = state,
+        onSubmit = { null },
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp),
