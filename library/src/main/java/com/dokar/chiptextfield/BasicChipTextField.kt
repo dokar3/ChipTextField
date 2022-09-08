@@ -43,6 +43,7 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -57,7 +58,7 @@ import kotlinx.coroutines.flow.filter
  *
  * @param state Use [rememberChipTextFieldState] to create new state.
  * @param modifier Modifier for chip text field.
- * @param onSubmit Called after pressing enter key.
+ * @param onSubmit Called after pressing enter key, used to create new chips.
  * @param enabled Enabled state, if false, user will not able to edit and select.
  * @param readOnly If true, edit will be disabled, but user can still select text.
  * @param readOnlyChips If true, chips are no more editable, but the text field can still be edited
@@ -84,8 +85,8 @@ import kotlinx.coroutines.flow.filter
 @Composable
 fun <T : Chip> BasicChipTextField(
     state: ChipTextFieldState<T>,
+    onSubmit: (value: TextFieldValue) -> T?,
     modifier: Modifier = Modifier,
-    onSubmit: (() -> Unit)? = null,
     enabled: Boolean = true,
     readOnly: Boolean = false,
     readOnlyChips: Boolean = readOnly,
@@ -310,7 +311,7 @@ private fun <T : Chip> Chips(
 @Composable
 private fun <T : Chip> Input(
     state: ChipTextFieldState<T>,
-    onSubmit: (() -> Unit)?,
+    onSubmit: (value: TextFieldValue) -> T?,
     enabled: Boolean,
     readOnly: Boolean,
     isError: Boolean,
@@ -329,13 +330,27 @@ private fun <T : Chip> Input(
     val textColor = textStyle.color.takeOrElse {
         colors.textColor(enabled).value
     }
+
+    fun tryAddNewChip(value: TextFieldValue): Boolean {
+        val newChip = onSubmit(value)
+        return if (newChip != null) {
+            state.addChip(newChip)
+            true
+        } else {
+            false
+        }
+    }
+
     BasicTextField(
         value = value,
         onValueChange = filterNewLine { newValue, hasNewLine ->
-            state.onValueChange(newValue)
             if (hasNewLine && newValue.text.isNotEmpty()) {
-                onSubmit?.invoke()
+                if (tryAddNewChip(newValue)) {
+                    state.value = TextFieldValue()
+                    return@filterNewLine
+                }
             }
+            state.onValueChange(newValue)
         },
         modifier = modifier
             .focusRequester(focusRequester)
@@ -357,7 +372,7 @@ private fun <T : Chip> Input(
         keyboardActions = KeyboardActions(
             onDone = {
                 if (value.text.isNotEmpty()) {
-                    onSubmit?.invoke()
+                    tryAddNewChip(value)
                 }
             }
         ),
