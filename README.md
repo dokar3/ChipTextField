@@ -13,17 +13,24 @@ implementation "io.github.dokar3:chiptextfield:latest_version"
 **Default (filled style)** 
 
 ```kotlin
-var value by remember { mutableStateOf("") }
+var value by remember { mutableStateOf("Initial text") }
 val state = rememberChipTextFieldState<Chip>(
     value = value,
     onValueChange = { value = it },
 )
 ChipTextField(
     state = state,
-    onSubmit = {
-        state.addChip(Chip(value))
-        value = ""
-    },
+    onSubmit = { textFieldValue -> Chip(textFieldValue.text) },
+)
+```
+
+Simplified version if do not care about the text field value:
+
+```kotlin
+val state = rememberChipTextFieldState<Chip>()
+ChipTextField(
+    state = state,
+    onSubmit = { textFieldValue -> Chip(textFieldValue.text) },
 )
 ```
 
@@ -32,17 +39,10 @@ ChipTextField(
 **Outlined**
 
 ```kotlin
-var value by remember { mutableStateOf("") }
-val state = rememberChipTextFieldState<Chip>(
-    value = value,
-    onValueChange = { value = it },
-)
+val state = rememberChipTextFieldState<Chip>()
 OutlinedChipTextField(
     state = state,
-    onSubmit = {
-        state.addChip(Chip(value))
-        value = ""
-    },
+    onSubmit = { Chip(it.text) },
 )
 ```
 
@@ -51,17 +51,10 @@ OutlinedChipTextField(
 **Need a classic underline style?**
 
 ```kotlin
-var value by remember { mutableStateOf("") }
-val state = rememberChipTextFieldState<Chip>(
-    value = value,
-    onValueChange = { value = it },
-)
+val state = rememberChipTextFieldState<Chip>()
 ChipTextField(
     state = state, 
-    onSubmit = {
-        state.addChip(Chip(value))
-        value = ""
-    },
+    onSubmit = { Chip(it.text) },
     colors = TextFieldDefaults.textFieldColors(
         backgroundColor = Color.Transparent
     ),
@@ -79,16 +72,15 @@ class CheckableChip(text: String, isChecked: Boolean = false) : Chip(text) {
 }
 
 val state = rememberChipTextFieldState(
-    value = "",
-    onValueChange = {},
     chips = listOf(CheckableChip(""), ...),
 )
 BasicChipTextField(
-        state = state,
-        readOnly = true, // Disable editing
-        chipLeadingIcon = { chip -> CheckIcon(chip) }, // Show check icon if checked
-        chipTrailingIcon = {}, // Hide default close button
-        onChipClick = { chip -> chip.isChecked = !chip.isChecked }
+    state = state,
+    onSubmit = { null },
+    readOnly = true, // Disable editing
+    chipLeadingIcon = { chip -> CheckIcon(chip) }, // Show check icon if checked
+    chipTrailingIcon = {}, // Hide default close button
+    onChipClick = { chip -> chip.isChecked = !chip.isChecked }
 )
 
 @Composable
@@ -102,18 +94,11 @@ fun CheckIcon(chip: CheckableChip, modifier: Modifier = Modifier) { ... }
 ```kotlin
 class AvatarChip(text: String, val avatarUrl: String) : Chip(text)
 
-var value by remember { mutableStateOf("") }
-val state = rememberChipTextFieldState<AvatarChip>(
-    value = value,
-    onValueChange = { value = it },
-)
+val state = rememberChipTextFieldState<AvatarChip>()
 ChipTextField(
-        state = state,
-        onSubmit = { 
-            state.addChip(AvatarChip(value, AVATAR_URL))
-            value = ""
-        },
-        chipLeadingIcon = { chip -> Avatar(chip) } // Load and display avatar
+    state = state,
+    onSubmit = { AvatarChip(it.text, AVATAR_URL) },
+    chipLeadingIcon = { chip -> Avatar(chip) } // Load and display avatar
 )
 
 @Composable
