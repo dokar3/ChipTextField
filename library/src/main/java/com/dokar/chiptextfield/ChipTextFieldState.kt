@@ -8,6 +8,24 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.text.input.TextFieldValue
 
+
+/**
+ * Return a new remembered [ChipTextFieldState]
+ *
+ * @param chips Default chips
+ */
+@Composable
+fun <T : Chip> rememberChipTextFieldState(
+    chips: List<T> = emptyList()
+): ChipTextFieldState<T> {
+    var value by remember { mutableStateOf("") }
+    return rememberChipTextFieldState(
+        value = value,
+        onValueChange = { value = it },
+        chips = chips,
+    )
+}
+
 /**
  * Return a new remembered [ChipTextFieldState]
  *

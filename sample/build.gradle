@@ -4,12 +4,12 @@ plugins {
 }
 
 android {
-    compileSdk 32
+    compileSdk compile_sdk
 
     defaultConfig {
         applicationId "com.dokar.chiptextfield.sample"
         minSdk 21
-        targetSdk 32
+        targetSdk target_sdk
         versionCode 1
         versionName "1.0"
 
