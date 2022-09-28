@@ -5,14 +5,14 @@ import androidx.compose.ui.text.input.TextFieldValue
 /**
  * Remove all `\n` in [TextFieldValue]
  */
-internal fun filterNewLine(
+internal fun filterNewLines(
     block: (value: TextFieldValue, hasNewLine: Boolean) -> Unit
 ): (TextFieldValue) -> Unit = {
     val text = it.text
     val hasNewLine = text.hasNewLine()
     val value = if (hasNewLine) {
         TextFieldValue(
-            text = text.removeNewLine(),
+            text = text.removeNewLines(),
             selection = it.selection,
             composition = it.composition,
         )
@@ -26,13 +26,11 @@ private fun String.hasNewLine(): Boolean {
     return indexOf('\n') != -1
 }
 
-private fun String.removeNewLine(): String {
+private fun String.removeNewLines(): String {
     val index = indexOf('\n')
     return if (index != -1) {
-        replace(NEW_LINE_REGEX, "")
+        replace("\n", "")
     } else {
         this
     }
 }
-
-private val NEW_LINE_REGEX = Regex("\\n")
