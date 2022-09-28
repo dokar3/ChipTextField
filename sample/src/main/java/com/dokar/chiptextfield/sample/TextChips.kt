@@ -45,13 +45,13 @@ internal fun TextChips(chipFieldStyle: ChipFieldStyle) {
 private fun Underline(chipFieldStyle: ChipFieldStyle) {
     var value by remember { mutableStateOf("Android") }
     val state = rememberChipTextFieldState(
-        value = value,
-        onValueChange = { value = it },
         chips = remember { SampleChips.getTextChips() },
     )
     ChipTextField(
         state = state,
-        onSubmit = { Chip(it.text) },
+        value = value,
+        onValueChange = { value = it },
+        onSubmit = ::Chip,
         modifier = Modifier.padding(8.dp),
         chipStyle = ChipTextFieldDefaults.chipStyle(
             focusedTextColor = chipFieldStyle.textColor,
@@ -74,7 +74,7 @@ private fun MaterialOutlined(chipFieldStyle: ChipFieldStyle) {
     )
     OutlinedChipTextField(
         state = state,
-        onSubmit = { Chip(it.text) },
+        onSubmit = ::Chip,
         modifier = Modifier.padding(8.dp),
         chipStyle = ChipTextFieldDefaults.chipStyle(
             focusedTextColor = chipFieldStyle.textColor,
@@ -98,7 +98,7 @@ private fun MaterialFilled(chipFieldStyle: ChipFieldStyle) {
     ChipTextField(
         state = state,
         modifier = Modifier.padding(8.dp),
-        onSubmit = { Chip(it.text) },
+        onSubmit = ::Chip,
         chipStyle = ChipTextFieldDefaults.chipStyle(
             focusedTextColor = chipFieldStyle.textColor,
             focusedBorderColor = chipFieldStyle.borderColor,

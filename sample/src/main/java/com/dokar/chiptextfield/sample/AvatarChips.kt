@@ -37,7 +37,7 @@ internal fun AvatarChips(
 
     ChipTextField(
         state = state,
-        onSubmit = { AvatarChip(it.text, SampleChips.randomAvatarUrl()) },
+        onSubmit = { AvatarChip(it, SampleChips.randomAvatarUrl()) },
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp),
