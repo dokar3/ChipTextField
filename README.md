@@ -18,8 +18,8 @@ val state = rememberChipTextFieldState<Chip>()
 ChipTextField(
     state = state,
     value = value,
-    onSubmit = { text -> Chip(text) },
     onValueChange = { value = it },
+    onSubmit = { text -> Chip(text) },
 )
 ```
 
@@ -55,7 +55,7 @@ ChipTextField(
     state = state,
     onSubmit = ::Chip,
     colors = TextFieldDefaults.textFieldColors(
-        backgroundColor = Color.Transparent
+        backgroundColor = Color.Transparent,
     ),
     contentPadding = PaddingValues(bottom = 8.dp),
 )
