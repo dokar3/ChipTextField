@@ -107,9 +107,9 @@ fun <T : Chip> ChipTextField(
 @Composable
 fun <T : Chip> ChipTextField(
     state: ChipTextFieldState<T>,
-    onSubmit: (value: String) -> T?,
     value: String,
     onValueChange: (String) -> Unit,
+    onSubmit: (value: String) -> T?,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     readOnly: Boolean = false,
@@ -198,9 +198,9 @@ fun <T : Chip> ChipTextField(
 @Composable
 fun <T : Chip> ChipTextField(
     state: ChipTextFieldState<T>,
-    onSubmit: (value: TextFieldValue) -> T?,
     value: TextFieldValue,
     onValueChange: (TextFieldValue) -> Unit,
+    onSubmit: (value: TextFieldValue) -> T?,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     readOnly: Boolean = false,

@@ -60,8 +60,8 @@ import kotlinx.coroutines.flow.filter
  * A text field can display chips, press enter to create a new chip.
  *
  * @param state Use [rememberChipTextFieldState] to create new state.
- * @param modifier Modifier for chip text field.
  * @param onSubmit Called after pressing enter key, used to create new chips.
+ * @param modifier Modifier for chip text field.
  * @param enabled Enabled state, if false, user will not able to edit and select.
  * @param readOnly If true, edit will be disabled, but user can still select text.
  * @param readOnlyChips If true, chips are no more editable, but the text field can still be edited
@@ -135,10 +135,10 @@ fun <T : Chip> BasicChipTextField(
  * A text field can display chips, press enter to create a new chip.
  *
  * @param state Use [rememberChipTextFieldState] to create new state.
- * @param modifier Modifier for chip text field.
- * @param onSubmit Called after pressing enter key, used to create new chips.
  * @param value The value of text field.
  * @param onValueChange Called when the value in ChipTextField has changed.
+ * @param onSubmit Called after pressing enter key, used to create new chips.
+ * @param modifier Modifier for chip text field.
  * @param enabled Enabled state, if false, user will not able to edit and select.
  * @param readOnly If true, edit will be disabled, but user can still select text.
  * @param readOnlyChips If true, chips are no more editable, but the text field can still be edited
@@ -161,9 +161,9 @@ fun <T : Chip> BasicChipTextField(
 @Composable
 fun <T : Chip> BasicChipTextField(
     state: ChipTextFieldState<T>,
-    onSubmit: (value: String) -> T?,
     value: String,
     onValueChange: (String) -> Unit,
+    onSubmit: (value: String) -> T?,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     readOnly: Boolean = false,
@@ -232,10 +232,10 @@ fun <T : Chip> BasicChipTextField(
  * A text field can display chips, press enter to create a new chip.
  *
  * @param state Use [rememberChipTextFieldState] to create new state.
- * @param modifier Modifier for chip text field.
- * @param onSubmit Called after pressing enter key, used to create new chips.
  * @param value The value of text field.
  * @param onValueChange Called when the value in ChipTextField has changed.
+ * @param onSubmit Called after pressing enter key, used to create new chips.
+ * @param modifier Modifier for chip text field.
  * @param enabled Enabled state, if false, user will not able to edit and select.
  * @param readOnly If true, edit will be disabled, but user can still select text.
  * @param readOnlyChips If true, chips are no more editable, but the text field can still be edited
@@ -262,9 +262,9 @@ fun <T : Chip> BasicChipTextField(
 @Composable
 fun <T : Chip> BasicChipTextField(
     state: ChipTextFieldState<T>,
-    onSubmit: (value: TextFieldValue) -> T?,
     value: TextFieldValue,
     onValueChange: (TextFieldValue) -> Unit,
+    onSubmit: (value: TextFieldValue) -> T?,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     readOnly: Boolean = false,

@@ -49,9 +49,9 @@ private fun Underline(chipFieldStyle: ChipFieldStyle) {
     )
     ChipTextField(
         state = state,
-        onSubmit = ::Chip,
         value = value,
         onValueChange = { value = it },
+        onSubmit = ::Chip,
         modifier = Modifier.padding(8.dp),
         chipStyle = ChipTextFieldDefaults.chipStyle(
             focusedTextColor = chipFieldStyle.textColor,
