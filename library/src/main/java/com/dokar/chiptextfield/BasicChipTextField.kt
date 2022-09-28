@@ -371,8 +371,8 @@ private fun <T : Chip> Input(
         keyboardOptions = keyboardOptions.copy(imeAction = ImeAction.Done),
         keyboardActions = KeyboardActions(
             onDone = {
-                if (value.text.isNotEmpty()) {
-                    tryAddNewChip(value)
+                if (value.text.isNotEmpty() && tryAddNewChip(value)) {
+                    state.value = TextFieldValue()
                 }
             }
         ),
