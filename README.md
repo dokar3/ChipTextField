@@ -14,13 +14,12 @@ implementation "io.github.dokar3:chiptextfield:latest_version"
 
 ```kotlin
 var value by remember { mutableStateOf("Initial text") }
-val state = rememberChipTextFieldState<Chip>(
-    value = value,
-    onValueChange = { value = it },
-)
+val state = rememberChipTextFieldState<Chip>()
 ChipTextField(
     state = state,
-    onSubmit = { textFieldValue -> Chip(textFieldValue.text) },
+    value = value,
+    onSubmit = { text -> Chip(text) },
+    onValueChange = { value = it },
 )
 ```
 
@@ -30,7 +29,7 @@ Simplified version if do not care about the text field value:
 val state = rememberChipTextFieldState<Chip>()
 ChipTextField(
     state = state,
-    onSubmit = { textFieldValue -> Chip(textFieldValue.text) },
+    onSubmit = ::Chip,
 )
 ```
 
@@ -42,7 +41,7 @@ ChipTextField(
 val state = rememberChipTextFieldState<Chip>()
 OutlinedChipTextField(
     state = state,
-    onSubmit = { Chip(it.text) },
+    onSubmit = ::Chip,
 )
 ```
 
@@ -53,8 +52,8 @@ OutlinedChipTextField(
 ```kotlin
 val state = rememberChipTextFieldState<Chip>()
 ChipTextField(
-    state = state, 
-    onSubmit = { Chip(it.text) },
+    state = state,
+    onSubmit = ::Chip,
     colors = TextFieldDefaults.textFieldColors(
         backgroundColor = Color.Transparent
     ),
@@ -72,7 +71,7 @@ class CheckableChip(text: String, isChecked: Boolean = false) : Chip(text) {
 }
 
 val state = rememberChipTextFieldState(
-    chips = listOf(CheckableChip(""), ...),
+    chips = listOf(CheckableChip(""), /*...*/),
 )
 BasicChipTextField(
     state = state,
@@ -84,7 +83,7 @@ BasicChipTextField(
 )
 
 @Composable
-fun CheckIcon(chip: CheckableChip, modifier: Modifier = Modifier) { ... }
+fun CheckIcon(chip: CheckableChip, modifier: Modifier = Modifier) { /*...*/ }
 ```
 
 ![](/images/screenshot_checkable.jpg)
@@ -102,7 +101,7 @@ ChipTextField(
 )
 
 @Composable
-fun Avatar(chip: AvatarChip, modifier: Modifier = Modifier) { ... }
+fun Avatar(chip: AvatarChip, modifier: Modifier = Modifier) { /*...*/ }
 ```
 
 ![](/images/screenshot_avatar.png)
