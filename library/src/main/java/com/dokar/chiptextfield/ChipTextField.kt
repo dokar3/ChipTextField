@@ -41,7 +41,7 @@ import androidx.compose.ui.unit.dp
  *     modifier = Modifier,
  *     innerModifier = Modifier
  *         .heightIn(max = 100.dp)
- *         .verticalScrollable(state = rememberScrollableState()),
+ *         .verticalScroll(state = rememberScrollState()),
  * )
  * ```
  *
@@ -130,7 +130,7 @@ fun <T : Chip> ChipTextField(
  *     modifier = Modifier,
  *     innerModifier = Modifier
  *         .heightIn(max = 100.dp)
- *         .verticalScrollable(state = rememberScrollableState()),
+ *         .verticalScroll(state = rememberScrollState()),
  * )
  * ```
  *
@@ -240,7 +240,7 @@ fun <T : Chip> ChipTextField(
  *     modifier = Modifier,
  *     innerModifier = Modifier
  *         .heightIn(max = 100.dp)
- *         .verticalScrollable(state = rememberScrollableState()),
+ *         .verticalScroll(state = rememberScrollState()),
  * )
  * ```
  *
