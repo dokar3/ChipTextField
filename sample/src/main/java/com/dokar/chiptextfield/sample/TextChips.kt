@@ -4,7 +4,10 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -39,6 +42,9 @@ internal fun TextChips(chipFieldStyle: ChipFieldStyle) {
 
     ChipsHeader("Material filled")
     MaterialFilled(chipFieldStyle)
+
+    ChipsHeader("Scrollable")
+    Scrollable(chipFieldStyle)
 }
 
 @Composable
@@ -108,6 +114,55 @@ private fun MaterialFilled(chipFieldStyle: ChipFieldStyle) {
         colors = TextFieldDefaults.textFieldColors(
             cursorColor = chipFieldStyle.cursorColor,
             focusedIndicatorColor = chipFieldStyle.cursorColor,
+            focusedLabelColor = chipFieldStyle.cursorColor,
+        ),
+    )
+}
+
+@Composable
+internal fun Scrollable(chipFieldStyle: ChipFieldStyle) {
+    val initialChips = remember { SampleChips.getTextChips() + SampleChips.getTextChips() }
+
+    val filledState = rememberChipTextFieldState(chips = initialChips)
+
+    val outlinedState = rememberChipTextFieldState(chips = initialChips)
+
+    ChipTextField(
+        state = filledState,
+        modifier = Modifier.padding(8.dp),
+        innerModifier = Modifier
+            .heightIn(max = 100.dp)
+            .verticalScroll(state = rememberScrollState()),
+        onSubmit = ::Chip,
+        chipStyle = ChipTextFieldDefaults.chipStyle(
+            focusedTextColor = chipFieldStyle.textColor,
+            focusedBorderColor = chipFieldStyle.borderColor,
+            focusedBackgroundColor = chipFieldStyle.backgroundColor,
+        ),
+        label = { Text("Label here") },
+        colors = TextFieldDefaults.textFieldColors(
+            cursorColor = chipFieldStyle.cursorColor,
+            focusedIndicatorColor = chipFieldStyle.cursorColor,
+            focusedLabelColor = chipFieldStyle.cursorColor,
+        ),
+    )
+
+    OutlinedChipTextField(
+        state = outlinedState,
+        onSubmit = ::Chip,
+        modifier = Modifier.padding(8.dp),
+        innerModifier = Modifier
+            .heightIn(max = 100.dp)
+            .verticalScroll(state = rememberScrollState()),
+        chipStyle = ChipTextFieldDefaults.chipStyle(
+            focusedTextColor = chipFieldStyle.textColor,
+            focusedBorderColor = chipFieldStyle.borderColor,
+            focusedBackgroundColor = chipFieldStyle.backgroundColor,
+        ),
+        label = { Text("Label here") },
+        colors = TextFieldDefaults.outlinedTextFieldColors(
+            cursorColor = chipFieldStyle.cursorColor,
+            focusedBorderColor = chipFieldStyle.cursorColor,
             focusedLabelColor = chipFieldStyle.cursorColor,
         ),
     )

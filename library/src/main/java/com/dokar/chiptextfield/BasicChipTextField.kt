@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.relocation.BringIntoViewRequester
+import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -24,6 +26,7 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -53,8 +56,10 @@ import com.dokar.chiptextfield.util.StableHolder
 import com.dokar.chiptextfield.util.filterNewLines
 import com.google.accompanist.flowlayout.FlowCrossAxisAlignment
 import com.google.accompanist.flowlayout.FlowRow
+import kotlinx.coroutines.android.awaitFrame
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.launch
 
 /**
  * A text field can display chips, press enter to create a new chip.
@@ -284,11 +289,15 @@ fun <T : Chip> BasicChipTextField(
     decorationBox: @Composable (innerTextField: @Composable () -> Unit) -> Unit =
         @Composable { innerTextField -> innerTextField() },
 ) {
+    val scope = rememberCoroutineScope()
+
     val textFieldFocusRequester = remember { StableHolder(FocusRequester()) }
 
     val editable = enabled && !readOnly
 
     val keyboardController = LocalSoftwareKeyboardController.current
+
+    val bringLastIntoViewRequester = remember { BringIntoViewRequester() }
 
     LaunchedEffect(state) {
         snapshotFlow { state.chips }
@@ -322,6 +331,7 @@ fun <T : Chip> BasicChipTextField(
                             // Move cursor to the end
                             val selection = value.text.length
                             onValueChange(value.copy(selection = TextRange(selection)))
+                            scope.launch { bringLastIntoViewRequester.bringIntoView() }
                         },
                     )
                 },
@@ -355,11 +365,21 @@ fun <T : Chip> BasicChipTextField(
                 chipStyle = chipStyle,
                 chipLeadingIcon = chipLeadingIcon,
                 chipTrailingIcon = chipTrailingIcon,
+                bringLastIntoViewRequester = bringLastIntoViewRequester,
             )
 
             Input(
                 state = state,
-                onSubmit = onSubmit,
+                onSubmit = {
+                    val chip = onSubmit(it)
+                    if (chip != null) {
+                        scope.launch {
+                            awaitFrame()
+                            bringLastIntoViewRequester.bringIntoView()
+                        }
+                    }
+                    chip
+                },
                 value = value,
                 onValueChange = onValueChange,
                 enabled = enabled,
@@ -375,6 +395,7 @@ fun <T : Chip> BasicChipTextField(
                         state.focusedChip = null
                     }
                 },
+                modifier = Modifier.bringIntoViewRequester(bringLastIntoViewRequester),
             )
         }
     }
@@ -396,7 +417,8 @@ private fun <T : Chip> Chips(
     textStyle: TextStyle,
     chipStyle: ChipStyle,
     chipLeadingIcon: @Composable (chip: T) -> Unit,
-    chipTrailingIcon: @Composable (chip: T) -> Unit
+    chipTrailingIcon: @Composable (chip: T) -> Unit,
+    bringLastIntoViewRequester: BringIntoViewRequester,
 ) {
     val chips = state.chips
 
@@ -483,7 +505,12 @@ private fun <T : Chip> Chips(
             textStyle = textStyle,
             chipStyle = chipStyle,
             chipLeadingIcon = chipLeadingIcon,
-            chipTrailingIcon = chipTrailingIcon
+            chipTrailingIcon = chipTrailingIcon,
+            modifier = if (index == chips.lastIndex) {
+                Modifier.bringIntoViewRequester(bringLastIntoViewRequester)
+            } else {
+                Modifier
+            },
         )
     }
 }

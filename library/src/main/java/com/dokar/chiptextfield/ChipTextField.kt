@@ -29,6 +29,22 @@ import androidx.compose.ui.unit.dp
 /**
  * Chip text field with Material Design filled style.
  *
+ * The [innerModifier] will be passed to the inner text field of the decoration box. This can be
+ * used to control style, layout and interaction of the inner text field independently.
+ *
+ * This is a sample to constraint the height of the inner text field and makes it scrollable:
+ *
+ * ```kotlin
+ * ChipTextField(
+ *     state = ...,
+ *     onSubmit = ...,
+ *     modifier = Modifier,
+ *     innerModifier = Modifier
+ *         .heightIn(max = 100.dp)
+ *         .verticalScrollable(state = rememberScrollableState()),
+ * )
+ * ```
+ *
  * @see [BasicChipTextField]
  * @see [TextField]
  */
@@ -38,6 +54,7 @@ fun <T : Chip> ChipTextField(
     state: ChipTextFieldState<T>,
     onSubmit: (value: String) -> T?,
     modifier: Modifier = Modifier,
+    innerModifier: Modifier = Modifier,
     enabled: Boolean = true,
     readOnly: Boolean = false,
     readOnlyChips: Boolean = readOnly,
@@ -73,6 +90,7 @@ fun <T : Chip> ChipTextField(
         value = value,
         onValueChange = onValueChange,
         modifier = modifier,
+        innerModifier = innerModifier,
         enabled = enabled,
         readOnly = readOnly,
         readOnlyChips = readOnlyChips,
@@ -100,6 +118,22 @@ fun <T : Chip> ChipTextField(
 /**
  * Chip text field with Material Design filled style.
  *
+ * The [innerModifier] will be passed to the inner text field of the decoration box. This can be
+ * used to control style, layout and interaction of the inner text field independently.
+ *
+ * This is a sample to constraint the height of the inner text field and makes it scrollable:
+ *
+ * ```kotlin
+ * ChipTextField(
+ *     state = ...,
+ *     onSubmit = ...,
+ *     modifier = Modifier,
+ *     innerModifier = Modifier
+ *         .heightIn(max = 100.dp)
+ *         .verticalScrollable(state = rememberScrollableState()),
+ * )
+ * ```
+ *
  * @see [BasicChipTextField]
  * @see [TextField]
  */
@@ -111,6 +145,7 @@ fun <T : Chip> ChipTextField(
     onValueChange: (String) -> Unit,
     onSubmit: (value: String) -> T?,
     modifier: Modifier = Modifier,
+    innerModifier: Modifier = Modifier,
     enabled: Boolean = true,
     readOnly: Boolean = false,
     readOnlyChips: Boolean = readOnly,
@@ -143,7 +178,8 @@ fun <T : Chip> ChipTextField(
     val textFieldValue = textFieldValueState.copy(text = value)
     SideEffect {
         if (textFieldValue.selection != textFieldValueState.selection ||
-            textFieldValue.composition != textFieldValueState.composition) {
+            textFieldValue.composition != textFieldValueState.composition
+        ) {
             textFieldValueState = textFieldValue
         }
     }
@@ -164,6 +200,7 @@ fun <T : Chip> ChipTextField(
         value = textFieldValue,
         onValueChange = mappedOnValueChange,
         modifier = modifier,
+        innerModifier = innerModifier,
         enabled = enabled,
         readOnly = readOnly,
         readOnlyChips = readOnlyChips,
@@ -191,6 +228,22 @@ fun <T : Chip> ChipTextField(
 /**
  * Chip text field with Material Design filled style.
  *
+ * The [innerModifier] will be passed to the inner text field of the decoration box. This can be
+ * used to control style, layout and interaction of the inner text field independently.
+ *
+ * This is a sample to constraint the height of the inner text field and makes it scrollable:
+ *
+ * ```kotlin
+ * ChipTextField(
+ *     state = ...,
+ *     onSubmit = ...,
+ *     modifier = Modifier,
+ *     innerModifier = Modifier
+ *         .heightIn(max = 100.dp)
+ *         .verticalScrollable(state = rememberScrollableState()),
+ * )
+ * ```
+ *
  * @see [BasicChipTextField]
  * @see [TextField]
  */
@@ -202,6 +255,7 @@ fun <T : Chip> ChipTextField(
     onValueChange: (TextFieldValue) -> Unit,
     onSubmit: (value: TextFieldValue) -> T?,
     modifier: Modifier = Modifier,
+    innerModifier: Modifier = Modifier,
     enabled: Boolean = true,
     readOnly: Boolean = false,
     readOnlyChips: Boolean = readOnly,
@@ -239,7 +293,7 @@ fun <T : Chip> ChipTextField(
             onSubmit = onSubmit,
             value = value,
             onValueChange = onValueChange,
-            modifier = Modifier.fillMaxWidth(),
+            modifier = innerModifier.fillMaxWidth(),
             enabled = enabled,
             readOnly = readOnly,
             readOnlyChips = readOnlyChips,
