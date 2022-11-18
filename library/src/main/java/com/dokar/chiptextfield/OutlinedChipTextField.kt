@@ -42,7 +42,7 @@ import com.dokar.chiptextfield.util.runIf
  *     modifier = Modifier,
  *     innerModifier = Modifier
  *         .heightIn(max = 100.dp)
- *         .verticalScrollable(state = rememberScrollableState()),
+ *         .verticalScroll(state = rememberScrollState()),
  * )
  * ```
  *
@@ -123,7 +123,7 @@ fun <T : Chip> OutlinedChipTextField(
  *     modifier = Modifier,
  *     innerModifier = Modifier
  *         .heightIn(max = 100.dp)
- *         .verticalScrollable(state = rememberScrollableState()),
+ *         .verticalScroll(state = rememberScrollState()),
  * )
  * ```
  *
@@ -225,7 +225,7 @@ fun <T : Chip> OutlinedChipTextField(
  *     modifier = Modifier,
  *     innerModifier = Modifier
  *         .heightIn(max = 100.dp)
- *         .verticalScrollable(state = rememberScrollableState()),
+ *         .verticalScroll(state = rememberScrollState()),
  * )
  * ```
  *
