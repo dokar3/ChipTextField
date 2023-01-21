@@ -5,8 +5,8 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 
 @Composable
 internal fun ChipsHeader(
@@ -16,7 +16,7 @@ internal fun ChipsHeader(
     Text(
         text = name,
         modifier = modifier.padding(8.dp, 4.dp),
-        fontSize = 15.sp,
-        color = MaterialTheme.colors.onBackground
+        fontWeight = FontWeight.Bold,
+        color = MaterialTheme.colors.primary,
     )
 }
