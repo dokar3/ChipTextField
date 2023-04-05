@@ -292,7 +292,7 @@ fun <T : Chip> BasicChipTextField(
 ) {
     val scope = rememberCoroutineScope()
 
-    val textFieldFocusRequester = remember { StableHolder(FocusRequester()) }
+    val textFieldFocusRequester = remember { FocusRequester() }
 
     val editable = enabled && !readOnly
 
@@ -312,7 +312,7 @@ fun <T : Chip> BasicChipTextField(
             .filter { it.isEmpty() }
             .collect {
                 if (hasFocusedChipBeforeEmpty.value) {
-                    textFieldFocusRequester.value.requestFocus()
+                    textFieldFocusRequester.requestFocus()
                 }
                 hasFocusedChipBeforeEmpty.value = false
             }
@@ -339,7 +339,7 @@ fun <T : Chip> BasicChipTextField(
                         onTap = {
                             if (!editable) return@detectTapGestures
                             keyboardController?.show()
-                            textFieldFocusRequester.value.requestFocus()
+                            textFieldFocusRequester.requestFocus()
                             state.focusedChip = null
                             // Move cursor to the end
                             val selection = value.text.length
@@ -369,7 +369,7 @@ fun <T : Chip> BasicChipTextField(
                     interactionSource.tryEmit(FocusInteraction.Unfocus(it))
                 },
                 onLoseFocus = {
-                    textFieldFocusRequester.value.requestFocus()
+                    textFieldFocusRequester.requestFocus()
                     state.focusedChip = null
                 },
                 onChipClick = onChipClick,
@@ -541,7 +541,7 @@ private fun <T : Chip> Input(
     textStyle: TextStyle,
     colors: TextFieldColors,
     keyboardOptions: KeyboardOptions,
-    focusRequester: StableHolder<FocusRequester>,
+    focusRequester: FocusRequester,
     interactionSource: MutableInteractionSource,
     onFocusChange: (isFocused: Boolean) -> Unit,
     modifier: Modifier = Modifier,
@@ -567,7 +567,7 @@ private fun <T : Chip> Input(
             }
         },
         modifier = modifier
-            .focusRequester(focusRequester.value)
+            .focusRequester(focusRequester)
             .onFocusChanged { onFocusChange(it.isFocused) }
             .onPreviewKeyEvent {
                 if (it.type == KeyEventType.KeyDown && it.key == Key.Backspace) {
