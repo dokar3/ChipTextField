@@ -298,7 +298,7 @@ fun <T : Chip> BasicChipTextField(
 
     val keyboardController = LocalSoftwareKeyboardController.current
 
-    val bringLastIntoViewRequester = remember { BringIntoViewRequester() }
+    val bringLastIntoViewRequester = remember { StableHolder(BringIntoViewRequester()) }
 
     val hasFocusedChipBeforeEmpty = remember { mutableStateOf(false) }
 
@@ -344,7 +344,7 @@ fun <T : Chip> BasicChipTextField(
                             // Move cursor to the end
                             val selection = value.text.length
                             onValueChange(value.copy(selection = TextRange(selection)))
-                            scope.launch { bringLastIntoViewRequester.bringIntoView() }
+                            scope.launch { bringLastIntoViewRequester.value.bringIntoView() }
                         },
                     )
                 },
@@ -388,7 +388,7 @@ fun <T : Chip> BasicChipTextField(
                     if (chip != null) {
                         scope.launch {
                             awaitFrame()
-                            bringLastIntoViewRequester.bringIntoView()
+                            bringLastIntoViewRequester.value.bringIntoView()
                         }
                     }
                     chip
@@ -408,7 +408,7 @@ fun <T : Chip> BasicChipTextField(
                         state.focusedChip = null
                     }
                 },
-                modifier = Modifier.bringIntoViewRequester(bringLastIntoViewRequester),
+                modifier = Modifier.bringIntoViewRequester(bringLastIntoViewRequester.value),
             )
         }
     }
@@ -431,7 +431,7 @@ private fun <T : Chip> Chips(
     chipStyle: ChipStyle,
     chipLeadingIcon: @Composable (chip: T) -> Unit,
     chipTrailingIcon: @Composable (chip: T) -> Unit,
-    bringLastIntoViewRequester: BringIntoViewRequester,
+    bringLastIntoViewRequester: StableHolder<BringIntoViewRequester>,
 ) {
     val chips = state.chips
 
@@ -520,7 +520,7 @@ private fun <T : Chip> Chips(
             chipLeadingIcon = chipLeadingIcon,
             chipTrailingIcon = chipTrailingIcon,
             modifier = if (index == chips.lastIndex) {
-                Modifier.bringIntoViewRequester(bringLastIntoViewRequester)
+                Modifier.bringIntoViewRequester(bringLastIntoViewRequester.value)
             } else {
                 Modifier
             },
