@@ -193,7 +193,8 @@ fun <T : Chip> BasicChipTextField(
     val textFieldValue = textFieldValueState.copy(text = value)
     SideEffect {
         if (textFieldValue.selection != textFieldValueState.selection ||
-            textFieldValue.composition != textFieldValueState.composition) {
+            textFieldValue.composition != textFieldValueState.composition
+        ) {
             textFieldValueState = textFieldValue
         }
     }
@@ -291,18 +292,30 @@ fun <T : Chip> BasicChipTextField(
 ) {
     val scope = rememberCoroutineScope()
 
-    val textFieldFocusRequester = remember { StableHolder(FocusRequester()) }
+    val textFieldFocusRequester = remember { FocusRequester() }
 
     val editable = enabled && !readOnly
 
     val keyboardController = LocalSoftwareKeyboardController.current
 
-    val bringLastIntoViewRequester = remember { BringIntoViewRequester() }
+    val bringLastIntoViewRequester = remember { StableHolder(BringIntoViewRequester()) }
+
+    val hasFocusedChipBeforeEmpty = remember { mutableStateOf(false) }
 
     LaunchedEffect(state) {
+        launch {
+            snapshotFlow { state.focusedChip != null }
+                .filter { state.chips.isNotEmpty() }
+                .collect { hasFocusedChipBeforeEmpty.value = it }
+        }
         snapshotFlow { state.chips }
             .filter { it.isEmpty() }
-            .collect { textFieldFocusRequester.value.requestFocus() }
+            .collect {
+                if (hasFocusedChipBeforeEmpty.value) {
+                    textFieldFocusRequester.requestFocus()
+                }
+                hasFocusedChipBeforeEmpty.value = false
+            }
     }
 
     LaunchedEffect(state, state.disposed) {
@@ -326,12 +339,12 @@ fun <T : Chip> BasicChipTextField(
                         onTap = {
                             if (!editable) return@detectTapGestures
                             keyboardController?.show()
-                            textFieldFocusRequester.value.requestFocus()
+                            textFieldFocusRequester.requestFocus()
                             state.focusedChip = null
                             // Move cursor to the end
                             val selection = value.text.length
                             onValueChange(value.copy(selection = TextRange(selection)))
-                            scope.launch { bringLastIntoViewRequester.bringIntoView() }
+                            scope.launch { bringLastIntoViewRequester.value.bringIntoView() }
                         },
                     )
                 },
@@ -356,7 +369,7 @@ fun <T : Chip> BasicChipTextField(
                     interactionSource.tryEmit(FocusInteraction.Unfocus(it))
                 },
                 onLoseFocus = {
-                    textFieldFocusRequester.value.requestFocus()
+                    textFieldFocusRequester.requestFocus()
                     state.focusedChip = null
                 },
                 onChipClick = onChipClick,
@@ -375,7 +388,7 @@ fun <T : Chip> BasicChipTextField(
                     if (chip != null) {
                         scope.launch {
                             awaitFrame()
-                            bringLastIntoViewRequester.bringIntoView()
+                            bringLastIntoViewRequester.value.bringIntoView()
                         }
                     }
                     chip
@@ -395,7 +408,7 @@ fun <T : Chip> BasicChipTextField(
                         state.focusedChip = null
                     }
                 },
-                modifier = Modifier.bringIntoViewRequester(bringLastIntoViewRequester),
+                modifier = Modifier.bringIntoViewRequester(bringLastIntoViewRequester.value),
             )
         }
     }
@@ -418,7 +431,7 @@ private fun <T : Chip> Chips(
     chipStyle: ChipStyle,
     chipLeadingIcon: @Composable (chip: T) -> Unit,
     chipTrailingIcon: @Composable (chip: T) -> Unit,
-    bringLastIntoViewRequester: BringIntoViewRequester,
+    bringLastIntoViewRequester: StableHolder<BringIntoViewRequester>,
 ) {
     val chips = state.chips
 
@@ -507,7 +520,7 @@ private fun <T : Chip> Chips(
             chipLeadingIcon = chipLeadingIcon,
             chipTrailingIcon = chipTrailingIcon,
             modifier = if (index == chips.lastIndex) {
-                Modifier.bringIntoViewRequester(bringLastIntoViewRequester)
+                Modifier.bringIntoViewRequester(bringLastIntoViewRequester.value)
             } else {
                 Modifier
             },
@@ -528,7 +541,7 @@ private fun <T : Chip> Input(
     textStyle: TextStyle,
     colors: TextFieldColors,
     keyboardOptions: KeyboardOptions,
-    focusRequester: StableHolder<FocusRequester>,
+    focusRequester: FocusRequester,
     interactionSource: MutableInteractionSource,
     onFocusChange: (isFocused: Boolean) -> Unit,
     modifier: Modifier = Modifier,
@@ -554,7 +567,7 @@ private fun <T : Chip> Input(
             }
         },
         modifier = modifier
-            .focusRequester(focusRequester.value)
+            .focusRequester(focusRequester)
             .onFocusChanged { onFocusChange(it.isFocused) }
             .onPreviewKeyEvent {
                 if (it.type == KeyEventType.KeyDown && it.key == Key.Backspace) {

@@ -49,16 +49,15 @@ internal fun TextChips(chipFieldStyle: ChipFieldStyle) {
 
 @Composable
 private fun Underline(chipFieldStyle: ChipFieldStyle) {
-    var value by remember { mutableStateOf("Android") }
-    val state = rememberChipTextFieldState(
-        chips = remember { SampleChips.getTextChips() },
-    )
+    var value by remember { mutableStateOf("") }
+    val state = rememberChipTextFieldState(chips = emptyList())
     ChipTextField(
         state = state,
         value = value,
         onValueChange = { value = it },
         onSubmit = ::Chip,
         modifier = Modifier.padding(8.dp),
+        placeholder = { Text("Enter to submit a chip") },
         chipStyle = ChipTextFieldDefaults.chipStyle(
             focusedTextColor = chipFieldStyle.textColor,
             focusedBorderColor = chipFieldStyle.borderColor,
