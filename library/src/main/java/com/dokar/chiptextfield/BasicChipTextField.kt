@@ -193,7 +193,8 @@ fun <T : Chip> BasicChipTextField(
     val textFieldValue = textFieldValueState.copy(text = value)
     SideEffect {
         if (textFieldValue.selection != textFieldValueState.selection ||
-            textFieldValue.composition != textFieldValueState.composition) {
+            textFieldValue.composition != textFieldValueState.composition
+        ) {
             textFieldValueState = textFieldValue
         }
     }
@@ -299,10 +300,22 @@ fun <T : Chip> BasicChipTextField(
 
     val bringLastIntoViewRequester = remember { BringIntoViewRequester() }
 
+    val hasFocusedChipBeforeEmpty = remember { mutableStateOf(false) }
+
     LaunchedEffect(state) {
+        launch {
+            snapshotFlow { state.focusedChip != null }
+                .filter { state.chips.isNotEmpty() }
+                .collect { hasFocusedChipBeforeEmpty.value = it }
+        }
         snapshotFlow { state.chips }
             .filter { it.isEmpty() }
-            .collect { textFieldFocusRequester.value.requestFocus() }
+            .collect {
+                if (hasFocusedChipBeforeEmpty.value) {
+                    textFieldFocusRequester.value.requestFocus()
+                }
+                hasFocusedChipBeforeEmpty.value = false
+            }
     }
 
     LaunchedEffect(state, state.disposed) {
