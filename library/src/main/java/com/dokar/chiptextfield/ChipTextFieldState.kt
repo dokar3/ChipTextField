@@ -136,7 +136,7 @@ class ChipTextFieldState<T : Chip>(
     }
 }
 
-enum class TextFieldFocusState {
+internal enum class TextFieldFocusState {
     None,
     Focused,
     Unfocused,
