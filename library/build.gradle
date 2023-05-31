@@ -5,6 +5,8 @@ plugins {
 }
 
 android {
+    namespace 'com.dokar.chiptextfield'
+
     compileSdk compile_sdk
 
     defaultConfig {
