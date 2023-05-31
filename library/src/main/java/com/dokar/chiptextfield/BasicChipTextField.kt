@@ -44,6 +44,7 @@ import androidx.compose.ui.input.key.onPreviewKeyEvent
 import androidx.compose.ui.input.key.type
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
@@ -302,6 +303,8 @@ fun <T : Chip> BasicChipTextField(
 
     val hasFocusedChipBeforeEmpty = remember { mutableStateOf(false) }
 
+    val focusManager = LocalFocusManager.current
+
     LaunchedEffect(state) {
         launch {
             snapshotFlow { state.focusedChip != null }
@@ -325,6 +328,22 @@ fun <T : Chip> BasicChipTextField(
         }
     }
 
+
+    LaunchedEffect(focusManager, state, textFieldFocusRequester) {
+        snapshotFlow { state.textFieldFocusState }
+            .distinctUntilChanged()
+            .collect {
+                when (it) {
+                    TextFieldFocusState.None -> {}
+                    TextFieldFocusState.Focused -> textFieldFocusRequester.requestFocus()
+                    TextFieldFocusState.Unfocused -> {
+                        focusManager.clearFocus()
+                        textFieldFocusRequester.freeFocus()
+                    }
+                }
+            }
+    }
+
     DisposableEffect(state) {
         onDispose {
             state.disposed = true
@@ -340,7 +359,7 @@ fun <T : Chip> BasicChipTextField(
                             if (!editable) return@detectTapGestures
                             keyboardController?.show()
                             textFieldFocusRequester.requestFocus()
-                            state.focusedChip = null
+                            state.updateFocusedChip(null)
                             // Move cursor to the end
                             val selection = value.text.length
                             onValueChange(value.copy(selection = TextRange(selection)))
@@ -370,7 +389,7 @@ fun <T : Chip> BasicChipTextField(
                 },
                 onLoseFocus = {
                     textFieldFocusRequester.requestFocus()
-                    state.focusedChip = null
+                    state.updateFocusedChip(null)
                 },
                 onChipClick = onChipClick,
                 onChipLongClick = onChipLongClick,
@@ -405,7 +424,7 @@ fun <T : Chip> BasicChipTextField(
                 interactionSource = interactionSource,
                 onFocusChange = { isFocused ->
                     if (isFocused) {
-                        state.focusedChip = null
+                        state.updateFocusedChip(null)
                     }
                 },
                 modifier = Modifier.bringIntoViewRequester(bringLastIntoViewRequester.value),
@@ -447,15 +466,22 @@ private fun <T : Chip> Chips(
         )
     }
 
-    LaunchedEffect(chips, state.focusedChip) {
+    val focusManager = LocalFocusManager.current
+
+    LaunchedEffect(focusManager, focusRequesters, chips, state.focusedChip) {
         state.recordFocusedChip = true
-        val chip = state.focusedChip ?: return@LaunchedEffect
-        for (i in chips.indices) {
-            if (chips[i] == chip) {
-                focusRequesters[i].requestFocus()
-                onFocused(chips[i].focus)
+        val chip = state.focusedChip
+        if (chip == null) {
+            focusRequesters.forEach { it.freeFocus() }
+            if (!state.isTextFieldFocused) {
+                focusManager.clearFocus()
             }
+            return@LaunchedEffect
         }
+        val index = chips.indexOf(chip)
+        if (index == -1) return@LaunchedEffect
+        focusRequesters[index].requestFocus()
+        onFocused(chip.focus)
     }
 
     LaunchedEffect(chips) {
@@ -506,7 +532,7 @@ private fun <T : Chip> Chips(
             onFocusChange = { isFocused ->
                 if (isFocused) {
                     if (state.recordFocusedChip) {
-                        state.focusedChip = chip
+                        state.updateFocusedChip(chip)
                     }
                     onFocused(chip.focus)
                 } else {
