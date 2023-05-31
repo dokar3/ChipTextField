@@ -73,6 +73,10 @@ fun SampleScreen() {
         AvatarChips(chipFieldStyle = chipFieldStyle)
 
         Spacer(modifier = Modifier.height(32.dp))
+
+        ManualFocusChips(chipFieldStyle = chipFieldStyle)
+
+        Spacer(modifier = Modifier.height(32.dp))
     }
 }
 

@@ -32,11 +32,19 @@ class ChipTextFieldState<T : Chip>(
 
     internal var defaultChips: List<T> = chips
 
-    internal var focusedChip: T? by mutableStateOf(null)
+    private var _focusedChip: T? by mutableStateOf(null)
+    internal val focusedChip get() = _focusedChip
+
+    private var _focusedChipIndex by mutableStateOf(-1)
+    val focusedChipIndex get() = _focusedChipIndex
 
     internal var nextFocusedChipIndex by mutableStateOf(-1)
 
     internal var recordFocusedChip = true
+
+    internal var textFieldFocusState by mutableStateOf(TextFieldFocusState.None)
+
+    val isTextFieldFocused get() = textFieldFocusState == TextFieldFocusState.Focused
 
     var chips by mutableStateOf(chips)
 
@@ -64,7 +72,7 @@ class ChipTextFieldState<T : Chip>(
             if (index == list.lastIndex) {
                 // The chip to remove is also the last chip, change the focused chip to the
                 // previous chip
-                focusedChip = list[index - 1]
+                updateFocusedChip(list[index - 1])
             }
             // IME will lose focus if the focused chip is the last, we move the focus to the
             // previous composable to avoid IME flash
@@ -72,7 +80,7 @@ class ChipTextFieldState<T : Chip>(
             nextFocusedChipIndex = focusedChipIndex - 1
         } else if (chip == focusedChip && index < list.lastIndex) {
             // We are removing the focusing chip, simply set the focused chip to the next one.
-            focusedChip = list[index + 1]
+            updateFocusedChip(list[index + 1])
         }
 
         list.remove(chip)
@@ -83,4 +91,53 @@ class ChipTextFieldState<T : Chip>(
         val list = chips.subList(0, chips.size - 1)
         chips = list
     }
+
+    internal fun updateFocusedChip(chip: T?) {
+        if (chip != null) {
+            textFieldFocusState = TextFieldFocusState.None
+        }
+        this._focusedChip = chip
+        this._focusedChipIndex = chips.indexOf(chip)
+    }
+
+    /**
+     * Focus a chip by index.
+     */
+    fun focusChip(index: Int) {
+        if (chips.isEmpty()) return
+        if (index < 0 || index > chips.lastIndex) return
+        updateFocusedChip(chips[index])
+    }
+
+    /**
+     * Clear focus from a focused chip by index.
+     */
+    fun clearChipFocus(index: Int) {
+        if (chips.isEmpty()) return
+        if (index < 0 || index > chips.lastIndex) return
+        val target = chips[index]
+        if (focusedChip == target) {
+            updateFocusedChip(null)
+        }
+    }
+
+    /**
+     * Focus the text field at the end of chips.
+     */
+    fun focusTextField() {
+        textFieldFocusState = TextFieldFocusState.Focused
+    }
+
+    /**
+     * Clear focus from the focused text field at the end chips.
+     */
+    fun clearTextFieldFocus() {
+        textFieldFocusState = TextFieldFocusState.Unfocused
+    }
+}
+
+internal enum class TextFieldFocusState {
+    None,
+    Focused,
+    Unfocused,
 }
