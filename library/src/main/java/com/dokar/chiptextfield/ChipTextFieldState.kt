@@ -3,6 +3,7 @@ package com.dokar.chiptextfield
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -35,10 +36,10 @@ class ChipTextFieldState<T : Chip>(
     private var _focusedChip: T? by mutableStateOf(null)
     internal val focusedChip get() = _focusedChip
 
-    private var _focusedChipIndex by mutableStateOf(-1)
+    private var _focusedChipIndex by mutableIntStateOf(-1)
     val focusedChipIndex get() = _focusedChipIndex
 
-    internal var nextFocusedChipIndex by mutableStateOf(-1)
+    internal var nextFocusedChipIndex by mutableIntStateOf(-1)
 
     internal var recordFocusedChip = true
 
