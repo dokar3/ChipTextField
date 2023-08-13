@@ -4,9 +4,8 @@ buildscript {
         compose_bom_version = '2023.08.00'
         compose_compiler_version = '1.5.1'
         kotlin_version = '1.9.0'
-        accompanist_version = '0.30.1'
-        compile_sdk = 33
-        target_sdk = 33
+        compile_sdk = 34
+        target_sdk = 34
     }
     repositories {
         google()

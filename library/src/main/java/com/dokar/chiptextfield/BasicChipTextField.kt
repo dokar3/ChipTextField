@@ -7,7 +7,10 @@ import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.interaction.FocusInteraction
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -55,8 +58,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.dokar.chiptextfield.util.StableHolder
 import com.dokar.chiptextfield.util.filterNewLines
-import com.google.accompanist.flowlayout.FlowCrossAxisAlignment
-import com.google.accompanist.flowlayout.FlowRow
 import kotlinx.coroutines.android.awaitFrame
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
@@ -264,7 +265,8 @@ fun <T : Chip> BasicChipTextField(
  */
 @OptIn(
     ExperimentalComposeUiApi::class,
-    ExperimentalFoundationApi::class
+    ExperimentalFoundationApi::class,
+    ExperimentalLayoutApi::class,
 )
 @Composable
 fun <T : Chip> BasicChipTextField(
@@ -315,7 +317,7 @@ fun <T : Chip> BasicChipTextField(
             .filter { it.isEmpty() }
             .collect {
                 if (hasFocusedChipBeforeEmpty.value) {
-                    textFieldFocusRequester.requestFocus()
+                    runCatching { textFieldFocusRequester.requestFocus() }
                 }
                 hasFocusedChipBeforeEmpty.value = false
             }
@@ -335,7 +337,10 @@ fun <T : Chip> BasicChipTextField(
             .collect {
                 when (it) {
                     TextFieldFocusState.None -> {}
-                    TextFieldFocusState.Focused -> textFieldFocusRequester.requestFocus()
+                    TextFieldFocusState.Focused -> runCatching {
+                        textFieldFocusRequester.requestFocus()
+                    }
+
                     TextFieldFocusState.Unfocused -> {
                         focusManager.clearFocus()
                         textFieldFocusRequester.freeFocus()
@@ -358,7 +363,7 @@ fun <T : Chip> BasicChipTextField(
                         onTap = {
                             if (!editable) return@detectTapGestures
                             keyboardController?.show()
-                            textFieldFocusRequester.requestFocus()
+                            runCatching { textFieldFocusRequester.requestFocus() }
                             state.updateFocusedChip(null)
                             // Move cursor to the end
                             val selection = value.text.length
@@ -367,9 +372,8 @@ fun <T : Chip> BasicChipTextField(
                         },
                     )
                 },
-            mainAxisSpacing = chipHorizontalSpacing,
-            crossAxisSpacing = chipVerticalSpacing,
-            crossAxisAlignment = FlowCrossAxisAlignment.Center
+            horizontalArrangement = Arrangement.spacedBy(chipHorizontalSpacing),
+            verticalArrangement = Arrangement.spacedBy(chipVerticalSpacing),
         ) {
             val focuses = remember { StableHolder(mutableSetOf<FocusInteraction.Focus>()) }
             Chips(
@@ -388,7 +392,10 @@ fun <T : Chip> BasicChipTextField(
                     interactionSource.tryEmit(FocusInteraction.Unfocus(it))
                 },
                 onLoseFocus = {
-                    textFieldFocusRequester.requestFocus()
+                    scope.launch {
+                        awaitFrame()
+                        runCatching { textFieldFocusRequester.requestFocus() }
+                    }
                     state.updateFocusedChip(null)
                 },
                 onChipClick = onChipClick,
@@ -408,6 +415,7 @@ fun <T : Chip> BasicChipTextField(
                         scope.launch {
                             awaitFrame()
                             bringLastIntoViewRequester.value.bringIntoView()
+                            state.focusTextField()
                         }
                     }
                     chip
@@ -427,7 +435,9 @@ fun <T : Chip> BasicChipTextField(
                         state.updateFocusedChip(null)
                     }
                 },
-                modifier = Modifier.bringIntoViewRequester(bringLastIntoViewRequester.value),
+                modifier = Modifier
+                    .padding(top = chipVerticalSpacing)
+                    .bringIntoViewRequester(bringLastIntoViewRequester.value),
             )
         }
     }
@@ -459,7 +469,7 @@ private fun <T : Chip> Chips(
     }
 
     fun focusChip(index: Int) {
-        focusRequesters[index].requestFocus()
+        runCatching { focusRequesters[index].requestFocus() }
         val targetChip = chips[index]
         targetChip.textFieldValue = targetChip.textFieldValue.copy(
             selection = TextRange(targetChip.text.length),
@@ -480,7 +490,7 @@ private fun <T : Chip> Chips(
         }
         val index = chips.indexOf(chip)
         if (index == -1) return@LaunchedEffect
-        focusRequesters[index].requestFocus()
+        runCatching { focusRequesters[index].requestFocus() }
         onFocused(chip.focus)
     }
 
@@ -490,11 +500,11 @@ private fun <T : Chip> Chips(
             .filter { it != -1 }
             .collect { index ->
                 if (index in 0..chips.lastIndex) {
-                    focusRequesters[index].requestFocus()
+                    runCatching { focusRequesters[index].requestFocus() }
                     onFocused(chips[index].focus)
                 } else if (index != -1) {
                     if (chips.isNotEmpty()) {
-                        focusRequesters[chips.lastIndex].requestFocus()
+                        runCatching { focusRequesters[chips.lastIndex].requestFocus() }
                     } else {
                         onLoseFocus()
                     }
@@ -707,7 +717,7 @@ private fun <T : Chip> ChipItem(
                 onClick = {
                     if (editable) {
                         keyboardController?.show()
-                        focusRequester.requestFocus()
+                        runCatching { focusRequester.requestFocus() }
                     }
                     onClick?.invoke()
                 },
