@@ -365,6 +365,7 @@ fun <T : Chip> BasicChipTextField(
                             keyboardController?.show()
                             runCatching { textFieldFocusRequester.requestFocus() }
                             state.updateFocusedChip(null)
+                            state.focusTextField()
                             // Move cursor to the end
                             val selection = value.text.length
                             onValueChange(value.copy(selection = TextRange(selection)))
