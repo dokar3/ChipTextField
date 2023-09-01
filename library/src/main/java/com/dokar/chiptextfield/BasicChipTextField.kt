@@ -611,6 +611,7 @@ private fun <T : Chip> Input(
                     if (value.text.isEmpty() && state.chips.isNotEmpty()) {
                         // Remove previous chip
                         state.removeLastChip()
+                        state.focusTextField()
                         return@onPreviewKeyEvent true
                     }
                 }
