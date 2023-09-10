@@ -81,11 +81,9 @@ fun <T : Chip> ChipTextField(
     colors: TextFieldColors = TextFieldDefaults.colors(),
     contentPadding: PaddingValues =
         if (label == null) {
-            TextFieldDefaults.contentPaddingWithoutLabel(
-            )
+            TextFieldDefaults.contentPaddingWithoutLabel()
         } else {
-            TextFieldDefaults.contentPaddingWithLabel(
-            )
+            TextFieldDefaults.contentPaddingWithLabel()
         }
 ) {
     var value by remember { mutableStateOf(TextFieldValue()) }
@@ -173,11 +171,9 @@ fun <T : Chip> ChipTextField(
     colors: TextFieldColors = TextFieldDefaults.colors(),
     contentPadding: PaddingValues =
         if (label == null) {
-            TextFieldDefaults.contentPaddingWithoutLabel(
-            )
+            TextFieldDefaults.contentPaddingWithoutLabel()
         } else {
-            TextFieldDefaults.contentPaddingWithLabel(
-            )
+            TextFieldDefaults.contentPaddingWithLabel()
         }
 ) {
     // Copied from androidx.compose.foundation.text.BasicTextField.kt
@@ -285,15 +281,13 @@ fun <T : Chip> ChipTextField(
     colors: TextFieldColors = TextFieldDefaults.colors(),
     contentPadding: PaddingValues =
         if (label == null) {
-            TextFieldDefaults.contentPaddingWithoutLabel(
-            )
+            TextFieldDefaults.contentPaddingWithoutLabel()
         } else {
-            TextFieldDefaults.contentPaddingWithLabel(
-            )
+            TextFieldDefaults.contentPaddingWithLabel()
         }
 ) {
     val colorScheme = MaterialTheme.colorScheme
-    val fieldColors = remember(colorScheme) { colors.toChipTextFieldColors(colorScheme) }
+    val fieldColors = remember(colors, colorScheme) { colors.toChipTextFieldColors(colorScheme) }
     Box(
         modifier = modifier
             .background(

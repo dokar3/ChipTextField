@@ -1,6 +1,5 @@
 package com.dokar.chiptextfield.m3
 
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
@@ -15,15 +14,15 @@ object ChipTextFieldDefaults {
 
     @Composable
     fun chipStyle(
-        shape: Shape = CircleShape,
+        shape: Shape = MaterialTheme.shapes.small,
         cursorColor: Color = MaterialTheme.colorScheme.primary,
         focusedBorderWidth: Dp = 1.dp,
         unfocusedBorderWidth: Dp = 1.dp,
         disabledBorderWidth: Dp = 1.dp,
-        focusedBorderColor: Color = MaterialTheme.colorScheme.onBackground,
+        focusedBorderColor: Color = MaterialTheme.colorScheme.outline,
         unfocusedBorderColor: Color = focusedBorderColor,
         disabledBorderColor: Color = focusedBorderColor.copy(alpha = disabledContentAlpha),
-        focusedTextColor: Color = MaterialTheme.colorScheme.onBackground,
+        focusedTextColor: Color = MaterialTheme.colorScheme.onSurface,
         unfocusedTextColor: Color = focusedTextColor,
         disabledTextColor: Color = focusedTextColor.copy(alpha = disabledContentAlpha),
         focusedBackgroundColor: Color = Color.Transparent,

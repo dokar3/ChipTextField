@@ -58,7 +58,7 @@ fun TextFieldColors.toChipTextFieldColors(colorScheme: ColorScheme): ChipTextFie
     }
 }
 
-private data class PartialTextFieldColors(
+private class PartialTextFieldColors(
     val focusedTextColor: Color,
     val unfocusedTextColor: Color,
     val disabledTextColor: Color,
@@ -76,21 +76,28 @@ private data class PartialTextFieldColors(
  * functions are internal.
  */
 private fun TextFieldColors.readColors(colorScheme: ColorScheme): PartialTextFieldColors {
+    fun colorOf(field: Field) = Color(field.getLong(this).toULong())
+
     return try {
         val fields = textFieldColorsFields
+        val clz = TextFieldColors::class.java
+        for (field in clz.declaredFields) {
+            field.isAccessible = true
+        }
         PartialTextFieldColors(
-            focusedTextColor = fields.focusedTextColor.get(this) as Color,
-            unfocusedTextColor = fields.unfocusedTextColor.get(this) as Color,
-            disabledTextColor = fields.disabledTextColor.get(this) as Color,
-            errorTextColor = fields.errorTextColor.get(this) as Color,
-            focusedContainerColor = fields.focusedContainerColor.get(this) as Color,
-            unfocusedContainerColor = fields.unfocusedContainerColor.get(this) as Color,
-            disabledContainerColor = fields.disabledContainerColor.get(this) as Color,
-            errorContainerColor = fields.errorContainerColor.get(this) as Color,
-            cursorColor = fields.cursorColor.get(this) as Color,
-            errorCursorColor = fields.errorCursorColor.get(this) as Color,
+            focusedTextColor = colorOf(fields.focusedTextColor),
+            unfocusedTextColor = colorOf(fields.unfocusedTextColor),
+            disabledTextColor = colorOf(fields.disabledTextColor),
+            errorTextColor = colorOf(fields.errorTextColor),
+            focusedContainerColor = colorOf(fields.focusedContainerColor),
+            unfocusedContainerColor = colorOf(fields.unfocusedContainerColor),
+            disabledContainerColor = colorOf(fields.disabledContainerColor),
+            errorContainerColor = colorOf(fields.errorContainerColor),
+            cursorColor = colorOf(fields.cursorColor),
+            errorCursorColor = colorOf(fields.errorCursorColor),
         )
     } catch (e: NoSuchFieldError) {
+        e.printStackTrace()
         PartialTextFieldColors(
             focusedTextColor = colorScheme.onSurface,
             unfocusedTextColor = colorScheme.onSurface,
@@ -125,7 +132,7 @@ private val textFieldColorsFields: TextFieldColorsFields by lazy {
     )
 }
 
-private data class TextFieldColorsFields(
+private class TextFieldColorsFields(
     val focusedTextColor: Field,
     val unfocusedTextColor: Field,
     val disabledTextColor: Field,

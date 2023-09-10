@@ -77,7 +77,7 @@ fun <T : Chip> OutlinedChipTextField(
     onChipClick: ((chip: T) -> Unit)? = null,
     onChipLongClick: ((chip: T) -> Unit)? = null,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    shape: Shape = MaterialTheme.shapes.small,
+    shape: Shape = OutlinedTextFieldDefaults.shape,
     colors: TextFieldColors = OutlinedTextFieldDefaults.colors(),
 ) {
     var value by remember { mutableStateOf(TextFieldValue()) }
@@ -160,9 +160,8 @@ fun <T : Chip> OutlinedChipTextField(
     onChipClick: ((chip: T) -> Unit)? = null,
     onChipLongClick: ((chip: T) -> Unit)? = null,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    shape: Shape = MaterialTheme.shapes.small,
-    colors: TextFieldColors = OutlinedTextFieldDefaults.colors(
-    ),
+    shape: Shape = OutlinedTextFieldDefaults.shape,
+    colors: TextFieldColors = OutlinedTextFieldDefaults.colors(),
 ) {
     // Copied from androidx.compose.foundation.text.BasicTextField.kt
     var textFieldValueState by remember { mutableStateOf(TextFieldValue(text = value)) }
@@ -264,11 +263,11 @@ fun <T : Chip> OutlinedChipTextField(
     onChipClick: ((chip: T) -> Unit)? = null,
     onChipLongClick: ((chip: T) -> Unit)? = null,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    shape: Shape = MaterialTheme.shapes.small,
+    shape: Shape = OutlinedTextFieldDefaults.shape,
     colors: TextFieldColors = OutlinedTextFieldDefaults.colors(),
 ) {
     val colorScheme = MaterialTheme.colorScheme
-    val fieldColors = remember(colorScheme) { colors.toChipTextFieldColors(colorScheme) }
+    val fieldColors = remember(colors, colorScheme) { colors.toChipTextFieldColors(colorScheme) }
     Box(
         modifier = modifier
             .runIf(label != null) { modifier.padding(top = 8.dp) }
