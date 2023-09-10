@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
@@ -23,15 +22,11 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun <T : Chip> CloseButton(
+fun <T : Chip> BasicCloseButton(
     state: ChipTextFieldState<T>,
     chip: T,
     modifier: Modifier = Modifier,
-    backgroundColor: Color = if (MaterialTheme.colors.isLight) {
-        Color.Black.copy(alpha = 0.3f)
-    } else {
-        Color.White.copy(alpha = 0.3f)
-    },
+    backgroundColor: Color = Color.Black.copy(alpha = 0.3f),
     strokeColor: Color = Color.White,
     startPadding: Dp = 0.dp,
     endPadding: Dp = 6.dp

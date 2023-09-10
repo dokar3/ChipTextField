@@ -18,6 +18,7 @@ import com.dokar.chiptextfield.ChipTextFieldDefaults
 import com.dokar.chiptextfield.rememberChipTextFieldState
 import com.dokar.chiptextfield.sample.data.CheckableChip
 import com.dokar.chiptextfield.sample.data.SampleChips
+import com.dokar.chiptextfield.toChipTextFieldColors
 
 @ExperimentalComposeUiApi
 @ExperimentalFoundationApi
@@ -40,7 +41,7 @@ internal fun CheckableChips(
         readOnly = true,
         colors = TextFieldDefaults.textFieldColors(
             cursorColor = chipFieldStyle.cursorColor
-        ),
+        ).toChipTextFieldColors(),
         chipStyle = ChipTextFieldDefaults.chipStyle(
             focusedTextColor = chipFieldStyle.textColor,
             focusedBorderColor = chipFieldStyle.borderColor,

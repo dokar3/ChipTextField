@@ -19,9 +19,6 @@ import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.LocalTextStyle
-import androidx.compose.material.TextFieldColors
-import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -80,10 +77,11 @@ import kotlinx.coroutines.launch
  * @param chipVerticalSpacing Vertical spacing between chips.
  * @param chipHorizontalSpacing Horizontal spacing between chips.
  * @param chipLeadingIcon Leading chip icon, nothing will be displayed by default.
- * @param chipTrailingIcon Trailing chip icon, by default, a [CloseButton] will be displayed.
+ * @param chipTrailingIcon Trailing chip icon, by default, a [BasicCloseButton] will be displayed.
  * @param onChipClick Chip click action.
  * @param onChipLongClick Chip long click action.
- * @param colors Text colors. [TextFieldDefaults.textFieldColors] is default colors.
+ * @param colors Colors of the chip text field. Defaults to
+ * [BasicChipTextFieldDefaults.chipTextFieldColors].
  * @param decorationBox The decoration box to wrap around text field.
  *
  * @see BasicTextField
@@ -98,16 +96,16 @@ fun <T : Chip> BasicChipTextField(
     readOnlyChips: Boolean = readOnly,
     isError: Boolean = false,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
-    textStyle: TextStyle = LocalTextStyle.current,
-    chipStyle: ChipStyle = ChipTextFieldDefaults.chipStyle(),
+    textStyle: TextStyle = BasicChipTextFieldDefaults.textStyle,
+    chipStyle: ChipStyle = BasicChipTextFieldDefaults.chipStyle(),
     chipVerticalSpacing: Dp = 4.dp,
     chipHorizontalSpacing: Dp = 4.dp,
     chipLeadingIcon: @Composable (chip: T) -> Unit = {},
-    chipTrailingIcon: @Composable (chip: T) -> Unit = { CloseButton(state, it) },
+    chipTrailingIcon: @Composable (chip: T) -> Unit = { BasicCloseButton(state, it) },
     onChipClick: ((chip: T) -> Unit)? = null,
     onChipLongClick: ((chip: T) -> Unit)? = null,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    colors: TextFieldColors = TextFieldDefaults.textFieldColors(),
+    colors: ChipTextFieldColors = BasicChipTextFieldDefaults.chipTextFieldColors(),
     decorationBox: @Composable (innerTextField: @Composable () -> Unit) -> Unit =
         @Composable { innerTextField -> innerTextField() },
 ) {
@@ -157,10 +155,11 @@ fun <T : Chip> BasicChipTextField(
  * @param chipVerticalSpacing Vertical spacing between chips.
  * @param chipHorizontalSpacing Horizontal spacing between chips.
  * @param chipLeadingIcon Leading chip icon, nothing will be displayed by default.
- * @param chipTrailingIcon Trailing chip icon, by default, a [CloseButton] will be displayed.
+ * @param chipTrailingIcon Trailing chip icon, by default, a [BasicCloseButton] will be displayed.
  * @param onChipClick Chip click action.
  * @param onChipLongClick Chip long click action.
- * @param colors Text colors. [TextFieldDefaults.textFieldColors] is default colors.
+ * @param colors Colors of the chip text field. Defaults to
+ * [BasicChipTextFieldDefaults.chipTextFieldColors].
  * @param decorationBox The decoration box to wrap around text field.
  *
  * @see BasicTextField
@@ -177,16 +176,16 @@ fun <T : Chip> BasicChipTextField(
     readOnlyChips: Boolean = readOnly,
     isError: Boolean = false,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
-    textStyle: TextStyle = LocalTextStyle.current,
-    chipStyle: ChipStyle = ChipTextFieldDefaults.chipStyle(),
+    textStyle: TextStyle = BasicChipTextFieldDefaults.textStyle,
+    chipStyle: ChipStyle = BasicChipTextFieldDefaults.chipStyle(),
     chipVerticalSpacing: Dp = 4.dp,
     chipHorizontalSpacing: Dp = 4.dp,
     chipLeadingIcon: @Composable (chip: T) -> Unit = {},
-    chipTrailingIcon: @Composable (chip: T) -> Unit = { CloseButton(state, it) },
+    chipTrailingIcon: @Composable (chip: T) -> Unit = { BasicCloseButton(state, it) },
     onChipClick: ((chip: T) -> Unit)? = null,
     onChipLongClick: ((chip: T) -> Unit)? = null,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    colors: TextFieldColors = TextFieldDefaults.textFieldColors(),
+    colors: ChipTextFieldColors = BasicChipTextFieldDefaults.chipTextFieldColors(),
     decorationBox: @Composable (innerTextField: @Composable () -> Unit) -> Unit =
         @Composable { innerTextField -> innerTextField() },
 ) {
@@ -255,10 +254,11 @@ fun <T : Chip> BasicChipTextField(
  * @param chipVerticalSpacing Vertical spacing between chips.
  * @param chipHorizontalSpacing Horizontal spacing between chips.
  * @param chipLeadingIcon Leading chip icon, nothing will be displayed by default.
- * @param chipTrailingIcon Trailing chip icon, by default, a [CloseButton] will be displayed.
+ * @param chipTrailingIcon Trailing chip icon, by default, a [BasicCloseButton] will be displayed.
  * @param onChipClick Chip click action.
  * @param onChipLongClick Chip long click action.
- * @param colors Text colors. [TextFieldDefaults.textFieldColors] is default colors.
+ * @param colors Colors of the chip text field. Defaults to
+ * [BasicChipTextFieldDefaults.chipTextFieldColors].
  * @param decorationBox The decoration box to wrap around text field.
  *
  * @see BasicTextField
@@ -280,16 +280,16 @@ fun <T : Chip> BasicChipTextField(
     readOnlyChips: Boolean = readOnly,
     isError: Boolean = false,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
-    textStyle: TextStyle = LocalTextStyle.current,
-    chipStyle: ChipStyle = ChipTextFieldDefaults.chipStyle(),
+    textStyle: TextStyle = BasicChipTextFieldDefaults.textStyle,
+    chipStyle: ChipStyle = BasicChipTextFieldDefaults.chipStyle(),
     chipVerticalSpacing: Dp = 4.dp,
     chipHorizontalSpacing: Dp = 4.dp,
     chipLeadingIcon: @Composable (chip: T) -> Unit = {},
-    chipTrailingIcon: @Composable (chip: T) -> Unit = { CloseButton(state, it) },
+    chipTrailingIcon: @Composable (chip: T) -> Unit = { BasicCloseButton(state, it) },
     onChipClick: ((chip: T) -> Unit)? = null,
     onChipLongClick: ((chip: T) -> Unit)? = null,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    colors: TextFieldColors = TextFieldDefaults.textFieldColors(),
+    colors: ChipTextFieldColors = BasicChipTextFieldDefaults.chipTextFieldColors(),
     decorationBox: @Composable (innerTextField: @Composable () -> Unit) -> Unit =
         @Composable { innerTextField -> innerTextField() },
 ) {
@@ -329,7 +329,6 @@ fun <T : Chip> BasicChipTextField(
             state.disposed = false
         }
     }
-
 
     LaunchedEffect(focusManager, state, textFieldFocusRequester) {
         snapshotFlow { state.textFieldFocusState }
@@ -576,7 +575,7 @@ private fun <T : Chip> Input(
     readOnly: Boolean,
     isError: Boolean,
     textStyle: TextStyle,
-    colors: TextFieldColors,
+    colors: ChipTextFieldColors,
     keyboardOptions: KeyboardOptions,
     focusRequester: FocusRequester,
     interactionSource: MutableInteractionSource,
@@ -587,7 +586,7 @@ private fun <T : Chip> Input(
         return
     }
     val textColor = textStyle.color.takeOrElse {
-        colors.textColor(enabled).value
+        colors.textColor(enabled, isError, interactionSource).value
     }
 
     fun tryAddNewChip(value: TextFieldValue): Boolean {
