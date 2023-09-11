@@ -604,7 +604,12 @@ private fun <T : Chip> Input(
         },
         modifier = modifier
             .focusRequester(focusRequester)
-            .onFocusChanged { onFocusChange(it.isFocused) }
+            .onFocusChanged {
+                onFocusChange(it.isFocused)
+                if (it.isFocused) {
+                    state.focusTextField()
+                }
+            }
             .onPreviewKeyEvent {
                 if (it.type == KeyEventType.KeyDown && it.key == Key.Backspace) {
                     if (value.text.isEmpty() && state.chips.isNotEmpty()) {
