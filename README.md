@@ -7,7 +7,11 @@ Editable and customizable chips for Jetpack Compose.
 Gradle dependency [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.dokar3/chiptextfield/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.dokar3/chiptextfield):
 
 ```groovy
+// Material 2
 implementation "io.github.dokar3:chiptextfield:latest_version"
+
+// Material 3
+implementation "io.github.dokar3:chiptextfield-m3:latest_version"
 ```
 
 **Default (filled style)** 
@@ -106,6 +110,14 @@ fun Avatar(chip: AvatarChip, modifier: Modifier = Modifier) { /*...*/ }
 
 ![](/images/screenshot_avatar.png)
 
+**Material 3**
+
+```diff
+- import com.dokar.chiptextfield.OutlinedChipTextField
++ import com.dokar.chiptextfield.m3.OutlinedChipTextField
+```
+
+![](/images/screenshot_m3.jpg)
 
 
 # License
