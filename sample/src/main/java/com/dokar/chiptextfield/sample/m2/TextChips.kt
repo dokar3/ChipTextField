@@ -1,4 +1,4 @@
-package com.dokar.chiptextfield.sample
+package com.dokar.chiptextfield.sample.m2
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.PaddingValues
@@ -24,6 +24,7 @@ import com.dokar.chiptextfield.ChipTextField
 import com.dokar.chiptextfield.ChipTextFieldDefaults
 import com.dokar.chiptextfield.OutlinedChipTextField
 import com.dokar.chiptextfield.rememberChipTextFieldState
+import com.dokar.chiptextfield.sample.ChipFieldStyle
 import com.dokar.chiptextfield.sample.data.SampleChips
 
 @ExperimentalComposeUiApi
@@ -74,9 +75,7 @@ private fun Underline(chipFieldStyle: ChipFieldStyle) {
 
 @Composable
 private fun MaterialOutlined(chipFieldStyle: ChipFieldStyle) {
-    val state = rememberChipTextFieldState(
-        chips = remember { SampleChips.getTextChips() },
-    )
+    val state = rememberChipTextFieldState(chips = SampleChips.text)
     OutlinedChipTextField(
         state = state,
         onSubmit = ::Chip,
@@ -97,9 +96,7 @@ private fun MaterialOutlined(chipFieldStyle: ChipFieldStyle) {
 
 @Composable
 private fun MaterialFilled(chipFieldStyle: ChipFieldStyle) {
-    val state = rememberChipTextFieldState(
-        chips = remember { SampleChips.getTextChips() },
-    )
+    val state = rememberChipTextFieldState(chips = SampleChips.text)
     ChipTextField(
         state = state,
         modifier = Modifier.padding(8.dp),
@@ -120,7 +117,7 @@ private fun MaterialFilled(chipFieldStyle: ChipFieldStyle) {
 
 @Composable
 internal fun Scrollable(chipFieldStyle: ChipFieldStyle) {
-    val initialChips = remember { SampleChips.getTextChips() + SampleChips.getTextChips() }
+    val initialChips = remember { SampleChips.text + SampleChips.text }
 
     val filledState = rememberChipTextFieldState(chips = initialChips)
 

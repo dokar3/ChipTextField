@@ -8,17 +8,17 @@ object SampleChips {
 
     private const val PICSUM_SEED_URL = "https://picsum.photos/seed/{seed}/100/100"
 
-    fun getTextChips() = LOREM_IPSUM.split(" ").map(::Chip)
+    val text: List<Chip> get() = LOREM_IPSUM.split(" ").map(::Chip)
 
-    fun getCheckableChips() = LOREM_IPSUM.split(" ").map {
-        CheckableChip(text = it, isChecked = Random.nextBoolean())
-    }
+    val checkable: List<CheckableChip>
+        get() = LOREM_IPSUM
+            .split(" ")
+            .map { CheckableChip(text = it, isChecked = Random.nextBoolean()) }
 
-    fun getAvatarChips(): List<AvatarChip> {
-        var millis = System.currentTimeMillis()
-        return LOREM_IPSUM.split(" ")
-            .map { AvatarChip(it, randomAvatarUrl(millis++)) }
-    }
+    val avatar: List<AvatarChip>
+        get() = LOREM_IPSUM
+            .split(" ")
+            .mapIndexed { index, it -> AvatarChip(it, randomAvatarUrl(index.toLong())) }
 
     fun randomAvatarUrl(seed: Long = System.currentTimeMillis()): String {
         return PICSUM_SEED_URL.replace("{seed}", seed.toString())

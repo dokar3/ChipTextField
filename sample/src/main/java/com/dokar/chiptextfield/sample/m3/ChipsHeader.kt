@@ -1,8 +1,8 @@
-package com.dokar.chiptextfield.sample
+package com.dokar.chiptextfield.sample.m3
 
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -17,6 +17,6 @@ internal fun ChipsHeader(
         text = name,
         modifier = modifier.padding(8.dp, 4.dp),
         fontWeight = FontWeight.Bold,
-        color = MaterialTheme.colors.primary,
+        color = MaterialTheme.colorScheme.primary,
     )
 }

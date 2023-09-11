@@ -1,4 +1,4 @@
-package com.dokar.chiptextfield.sample
+package com.dokar.chiptextfield.sample.m2
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
@@ -16,6 +15,8 @@ import androidx.compose.ui.unit.dp
 import com.dokar.chiptextfield.BasicChipTextField
 import com.dokar.chiptextfield.ChipTextFieldDefaults
 import com.dokar.chiptextfield.rememberChipTextFieldState
+import com.dokar.chiptextfield.sample.ChipFieldStyle
+import com.dokar.chiptextfield.sample.R
 import com.dokar.chiptextfield.sample.data.CheckableChip
 import com.dokar.chiptextfield.sample.data.SampleChips
 import com.dokar.chiptextfield.toChipTextFieldColors
@@ -26,9 +27,7 @@ import com.dokar.chiptextfield.toChipTextFieldColors
 internal fun CheckableChips(
     chipFieldStyle: ChipFieldStyle
 ) {
-    val state = rememberChipTextFieldState(
-        chips = remember { SampleChips.getCheckableChips() }
-    )
+    val state = rememberChipTextFieldState(chips = SampleChips.checkable)
 
     ChipsHeader("Checkable chips")
 

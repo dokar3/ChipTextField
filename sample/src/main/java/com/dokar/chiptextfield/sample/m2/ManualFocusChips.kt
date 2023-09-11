@@ -1,39 +1,74 @@
-package com.dokar.chiptextfield.sample
+package com.dokar.chiptextfield.sample.m2
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Button
+import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
 import com.dokar.chiptextfield.ChipTextField
 import com.dokar.chiptextfield.ChipTextFieldDefaults
 import com.dokar.chiptextfield.rememberChipTextFieldState
+import com.dokar.chiptextfield.sample.ChipFieldStyle
 import com.dokar.chiptextfield.sample.data.AvatarChip
 import com.dokar.chiptextfield.sample.data.SampleChips
 
 @ExperimentalComposeUiApi
 @ExperimentalFoundationApi
 @Composable
-internal fun AvatarChips(
-    chipFieldStyle: ChipFieldStyle
+internal fun ManualFocusChips(
+    chipFieldStyle: ChipFieldStyle,
 ) {
-    val state = rememberChipTextFieldState(
-        chips = remember { SampleChips.getAvatarChips() },
-    )
+    val state = rememberChipTextFieldState(chips = SampleChips.text)
 
-    ChipsHeader("Avatar chips")
+    ChipsHeader("Request focus")
+
+    Row(
+        modifier = Modifier.padding(8.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        Button(
+            onClick = {
+                if (state.focusedChipIndex > 0) {
+                    state.focusChip(state.focusedChipIndex - 1)
+                } else {
+                    state.clearChipFocus(0)
+                }
+            }
+        ) {
+            Text("Prev chip")
+        }
+
+        Button(
+            onClick = {
+                if (state.focusedChipIndex < state.chips.size - 1) {
+                    state.focusChip(state.focusedChipIndex + 1)
+                }
+            },
+        ) {
+            Text("Next chip")
+        }
+
+        Button(
+            onClick = {
+                if (state.isTextFieldFocused) {
+                    state.clearTextFieldFocus()
+                } else {
+                    state.focusTextField()
+                }
+            },
+        ) {
+            Text("Text field")
+        }
+    }
 
     ChipTextField(
         state = state,
@@ -51,22 +86,6 @@ internal fun AvatarChips(
             focusedBorderColor = chipFieldStyle.borderColor,
             focusedBackgroundColor = chipFieldStyle.backgroundColor,
         ),
-        chipLeadingIcon = { Avatar(it) },
         contentPadding = PaddingValues(bottom = 8.dp),
-    )
-}
-
-@Composable
-private fun Avatar(
-    chip: AvatarChip,
-    modifier: Modifier = Modifier
-) {
-    AsyncImage(
-        model = chip.avatarUrl,
-        contentDescription = null,
-        modifier = modifier
-            .size(32.dp)
-            .clip(shape = CircleShape)
-            .background(MaterialTheme.colors.onBackground.copy(alpha = 0.2f)),
     )
 }
