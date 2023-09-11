@@ -7,5 +7,7 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "ChipTextField"
+include ':chiptextfield-core'
+include ':chiptextfield'
+include ':chiptextfield-m3'
 include ':sample'
-include ':library'
