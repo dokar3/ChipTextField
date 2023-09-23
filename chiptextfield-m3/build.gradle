@@ -42,7 +42,7 @@ dependencies {
     api project(":chiptextfield-core")
 
     implementation platform("androidx.compose:compose-bom:$compose_bom_version")
-    implementation "androidx.compose.material3:material3"
+    api "androidx.compose.material3:material3"
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
