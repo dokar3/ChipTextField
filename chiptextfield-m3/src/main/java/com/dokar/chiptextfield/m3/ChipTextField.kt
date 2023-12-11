@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LocalTextStyle
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
@@ -286,8 +285,7 @@ fun <T : Chip> ChipTextField(
             TextFieldDefaults.contentPaddingWithLabel()
         }
 ) {
-    val colorScheme = MaterialTheme.colorScheme
-    val fieldColors = remember(colors, colorScheme) { colors.toChipTextFieldColors(colorScheme) }
+    val fieldColors = remember(colors) { colors.toChipTextFieldColors() }
     Box(
         modifier = modifier
             .background(
