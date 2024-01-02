@@ -7,11 +7,6 @@ plugins {
 android {
     namespace = "com.dokar.chiptextfield.sample.shared"
     compileSdk = libs.versions.androidCompileSdk.get().toInt()
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
 }
 
 kotlin {

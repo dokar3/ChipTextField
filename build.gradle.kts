@@ -16,12 +16,7 @@ plugins {
 }
 
 allprojects {
-    tasks.withType<JavaCompile>().configureEach {
-        sourceCompatibility = JavaVersion.VERSION_17.toString()
-        targetCompatibility = JavaVersion.VERSION_17.toString()
-    }
-
     tasks.withType<KotlinJvmCompile>().configureEach {
-        compilerOptions.jvmTarget = JvmTarget.JVM_17
+        compilerOptions.jvmTarget = JvmTarget.JVM_1_8
     }
 }
