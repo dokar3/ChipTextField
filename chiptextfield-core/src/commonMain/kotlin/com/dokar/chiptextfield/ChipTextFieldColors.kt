@@ -65,9 +65,7 @@ internal class DefaultChipTextFieldColors(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as DefaultChipTextFieldColors
+        if (other !is DefaultChipTextFieldColors) return false
 
         if (textColor != other.textColor) return false
         if (disabledTextColor != other.disabledTextColor) return false
@@ -75,7 +73,9 @@ internal class DefaultChipTextFieldColors(
         if (cursorColor != other.cursorColor) return false
         if (errorCursorColor != other.errorCursorColor) return false
         if (backgroundColor != other.backgroundColor) return false
-        return disabledBackgroundColor == other.disabledBackgroundColor
+        if (disabledBackgroundColor != other.disabledBackgroundColor) return false
+
+        return true
     }
 
     override fun hashCode(): Int {

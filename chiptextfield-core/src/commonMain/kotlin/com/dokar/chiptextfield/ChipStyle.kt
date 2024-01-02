@@ -143,9 +143,7 @@ class DefaultChipStyle(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as DefaultChipStyle
+        if (other !is DefaultChipStyle) return false
 
         if (shape != other.shape) return false
         if (cursorColor != other.cursorColor) return false
