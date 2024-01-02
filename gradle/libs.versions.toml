@@ -1,0 +1,21 @@
+[versions]
+androidCompileSdk = "34"
+androidTargetSdk = "34"
+kotlin = "1.9.21"
+coil = "3.0.0-alpha01"
+compose-multiplatform = "1.6.0-alpha01"
+coroutines = "1.8.0-RC2"
+agp = "8.2.0"
+maven-publish = "0.26.0"
+
+[libraries]
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
+kotlinx-coroutines-swing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "coroutines" }
+coil = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+android-library = { id = "com.android.library", version.ref = "agp" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+compose-multiplatform = { id = "org.jetbrains.compose", version.ref = "compose-multiplatform" }
+mavenpublish = { id = "com.vanniktech.maven.publish", version.ref = "maven-publish" }

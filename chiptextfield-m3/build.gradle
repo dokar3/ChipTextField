@@ -1,17 +1,18 @@
 plugins {
-    id 'com.android.library'
-    id 'kotlin-android'
-    id 'com.vanniktech.maven.publish'
+    id("com.android.library")
+    id("kotlin-multiplatform")
+    id('com.vanniktech.maven.publish')
+    id("org.jetbrains.compose")
 }
 
 android {
     namespace 'com.dokar.chiptextfield.m3'
 
-    compileSdk compile_sdk
+    compileSdk libs.versions.androidCompileSdk.get().toInteger()
 
     defaultConfig {
         minSdk 21
-        targetSdk target_sdk
+        targetSdkVersion  libs.versions.androidTargetSdk.get().toInteger()
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -24,27 +25,33 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-    kotlinOptions {
-        jvmTarget = '1.8'
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     buildFeatures {
         compose true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion compose_compiler_version
+        kotlinCompilerExtensionVersion composeCompilerVersion
     }
 }
 
-dependencies {
-    api project(":chiptextfield-core")
+kotlin {
+    jvm()
+//    iosX64()
+//    macosX64()
+    js().browser()
 
-    implementation platform("androidx.compose:compose-bom:$compose_bom_version")
-    api "androidx.compose.material3:material3"
+    androidTarget()
 
-    testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+    sourceSets {
+        commonMain {
+            dependencies {
+                api project(":chiptextfield-core")
+                api(compose.ui)
+                api(compose.foundation)
+                api(compose.material3)
+            }
+        }
+    }
 }
