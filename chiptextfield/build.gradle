@@ -39,6 +39,10 @@ kotlin {
     js(IR) {
         browser()
     }
+    wasmJs {
+        binaries.executable()
+        binaries.library()
+    }
 
     androidTarget()
 

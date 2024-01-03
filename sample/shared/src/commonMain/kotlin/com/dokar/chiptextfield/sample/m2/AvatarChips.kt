@@ -15,10 +15,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import coil3.compose.AsyncImage
 import com.dokar.chiptextfield.ChipTextField
 import com.dokar.chiptextfield.ChipTextFieldDefaults
 import com.dokar.chiptextfield.rememberChipTextFieldState
+import com.dokar.chiptextfield.sample.AsyncImage
 import com.dokar.chiptextfield.sample.ChipFieldStyle
 import com.dokar.chiptextfield.sample.data.AvatarChip
 import com.dokar.chiptextfield.sample.data.SampleChips
@@ -65,6 +65,6 @@ private fun Avatar(
         modifier = modifier
             .size(32.dp)
             .clip(shape = CircleShape)
-            .background(MaterialTheme.colors.onBackground.copy(alpha = 0.2f)),
+            .background(MaterialTheme.colors.onBackground.copy(alpha = 0.2f))
     )
 }

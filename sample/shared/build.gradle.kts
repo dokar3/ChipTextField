@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
+
 plugins {
     id("com.android.library")
     id("kotlin-multiplatform")
@@ -11,9 +13,15 @@ android {
 
 kotlin {
     jvm()
+
     js(IR) {
         browser()
     }
+    @OptIn(ExperimentalWasmDsl::class)
+    wasmJs {
+        binaries.executable()
+    }
+
     androidTarget()
 
     sourceSets {
@@ -24,6 +32,11 @@ kotlin {
                 api(project(":chiptextfield-m3"))
                 api(compose.material)
                 api(compose.material3)
+            }
+        }
+
+        val nonWasmJsMain by creating {
+            dependencies {
                 implementation(libs.coil.compose)
                 implementation(libs.coil.network)
             }
@@ -31,20 +44,25 @@ kotlin {
 
         val jvmMain by getting {
             dependencies {
+                dependsOn(nonWasmJsMain)
                 implementation(libs.ktor.okhttp)
             }
         }
 
         val androidMain by getting {
             dependencies {
+                dependsOn(nonWasmJsMain)
                 implementation(libs.ktor.okhttp)
             }
         }
 
         val jsMain by getting {
             dependencies {
+                dependsOn(nonWasmJsMain)
                 implementation(libs.ktor.js)
             }
         }
+
+        val wasmJs by creating {  }
     }
 }
