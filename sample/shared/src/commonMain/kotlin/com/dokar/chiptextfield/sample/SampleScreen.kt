@@ -15,11 +15,24 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import coil3.ImageLoader
+import coil3.annotation.ExperimentalCoilApi
+import coil3.compose.setSingletonImageLoaderFactory
+import coil3.fetch.NetworkFetcher
 import com.dokar.chiptextfield.sample.m2.M2ChipScreen
 import com.dokar.chiptextfield.sample.m3.M3ChipsScreen
 
+@OptIn(ExperimentalCoilApi::class)
 @Composable
 fun SampleScreen(modifier: Modifier = Modifier) {
+    setSingletonImageLoaderFactory { context ->
+        ImageLoader.Builder(context)
+            .components {
+                add(NetworkFetcher.Factory())
+            }
+            .build()
+    }
+
     var sampleType by remember { mutableStateOf(SampleType.Material2) }
 
     Column(modifier = modifier.fillMaxSize()) {
