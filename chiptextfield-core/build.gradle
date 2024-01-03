@@ -36,7 +36,9 @@ kotlin {
     jvm()
 //    iosX64()
 //    macosX64()
-    js().browser()
+    js(IR) {
+        browser()
+    }
 
     androidTarget()
 

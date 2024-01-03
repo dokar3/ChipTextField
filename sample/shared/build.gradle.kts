@@ -11,7 +11,9 @@ android {
 
 kotlin {
     jvm()
-    js().browser()
+    js(IR) {
+        browser()
+    }
     androidTarget()
 
     sourceSets {
