@@ -19,7 +19,7 @@ kotlin {
 
     @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
-        moduleName = "chiptextfield-sample"
+        moduleName = "chiptextfield-wasmjs-sample"
         binaries.executable()
         browser {
             commonWebpackConfig {
