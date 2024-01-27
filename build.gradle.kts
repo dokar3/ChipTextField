@@ -3,8 +3,8 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
-    val composeBomVersion: String by extra("2023.10.01")
-    val composeCompilerVersion: String by extra("1.5.7")
+    val composeBomVersion: String by extra("2024.01.00")
+    val composeCompilerVersion: String by extra("1.5.8")
 }
 
 plugins {
