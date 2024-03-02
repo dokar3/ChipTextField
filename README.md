@@ -1,6 +1,12 @@
 # ChipTextField
 
-Editable and customizable chips for Jetpack Compose.
+Editable and customizable chips for Compose Multiplatform. Available on these platforms:
+
+- Android (Jetpack Compose)
+- Desktop
+- Browser (wasmJs and canvas)
+
+iOS support is currently lacking, see [#131](https://github.com/dokar3/ChipTextField/issues/131).
 
 # Usage
 
