@@ -33,6 +33,8 @@ android {
 }
 
 kotlin {
+    jvmToolchain(11)
+
     jvm()
 //    iosX64()
 //    macosX64()
@@ -46,6 +48,11 @@ kotlin {
 
     androidTarget {
         publishLibraryVariants("release")
+        compilations.configureEach {
+            kotlinOptions {
+                jvmTarget = "11"
+            }
+        }
     }
 
     sourceSets {
