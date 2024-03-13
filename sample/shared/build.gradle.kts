@@ -12,6 +12,8 @@ android {
 }
 
 kotlin {
+    jvmToolchain(11)
+
     jvm()
 
     js(IR) {
