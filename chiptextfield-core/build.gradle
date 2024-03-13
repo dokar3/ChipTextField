@@ -24,15 +24,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-    buildFeatures {
-        compose true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion composeCompilerVersion
-    }
 }
 
 kotlin {
+    jvmToolchain(11)
+
     jvm()
 //    iosX64()
 //    macosX64()
@@ -44,7 +40,9 @@ kotlin {
         binaries.library()
     }
 
-    androidTarget()
+    androidTarget {
+        publishLibraryVariants("release")
+    }
 
     sourceSets {
         commonMain {
