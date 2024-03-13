@@ -44,7 +44,9 @@ kotlin {
         binaries.library()
     }
 
-    androidTarget()
+    androidTarget {
+        publishLibraryVariants("release")
+    }
 
     sourceSets {
         commonMain {
