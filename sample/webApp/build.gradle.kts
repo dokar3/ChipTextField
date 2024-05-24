@@ -4,6 +4,7 @@ import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
 plugins {
     id("kotlin-multiplatform")
     id("org.jetbrains.compose")
+    alias(libs.plugins.compose.compiler)
 }
 
 kotlin {
@@ -54,6 +55,3 @@ kotlin {
     }
 }
 
-compose.experimental {
-    web.application {}
-}
