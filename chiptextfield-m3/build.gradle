@@ -3,6 +3,7 @@ plugins {
     id("kotlin-multiplatform")
     id('com.vanniktech.maven.publish')
     id("org.jetbrains.compose")
+    alias(libs.plugins.compose.compiler)
 }
 
 android {
