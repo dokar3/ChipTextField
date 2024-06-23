@@ -1,5 +1,7 @@
 # ChipTextField
 
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.dokar3/chiptextfield/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.dokar3/chiptextfield)
+
 Editable and customizable chips for Compose Multiplatform. Available on these platforms:
 
 - Android (Jetpack Compose)
@@ -10,7 +12,7 @@ iOS support is currently lacking, see [#131](https://github.com/dokar3/ChipTextF
 
 # Usage
 
-Gradle dependency [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.dokar3/chiptextfield/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.dokar3/chiptextfield):
+Gradle dependency:
 
 ```groovy
 // Material 2
