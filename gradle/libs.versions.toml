@@ -6,7 +6,7 @@ coil = "3.0.0-alpha01"
 compose-multiplatform = "1.6.11"
 coroutines = "1.8.1"
 agp = "8.5.1"
-maven-publish = "0.29.0"
+maven-publish = "0.30.0"
 ktor = "2.3.12"
 
 [libraries]
