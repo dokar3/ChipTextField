@@ -27,6 +27,11 @@ kotlin {
 
     androidTarget()
 
+    iosX64()
+    iosArm64()
+    iosSimulatorArm64()
+
+
     applyDefaultHierarchyTemplate()
 
     sourceSets {
@@ -69,5 +74,12 @@ kotlin {
         }
 
         val wasmJs by creating {  }
+
+        val iosMain by getting {
+            dependencies {
+                dependsOn(nonWasmJsMain)
+                implementation(libs.ktor.darwin)
+            }
+        }
     }
 }

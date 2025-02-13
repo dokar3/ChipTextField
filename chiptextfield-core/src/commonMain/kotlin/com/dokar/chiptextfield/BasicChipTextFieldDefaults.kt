@@ -1,3 +1,5 @@
+@file:Suppress("INVISIBLE_MEMBER", "INVISIBLE_REFERENCE")
+
 package com.dokar.chiptextfield
 
 import androidx.compose.foundation.shape.CircleShape
@@ -6,15 +8,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.PlatformParagraphStyle
 import androidx.compose.ui.text.PlatformSpanStyle
-import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.createPlatformTextStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 object BasicChipTextFieldDefaults {
     private const val DISABLED_CONTENT_ALPHA = 0.38f
 
-    private val DefaultPlatformTextStyle = PlatformTextStyle(
+    private val DefaultPlatformTextStyle = createPlatformTextStyle(
         spanStyle = PlatformSpanStyle.Default,
         paragraphStyle = PlatformParagraphStyle.Default,
     )
