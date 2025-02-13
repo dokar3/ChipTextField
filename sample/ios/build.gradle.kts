@@ -18,5 +18,11 @@ kotlin {
                 implementation(project(":sample:shared"))
             }
         }
+
+        //may be imported?
+        //kotlinx-coroutines-core-iosarm32/                                -         -
+        //kotlinx-coroutines-core-iosarm64/                                -         -
+        //kotlinx-coroutines-core-iossimulatorarm64/                       -         -
+        //kotlinx-coroutines-core-iosx64/
     }
 }

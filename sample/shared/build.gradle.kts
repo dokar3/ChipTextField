@@ -74,5 +74,12 @@ kotlin {
         }
 
         val wasmJs by creating {  }
+
+        val iosMain by getting {
+            dependencies {
+                dependsOn(nonWasmJsMain)
+                implementation(libs.ktor.darwin)
+            }
+        }
     }
 }

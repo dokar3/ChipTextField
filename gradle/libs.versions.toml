@@ -3,7 +3,7 @@ androidCompileSdk = "34"
 androidTargetSdk = "34"
 kotlin = "2.0.0"
 coil = "3.0.0-alpha01"
-compose-multiplatform = "1.6.11"
+compose-multiplatform = "1.7.3"
 coroutines = "1.8.1"
 agp = "8.5.1"
 maven-publish = "0.29.0"
@@ -12,9 +12,11 @@ ktor = "2.3.12"
 [libraries]
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 kotlinx-coroutines-swing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "coroutines" }
+kotlinx-coroutines-ios = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core-ios", version.ref = "coroutines" }
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
 coil-network = { module = "io.coil-kt.coil3:coil-network", version.ref = "coil" }
 ktor-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
+ktor-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }
 ktor-js = { module = "io.ktor:ktor-client-js", version.ref = "ktor" }
 
 [plugins]
