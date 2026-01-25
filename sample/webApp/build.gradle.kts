@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
-
 plugins {
     id("kotlin-multiplatform")
     id("org.jetbrains.compose")
@@ -8,31 +6,22 @@ plugins {
 
 kotlin {
     js(IR) {
-        outputModuleName.set("chiptextfield-sample")
+        outputModuleName.set("webApp")
         browser {
             commonWebpackConfig {
-                outputFileName = "chiptextfield-sample.js"
+                outputFileName = "webApp.js"
             }
         }
         binaries.executable()
     }
 
+    @OptIn(org.jetbrains.kotlin.gradle.ExperimentalWasmDsl::class)
     wasmJs {
-        outputModuleName.set("chiptextfield-wasmjs-sample")
+        outputModuleName.set("webAppWasm")
         binaries.executable()
         browser {
             commonWebpackConfig {
-                devServer = (devServer ?: KotlinWebpackConfig.DevServer()).apply {
-                    // Uncomment and configure this if you want to open a browser different from the system default
-                    // open = mapOf(
-                    //     "app" to mapOf(
-                    //         "name" to "google chrome"
-                    //     )
-                    // )
-
-                    // Serve sources to debug inside browser
-                    static(project.rootDir.path)
-                }
+                outputFileName = "webAppWasm.js"
             }
 
             // Uncomment the next line to apply Binaryen and get optimized wasm binaries
