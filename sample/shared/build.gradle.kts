@@ -1,31 +1,28 @@
-import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
-
 plugins {
-    id("com.android.library")
+    alias(libs.plugins.android.kotlin.multiplatform)
     id("kotlin-multiplatform")
     id("org.jetbrains.compose")
     alias(libs.plugins.compose.compiler)
 }
 
-android {
-    namespace = "com.dokar.chiptextfield.sample.shared"
-    compileSdk = libs.versions.androidCompileSdk.get().toInt()
-}
-
 kotlin {
     jvmToolchain(11)
+
+    androidLibrary {
+        namespace = "com.dokar.chiptextfield.sample.shared"
+        compileSdk = libs.versions.androidCompileSdk.get().toInt()
+        androidResources.enable = true
+    }
 
     jvm()
 
     js(IR) {
         browser()
     }
-    @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
+        browser()
         binaries.executable()
     }
-
-    androidTarget()
 
     applyDefaultHierarchyTemplate()
 
@@ -35,12 +32,14 @@ kotlin {
                 api(project(":chiptextfield-core"))
                 api(project(":chiptextfield"))
                 api(project(":chiptextfield-m3"))
-                api(compose.material)
-                api(compose.material3)
+                api(libs.jetbrains.compose.material)
+                api(libs.jetbrains.compose.material3)
+                implementation(libs.jetbrains.compose.resources)
             }
         }
 
         val nonWasmJsMain by creating {
+            dependsOn(commonMain)
             dependencies {
                 implementation(libs.coil.compose)
                 implementation(libs.coil.network)

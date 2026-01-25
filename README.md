@@ -1,6 +1,6 @@
 # ChipTextField
 
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.dokar3/chiptextfield/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.dokar3/chiptextfield)
+![Maven Central](https://img.shields.io/maven-central/v/io.github.dokar3/chiptextfield?style=flat-square&color=%23ea197e)
 
 Editable and customizable chips for Compose Multiplatform. Available on these platforms:
 

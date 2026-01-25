@@ -1,34 +1,19 @@
 plugins {
-    id("com.android.library")
+    alias(libs.plugins.android.kotlin.multiplatform)
     id("kotlin-multiplatform")
     id('com.vanniktech.maven.publish')
     id("org.jetbrains.compose")
     alias(libs.plugins.compose.compiler)
 }
 
-android {
-    namespace 'com.dokar.chiptextfield.m3'
-
-    compileSdk libs.versions.androidCompileSdk.get().toInteger()
-
-    defaultConfig {
-        minSdk 21
-        targetSdkVersion  libs.versions.androidTargetSdk.get().toInteger()
-
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles "consumer-rules.pro"
-    }
-
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-    }
-}
-
 kotlin {
     jvmToolchain(11)
+
+    androidLibrary {
+        namespace = "com.dokar.chiptextfield.m3"
+        compileSdk = libs.versions.androidCompileSdk.get().toInteger()
+        minSdk = libs.versions.androidMinSdk.get().toInteger()
+    }
 
     jvm()
 //    iosX64()
@@ -37,21 +22,18 @@ kotlin {
         browser()
     }
     wasmJs {
+        browser()
         binaries.executable()
         binaries.library()
-    }
-
-    androidTarget {
-        publishLibraryVariants("release")
     }
 
     sourceSets {
         commonMain {
             dependencies {
                 api project(":chiptextfield-core")
-                api(compose.ui)
-                api(compose.foundation)
-                api(compose.material3)
+                api(libs.jetbrains.compose.ui)
+                api(libs.jetbrains.compose.foundation)
+                api(libs.jetbrains.compose.material3)
             }
         }
     }
