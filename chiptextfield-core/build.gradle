@@ -1,55 +1,55 @@
 plugins {
-    id("com.android.library")
-    id("kotlin-multiplatform")
-    id('com.vanniktech.maven.publish')
-    id("org.jetbrains.compose")
+    alias(libs.plugins.android.kotlin.multiplatform)
+    alias(libs.plugins.kotlinMultiplatform)
+    alias(libs.plugins.compose.multiplatform)
+    alias(libs.plugins.mavenpublish)
     alias(libs.plugins.compose.compiler)
-}
-
-android {
-    namespace 'com.dokar.chiptextfield.core'
-
-    compileSdk libs.versions.androidCompileSdk.get().toInteger()
-
-    defaultConfig {
-        minSdk 21
-        targetSdkVersion  libs.versions.androidTargetSdk.get().toInteger()
-
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles "consumer-rules.pro"
-    }
-
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-    }
 }
 
 kotlin {
     jvmToolchain(11)
 
+    androidLibrary {
+        namespace = "com.dokar.chiptextfield.core"
+        compileSdk = libs.versions.androidCompileSdk.get().toInteger()
+        minSdk = libs.versions.androidMinSdk.get().toInteger()
+    }
+
     jvm()
 //    iosX64()
 //    macosX64()
-    js(IR) {
-        browser()
-    }
     wasmJs {
-        binaries.executable()
+        compilerOptions {
+            outputModuleName.set("chiptextfield-core")
+        }
+        browser {
+            commonWebpackConfig {
+                outputFileName = "chiptextfield-core.js"
+            }
+            testTask {
+                // Tests are broken now: Module not found: Error: Can't resolve './skiko.mjs'
+                enabled = false
+            }
+        }
         binaries.library()
     }
-
-    androidTarget {
-        publishLibraryVariants("release")
+    js(IR) {
+        compilerOptions {
+            outputModuleName.set("chiptextfield-core-jscanvas")
+        }
+        browser {
+            commonWebpackConfig {
+                outputFileName = "chiptextfield-core-jscanvas.js"
+            }
+        }
+        binaries.library()
     }
 
     sourceSets {
         commonMain {
             dependencies {
-                api(compose.ui)
-                api(compose.foundation)
+                api(libs.jetbrains.compose.ui)
+                api(libs.jetbrains.compose.foundation)
             }
         }
     }

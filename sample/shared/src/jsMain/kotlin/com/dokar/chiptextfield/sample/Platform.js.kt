@@ -5,7 +5,7 @@ import androidx.compose.ui.Modifier
 import coil3.ImageLoader
 import coil3.annotation.ExperimentalCoilApi
 import coil3.compose.setSingletonImageLoaderFactory
-import coil3.fetch.NetworkFetcher
+import coil3.network.ktor3.KtorNetworkFetcherFactory
 
 @OptIn(ExperimentalCoilApi::class)
 @Composable
@@ -13,7 +13,7 @@ actual fun setupImageLoader() {
     setSingletonImageLoaderFactory { context ->
         ImageLoader.Builder(context)
             .components {
-                add(NetworkFetcher.Factory())
+                add(KtorNetworkFetcherFactory())
             }
             .build()
     }

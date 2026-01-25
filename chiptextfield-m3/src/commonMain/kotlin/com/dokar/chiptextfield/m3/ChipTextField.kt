@@ -5,6 +5,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LocalTextStyle
@@ -318,7 +319,16 @@ fun <T : Chip> ChipTextField(
             decorationBox = { innerTextField ->
                 TextFieldDefaults.DecorationBox(
                     value = if (state.chips.isEmpty() && value.text.isEmpty()) "" else " ",
-                    innerTextField = innerTextField,
+                    innerTextField = {
+                        if (label != null) {
+                            // Hacky fix for the filled text field, target material3-1.9.0
+                            Box(modifier = Modifier.padding(top = 8.dp)) {
+                                innerTextField()
+                            }
+                        } else {
+                            innerTextField()
+                        }
+                    },
                     enabled = !readOnly,
                     singleLine = false,
                     visualTransformation = VisualTransformation.None,

@@ -1,56 +1,40 @@
-import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
-import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
-
 plugins {
-    id("kotlin-multiplatform")
-    id("org.jetbrains.compose")
+    alias(libs.plugins.kotlinMultiplatform)
+    alias(libs.plugins.compose.multiplatform)
     alias(libs.plugins.compose.compiler)
 }
 
 kotlin {
     js(IR) {
-        moduleName = "chiptextfield-sample"
+        compilerOptions {
+            outputModuleName.set("webApp")
+        }
         browser {
             commonWebpackConfig {
-                outputFileName = "chiptextfield-sample.js"
+                outputFileName = "webApp.js"
             }
         }
         binaries.executable()
     }
 
-    @OptIn(ExperimentalWasmDsl::class)
+    @OptIn(org.jetbrains.kotlin.gradle.ExperimentalWasmDsl::class)
     wasmJs {
-        moduleName = "chiptextfield-wasmjs-sample"
-        binaries.executable()
+        compilerOptions {
+            outputModuleName.set("webAppWasm")
+        }
         browser {
             commonWebpackConfig {
-                devServer = (devServer ?: KotlinWebpackConfig.DevServer()).apply {
-                    // Uncomment and configure this if you want to open a browser different from the system default
-                    // open = mapOf(
-                    //     "app" to mapOf(
-                    //         "name" to "google chrome"
-                    //     )
-                    // )
-
-                    static = (static ?: mutableListOf()).apply {
-                        // Serve sources to debug inside browser
-                        add(project.rootDir.path)
-                    }
-                }
+                outputFileName = "webAppWasm.js"
             }
-
             // Uncomment the next line to apply Binaryen and get optimized wasm binaries
             // applyBinaryen()
         }
+        binaries.executable()
     }
 
     sourceSets {
-        val commonMain by getting {
-            dependencies {
-                implementation(project(":sample:shared"))
-                @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
-                implementation(compose.components.resources)
-            }
+        commonMain.dependencies {
+            implementation(project(":sample:shared"))
         }
     }
 }

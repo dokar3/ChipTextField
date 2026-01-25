@@ -1,14 +1,14 @@
 package com.dokar.chiptextfield.sample
 
-import androidx.compose.ui.ExperimentalComposeUiApi
-import androidx.compose.ui.window.CanvasBasedWindow
-import org.jetbrains.skiko.wasm.onWasmReady
+//import androidx.compose.ui.ExperimentalComposeUiApi
+//import androidx.compose.ui.window.ComposeViewport
+//import org.jetbrains.skiko.wasm.onWasmReady
 
-@OptIn(ExperimentalComposeUiApi::class)
+//@OptIn(ExperimentalComposeUiApi::class)
 fun main() {
-    onWasmReady {
-        CanvasBasedWindow("ChipTextField Sample") {
-            SampleScreen()
-        }
-    }
+//    onWasmReady {
+//        ComposeViewport(viewportContainerId = "ComposeTarget") {
+//             SampleScreen()
+//        }
+//    }
 }

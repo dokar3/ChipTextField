@@ -4,9 +4,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.text.PlatformParagraphStyle
-import androidx.compose.ui.text.PlatformSpanStyle
-import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -14,10 +11,6 @@ import androidx.compose.ui.unit.dp
 object BasicChipTextFieldDefaults {
     private const val DISABLED_CONTENT_ALPHA = 0.38f
 
-    private val DefaultPlatformTextStyle = PlatformTextStyle(
-        spanStyle = PlatformSpanStyle.Default,
-        paragraphStyle = PlatformParagraphStyle.Default,
-    )
     private val DefaultTextStyle = TextStyle.Default.copy(platformStyle = DefaultPlatformTextStyle)
 
     val textStyle: TextStyle = DefaultTextStyle

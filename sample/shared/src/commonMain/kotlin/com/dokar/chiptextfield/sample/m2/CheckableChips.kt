@@ -6,14 +6,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.TextFieldDefaults
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Check
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.unit.dp
+import chiptextfield.sample.shared.generated.resources.Res
+import chiptextfield.sample.shared.generated.resources.ic_check
 import com.dokar.chiptextfield.BasicChipTextField
 import com.dokar.chiptextfield.ChipTextFieldDefaults
 import com.dokar.chiptextfield.rememberChipTextFieldState
@@ -21,6 +20,7 @@ import com.dokar.chiptextfield.sample.ChipFieldStyle
 import com.dokar.chiptextfield.sample.data.CheckableChip
 import com.dokar.chiptextfield.sample.data.SampleChips
 import com.dokar.chiptextfield.toChipTextFieldColors
+import org.jetbrains.compose.resources.painterResource
 
 @ExperimentalComposeUiApi
 @ExperimentalFoundationApi
@@ -61,7 +61,7 @@ private fun CheckIcon(
 ) {
     if (chip.isChecked) {
         Image(
-            painter = rememberVectorPainter(Icons.Outlined.Check),
+            painter = painterResource(Res.drawable.ic_check),
             contentDescription = null,
             modifier = modifier
                 .size(24.dp)

@@ -1,73 +1,45 @@
-import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
-
 plugins {
-    id("com.android.library")
-    id("kotlin-multiplatform")
-    id("org.jetbrains.compose")
+    alias(libs.plugins.android.kotlin.multiplatform)
+    alias(libs.plugins.kotlinMultiplatform)
+    alias(libs.plugins.compose.multiplatform)
     alias(libs.plugins.compose.compiler)
-}
-
-android {
-    namespace = "com.dokar.chiptextfield.sample.shared"
-    compileSdk = libs.versions.androidCompileSdk.get().toInt()
 }
 
 kotlin {
     jvmToolchain(11)
+
+    androidLibrary {
+        namespace = "com.dokar.chiptextfield.sample.shared"
+        compileSdk = libs.versions.androidCompileSdk.get().toInt()
+        androidResources.enable = true
+    }
 
     jvm()
 
     js(IR) {
         browser()
     }
-    @OptIn(ExperimentalWasmDsl::class)
+
+    @OptIn(org.jetbrains.kotlin.gradle.ExperimentalWasmDsl::class)
     wasmJs {
-        binaries.executable()
+        browser()
     }
-
-    androidTarget()
-
-    applyDefaultHierarchyTemplate()
 
     sourceSets {
         val commonMain by getting {
             dependencies {
-                api(project(":chiptextfield-core"))
-                api(project(":chiptextfield"))
-                api(project(":chiptextfield-m3"))
-                api(compose.material)
-                api(compose.material3)
-            }
-        }
-
-        val nonWasmJsMain by creating {
-            dependencies {
+                implementation(project(":chiptextfield-core"))
+                implementation(project(":chiptextfield"))
+                implementation(project(":chiptextfield-m3"))
+                api(libs.jetbrains.compose.runtime)
+                api(libs.jetbrains.compose.ui)
+                api(libs.jetbrains.compose.foundation)
+                api(libs.jetbrains.compose.material)
+                api(libs.jetbrains.compose.material3)
                 implementation(libs.coil.compose)
                 implementation(libs.coil.network)
+                implementation(libs.jetbrains.compose.resources)
             }
         }
-
-        val jvmMain by getting {
-            dependencies {
-                dependsOn(nonWasmJsMain)
-                implementation(libs.ktor.okhttp)
-            }
-        }
-
-        val androidMain by getting {
-            dependencies {
-                dependsOn(nonWasmJsMain)
-                implementation(libs.ktor.okhttp)
-            }
-        }
-
-        val jsMain by getting {
-            dependencies {
-                dependsOn(nonWasmJsMain)
-                implementation(libs.ktor.js)
-            }
-        }
-
-        val wasmJs by creating {  }
     }
 }
