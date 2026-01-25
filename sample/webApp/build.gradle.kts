@@ -1,12 +1,14 @@
 plugins {
-    id("kotlin-multiplatform")
-    id("org.jetbrains.compose")
+    alias(libs.plugins.kotlinMultiplatform)
+    alias(libs.plugins.compose.multiplatform)
     alias(libs.plugins.compose.compiler)
 }
 
 kotlin {
     js(IR) {
-        outputModuleName.set("webApp")
+        compilerOptions {
+            outputModuleName.set("webApp")
+        }
         browser {
             commonWebpackConfig {
                 outputFileName = "webApp.js"
@@ -17,24 +19,22 @@ kotlin {
 
     @OptIn(org.jetbrains.kotlin.gradle.ExperimentalWasmDsl::class)
     wasmJs {
-        outputModuleName.set("webAppWasm")
-        binaries.executable()
+        compilerOptions {
+            outputModuleName.set("webAppWasm")
+        }
         browser {
             commonWebpackConfig {
                 outputFileName = "webAppWasm.js"
             }
-
             // Uncomment the next line to apply Binaryen and get optimized wasm binaries
             // applyBinaryen()
         }
+        binaries.executable()
     }
 
     sourceSets {
-        val commonMain by getting {
-            dependencies {
-                implementation(project(":sample:shared"))
-                implementation(libs.jetbrains.compose.resources)
-            }
+        commonMain.dependencies {
+            implementation(project(":sample:shared"))
         }
     }
 }

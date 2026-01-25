@@ -1,8 +1,8 @@
 plugins {
     alias(libs.plugins.android.kotlin.multiplatform)
-    id("kotlin-multiplatform")
-    id('com.vanniktech.maven.publish')
-    id("org.jetbrains.compose")
+    alias(libs.plugins.kotlinMultiplatform)
+    alias(libs.plugins.compose.multiplatform)
+    alias(libs.plugins.mavenpublish)
     alias(libs.plugins.compose.compiler)
 }
 
@@ -18,12 +18,30 @@ kotlin {
     jvm()
 //    iosX64()
 //    macosX64()
-    js(IR) {
-        browser()
-    }
     wasmJs {
-        browser()
-        binaries.executable()
+        compilerOptions {
+            outputModuleName.set("chiptextfield-m3")
+        }
+        browser {
+            commonWebpackConfig {
+                outputFileName = "chiptextfield-m3.js"
+            }
+            testTask {
+                // Tests are broken now: Module not found: Error: Can't resolve './skiko.mjs'
+                enabled = false
+            }
+        }
+        binaries.library()
+    }
+    js(IR) {
+        compilerOptions {
+            outputModuleName.set("chiptextfield-m3-jscanvas")
+        }
+        browser {
+            commonWebpackConfig {
+                outputFileName = "chiptextfield-m3-jscanvas.js"
+            }
+        }
         binaries.library()
     }
 
