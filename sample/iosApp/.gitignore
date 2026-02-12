@@ -1,0 +1,7 @@
+## User settings
+userdata/
+xcuserdata/
+/build/
+DerivedData/
+*.moved-aside
+*.xcuserstate
