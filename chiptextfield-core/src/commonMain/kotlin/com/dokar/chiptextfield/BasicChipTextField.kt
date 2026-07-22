@@ -597,12 +597,8 @@ private fun <T : Chip> Input(
 
     BasicTextField(
         value = value,
-        onValueChange = filterNewLines { newValue, hasNewLine ->
-            if (hasNewLine && newValue.text.isNotEmpty() && tryAddNewChip(newValue)) {
-                onValueChange(TextFieldValue())
-            } else {
-                onValueChange(newValue)
-            }
+        onValueChange = filterNewLines { newValue, _ ->
+            onValueChange(newValue)
         },
         modifier = modifier
             .focusRequester(focusRequester)
@@ -623,6 +619,7 @@ private fun <T : Chip> Input(
             },
         enabled = enabled,
         readOnly = readOnly,
+        singleLine = true,
         textStyle = textStyle.copy(color = textColor),
         keyboardOptions = keyboardOptions.copy(imeAction = ImeAction.Done),
         keyboardActions = KeyboardActions(
