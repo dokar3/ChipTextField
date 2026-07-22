@@ -101,9 +101,12 @@ class ChipTextFieldState<T : Chip>(
 
     internal var recordFocusedChip = true
 
-    internal var textFieldFocusState by mutableStateOf(TextFieldFocusState.None)
+    private var nextTextFieldFocusRequestId = 0
 
-    val isTextFieldFocused get() = textFieldFocusState == TextFieldFocusState.Focused
+    internal var textFieldFocusRequest by mutableStateOf(TextFieldFocusRequest())
+
+    private var _isTextFieldFocused by mutableStateOf(false)
+    val isTextFieldFocused get() = _isTextFieldFocused
 
     var chips by mutableStateOf(chips)
 
@@ -153,10 +156,22 @@ class ChipTextFieldState<T : Chip>(
 
     internal fun updateFocusedChip(chip: T?) {
         if (chip != null) {
-            textFieldFocusState = TextFieldFocusState.None
+            textFieldFocusRequest = textFieldFocusRequest.copy(
+                state = TextFieldFocusState.None,
+            )
         }
         this._focusedChip = chip
         this._focusedChipIndex = chips.indexOf(chip)
+    }
+
+    internal fun updateTextFieldFocus(isFocused: Boolean) {
+        _isTextFieldFocused = isFocused
+    }
+
+    internal fun consumeTextFieldFocusRequest(request: TextFieldFocusRequest) {
+        if (textFieldFocusRequest == request) {
+            textFieldFocusRequest = request.copy(state = TextFieldFocusState.None)
+        }
     }
 
     /**
@@ -184,16 +199,28 @@ class ChipTextFieldState<T : Chip>(
      * Focus the text field at the end of chips.
      */
     fun focusTextField() {
-        textFieldFocusState = TextFieldFocusState.Focused
+        updateTextFieldFocusRequest(TextFieldFocusState.Focused)
     }
 
     /**
      * Clear focus from the focused text field at the end chips.
      */
     fun clearTextFieldFocus() {
-        textFieldFocusState = TextFieldFocusState.Unfocused
+        updateTextFieldFocusRequest(TextFieldFocusState.Unfocused)
+    }
+
+    private fun updateTextFieldFocusRequest(state: TextFieldFocusState) {
+        textFieldFocusRequest = TextFieldFocusRequest(
+            id = ++nextTextFieldFocusRequestId,
+            state = state,
+        )
     }
 }
+
+internal data class TextFieldFocusRequest(
+    val id: Int = 0,
+    val state: TextFieldFocusState = TextFieldFocusState.None,
+)
 
 internal enum class TextFieldFocusState {
     None,

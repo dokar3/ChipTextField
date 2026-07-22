@@ -54,5 +54,10 @@ kotlin {
                 implementation(libs.androidx.compose.runtime.retain)
             }
         }
+        commonTest {
+            dependencies {
+                implementation(kotlin("test"))
+            }
+        }
     }
 }
