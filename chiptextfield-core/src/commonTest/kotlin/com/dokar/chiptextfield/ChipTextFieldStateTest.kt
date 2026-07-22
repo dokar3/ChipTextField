@@ -35,4 +35,29 @@ class ChipTextFieldStateTest {
         assertEquals(TextFieldFocusState.Focused, secondRequest.state)
         assertNotEquals(firstRequest, secondRequest)
     }
+
+    @Test
+    fun consumedTextFieldFocusRequestBecomesInert() {
+        val state = ChipTextFieldState<Chip>()
+        state.focusTextField()
+        val request = state.textFieldFocusRequest
+
+        state.consumeTextFieldFocusRequest(request)
+
+        assertEquals(TextFieldFocusState.None, state.textFieldFocusRequest.state)
+    }
+
+    @Test
+    fun consumingOldTextFieldFocusRequestDoesNotClearNewRequest() {
+        val state = ChipTextFieldState<Chip>()
+        state.focusTextField()
+        val oldRequest = state.textFieldFocusRequest
+        state.clearTextFieldFocus()
+        val newRequest = state.textFieldFocusRequest
+
+        state.consumeTextFieldFocusRequest(oldRequest)
+
+        assertEquals(newRequest, state.textFieldFocusRequest)
+        assertEquals(TextFieldFocusState.Unfocused, state.textFieldFocusRequest.state)
+    }
 }

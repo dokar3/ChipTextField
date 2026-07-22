@@ -120,6 +120,12 @@ class ChipTextFieldState<T : Chip>(
         _isTextFieldFocused = isFocused
     }
 
+    internal fun consumeTextFieldFocusRequest(request: TextFieldFocusRequest) {
+        if (textFieldFocusRequest == request) {
+            textFieldFocusRequest = request.copy(state = TextFieldFocusState.None)
+        }
+    }
+
     /**
      * Focus a chip by index.
      */

@@ -344,6 +344,7 @@ fun <T : Chip> BasicChipTextField(
                         textFieldFocusRequester.freeFocus()
                     }
                 }
+                state.consumeTextFieldFocusRequest(request)
             }
     }
 
