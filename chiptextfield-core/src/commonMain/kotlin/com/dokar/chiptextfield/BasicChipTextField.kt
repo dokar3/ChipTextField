@@ -324,7 +324,9 @@ fun <T : Chip> BasicChipTextField(
 
     LaunchedEffect(state, state.disposed) {
         if (state.disposed) {
-            state.chips = state.defaultChips
+            if (state.resetChipsAfterLeavingComposition) {
+                state.chips = state.defaultChips
+            }
             state.disposed = false
         }
     }

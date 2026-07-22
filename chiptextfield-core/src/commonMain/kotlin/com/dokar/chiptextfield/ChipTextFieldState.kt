@@ -6,6 +6,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.retain.retain
 import androidx.compose.runtime.setValue
 
 /**
@@ -36,6 +37,46 @@ fun <T : Chip> rememberChipTextFieldState(
 }
 
 /**
+ * Return a [ChipTextFieldState] that is retained after leaving the composition.
+ *
+ * Retained state can survive configuration changes, but it does not survive process death. Use
+ * [rememberChipTextFieldState] when the state should only live as long as the current composition.
+ *
+ * @param chips Default chips
+ */
+@Composable
+fun <T : Chip> retainChipTextFieldState(
+    chips: List<T> = emptyList(),
+): ChipTextFieldState<T> {
+    return retain { retainedChipTextFieldState(chips) }
+}
+
+/**
+ * Return a [ChipTextFieldState] that is retained after leaving the composition, recreating it when
+ * [key] changes.
+ *
+ * Retained state can survive configuration changes, but it does not survive process death. Use
+ * [rememberChipTextFieldState] when the state should only live as long as the current composition.
+ *
+ * @param chips Default chips
+ * @param key An input that identifies the retained state. When this value changes, the previous
+ * state is discarded and a new state is created with [chips].
+ */
+@Composable
+fun <T : Chip> retainChipTextFieldState(
+    chips: List<T> = emptyList(),
+    key: Any?,
+): ChipTextFieldState<T> {
+    return retain(key) { retainedChipTextFieldState(chips) }
+}
+
+private fun <T : Chip> retainedChipTextFieldState(chips: List<T>): ChipTextFieldState<T> {
+    return ChipTextFieldState(chips = chips).apply {
+        resetChipsAfterLeavingComposition = false
+    }
+}
+
+/**
  * State class for [BasicChipTextField]
  *
  * @param chips Default chips
@@ -44,6 +85,8 @@ fun <T : Chip> rememberChipTextFieldState(
 class ChipTextFieldState<T : Chip>(
     chips: List<T> = emptyList()
 ) {
+    internal var resetChipsAfterLeavingComposition = true
+
     internal var disposed = false
 
     internal var defaultChips: List<T> = chips
