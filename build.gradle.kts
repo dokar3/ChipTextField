@@ -1,6 +1,6 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
-    val composeBomVersion: String by extra("2026.01.00")
+    extra["composeBomVersion"] = "2026.06.01"
 }
 
 plugins {

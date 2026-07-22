@@ -16,7 +16,6 @@ kotlin {
     }
 
     jvm()
-    iosX64()
     iosArm64()
     iosSimulatorArm64()
 //    macosX64()
@@ -35,7 +34,7 @@ kotlin {
         }
         binaries.library()
     }
-    js(IR) {
+    js {
         compilerOptions {
             outputModuleName.set("chiptextfield-core-jscanvas")
         }
