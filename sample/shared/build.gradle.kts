@@ -17,7 +17,6 @@ kotlin {
     jvm()
 
     listOf(
-        iosX64(),
         iosArm64(),
         iosSimulatorArm64()
     ).forEach {
@@ -27,7 +26,7 @@ kotlin {
         }
     }
 
-    js(IR) {
+    js {
         browser()
     }
 

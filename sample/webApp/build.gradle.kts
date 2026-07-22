@@ -5,7 +5,7 @@ plugins {
 }
 
 kotlin {
-    js(IR) {
+    js {
         compilerOptions {
             outputModuleName.set("webApp")
         }
@@ -38,4 +38,3 @@ kotlin {
         }
     }
 }
-
