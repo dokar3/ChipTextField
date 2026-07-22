@@ -330,10 +330,10 @@ fun <T : Chip> BasicChipTextField(
     }
 
     LaunchedEffect(focusManager, state, textFieldFocusRequester) {
-        snapshotFlow { state.textFieldFocusState }
+        snapshotFlow { state.textFieldFocusRequest }
             .distinctUntilChanged()
-            .collect {
-                when (it) {
+            .collect { request ->
+                when (request.state) {
                     TextFieldFocusState.None -> {}
                     TextFieldFocusState.Focused -> runCatching {
                         textFieldFocusRequester.requestFocus()
@@ -604,10 +604,8 @@ private fun <T : Chip> Input(
         modifier = modifier
             .focusRequester(focusRequester)
             .onFocusChanged {
+                state.updateTextFieldFocus(it.isFocused)
                 onFocusChange(it.isFocused)
-                if (it.isFocused) {
-                    state.focusTextField()
-                }
             }
             .onPreviewKeyEvent {
                 if (it.type == KeyEventType.KeyDown && it.key == Key.Backspace) {
