@@ -60,4 +60,18 @@ class ChipTextFieldStateTest {
         assertEquals(newRequest, state.textFieldFocusRequest)
         assertEquals(TextFieldFocusState.Unfocused, state.textFieldFocusRequest.state)
     }
+
+    @Test
+    fun focusingChipCancelsPendingTextFieldFocusRequest() {
+        val chip = Chip("Chip")
+        val state = ChipTextFieldState(chips = listOf(chip))
+        state.focusTextField()
+        val pendingRequest = state.textFieldFocusRequest
+
+        state.focusChip(0)
+
+        assertEquals(pendingRequest.id, state.textFieldFocusRequest.id)
+        assertEquals(TextFieldFocusState.None, state.textFieldFocusRequest.state)
+        assertEquals(0, state.focusedChipIndex)
+    }
 }

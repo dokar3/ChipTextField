@@ -112,6 +112,11 @@ class ChipTextFieldState<T : Chip>(
     }
 
     internal fun updateFocusedChip(chip: T?) {
+        if (chip != null) {
+            textFieldFocusRequest = textFieldFocusRequest.copy(
+                state = TextFieldFocusState.None,
+            )
+        }
         this._focusedChip = chip
         this._focusedChipIndex = chips.indexOf(chip)
     }
