@@ -21,6 +21,21 @@ fun <T : Chip> rememberChipTextFieldState(
 }
 
 /**
+ * Return a new remembered [ChipTextFieldState], recreating it when [key] changes.
+ *
+ * @param chips Default chips
+ * @param key An input that identifies the state. When this value changes, the previous state is
+ * discarded and a new state is created with [chips].
+ */
+@Composable
+fun <T : Chip> rememberChipTextFieldState(
+    chips: List<T> = emptyList(),
+    key: Any?,
+): ChipTextFieldState<T> {
+    return remember(key) { ChipTextFieldState(chips = chips) }
+}
+
+/**
  * State class for [BasicChipTextField]
  *
  * @param chips Default chips
