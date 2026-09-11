@@ -2,7 +2,7 @@
 androidCompileSdk = "37"
 androidTargetSdk = "37"
 androidMinSdk = "23"
-kotlin = "2.4.10"
+kotlin = "2.4.20"
 coil = "3.5.0"
 compose-multiplatform = "1.11.1"
 androidx-compose-runtime = "1.11.4"
